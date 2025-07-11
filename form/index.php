@@ -25,7 +25,7 @@
       <input type="email" name="email" placeholder="Email" required>
       <select name="role" required>
         <option value="" disabled selected>Select Role</option>
-        <option value="admin">Admin</option>
+        <!-- <option value="admin">Admin</option> -->
         <option value="employee">Employee</option>
         <option value="customer">Customer</option>
       </select>
