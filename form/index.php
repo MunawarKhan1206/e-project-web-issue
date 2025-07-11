@@ -8,11 +8,13 @@
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-
+<?php
+include("../includes/db.inc.php");
+?>
 <div class="container" id="container">
   <!-- SIGN UP FORM -->
   <div class="form-container sign-up">
-    <form action="register.php" method="post">
+    <form action="../includes/signup.php" method="post">
       <h1>Create Account</h1>
       <div class="social-icons">
         <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -30,7 +32,7 @@
         <option value="customer">Customer</option>
       </select>
       <input type="password" name="password" placeholder="Password" required>
-      <button type="submit" name="register">Sign Up</button>
+      <button type="submit" name="register_btn">Sign Up</button>
       <p class="mobile-toggle-link">
         Already have an account? <a href="#" id="mobileToggleSignin">Sign In</a>
       </p>
@@ -39,7 +41,7 @@
 
   <!-- SIGN IN FORM -->
   <div class="form-container sign-in">
-    <form action="login.php" method="post">
+    <form action="../includes/login.php" method="post">
       <h1>Sign In</h1>
       <div class="social-icons">
         <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -57,7 +59,7 @@
       </select>
       <input type="password" name="password" placeholder="Password" required>
       <a href="#">Forgot Your Password?</a>
-      <button type="submit" name="login">Sign In</button>
+  <button type="submit" name="login_btn" value="Sign In">Sign In</button>
       <p class="mobile-toggle-link">
         Don’t have an account? <a href="#" id="mobileToggleSignup">Sign Up</a>
       </p>

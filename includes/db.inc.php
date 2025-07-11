@@ -1,10 +1,9 @@
 <?php
 $host = 'localhost';
-$db_name = 'e_project';
+$db_name = 'giftstore';
 $db_user = 'root';
 $db_pass = '';
 $charset = 'utf8mb4';
-
 $dsn = "mysql:host=$host;dbname=$db_name;charset=$charset";
 $options=[
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
