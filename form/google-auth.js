@@ -1,44 +1,36 @@
-function initGoogleLogin() {
+window.onload = function () {
   const clientId = "547746583380-r0a21nabutv0jrurr3152ufnbqokvbo6.apps.googleusercontent.com";
 
+  // Render Google Sign-In for Login
   google.accounts.id.initialize({
     client_id: clientId,
-    callback: handleCredentialResponse
+    callback: handleGoogleCredential,
+    auto_select: false,
+    context: "signin"
   });
 
-  const loginBtn1 = document.getElementById("googleLoginSignin");
-  const loginBtn2 = document.getElementById("googleLoginSignup");
+  google.accounts.id.renderButton(
+    document.getElementById("g_id_signin"),
+    { theme: "outline", size: "large", text: "continue_with" }
+  );
 
-  function triggerGoogleLogin(e) {
-    e.preventDefault();
+  // Render Google Sign-Up button
+  google.accounts.id.renderButton(
+    document.getElementById("g_id_signup"),
+    { theme: "outline", size: "large", text: "signup_with" }
+  );
+};
 
-    google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        console.log("Google prompt was skipped or blocked. Trying fallback...");
-        // You can add a fallback like redirect here if needed
-      }
-    });
-  }
-
-  if (loginBtn1) loginBtn1.addEventListener("click", triggerGoogleLogin);
-  if (loginBtn2) loginBtn2.addEventListener("click", triggerGoogleLogin);
-}
-
-function handleCredentialResponse(response) {
+function handleGoogleCredential(response) {
   fetch("../includes/google-auth.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id_token: response.credential })
   })
     .then(res => res.text())
-    .then(msg => alert(msg))
+    .then(msg => {
+      alert(msg);
+      // window.location.href = "dashboard.php"; // Optional
+    })
     .catch(err => console.error(err));
 }
-
-// 🔁 Wait until Google is loaded before initializing
-let checkGoogle = setInterval(() => {
-  if (window.google && google.accounts && google.accounts.id) {
-    clearInterval(checkGoogle);
-    initGoogleLogin();
-  }
-}, 200);

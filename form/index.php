@@ -7,12 +7,10 @@
   <title>Modern Login Page</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="index.css">
-
-  <!-- Google Identity -->
+  <!-- Google Identity Services API -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-  <!-- ✅ Then Your JS -->
   <script src="google-auth.js" defer></script>
+
 </head>
 
 <body>
@@ -25,12 +23,10 @@
       <form action="../includes/signup.php" method="post">
         <h1>Create Account</h1>
         <div class="social-icons">
-          <a href="#" class="icon" id="googleLoginSignin">
-            <i class="fa-brands fa-google-plus-g"></i>
-          </a>
-          <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+          <div id="g_id_signup" class="g_id_signup"></div>
+          <!-- <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-          <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a> -->
         </div>
         <span>or use your email for registration</span>
         <input type="text" name="name" placeholder="Name" required>
@@ -51,12 +47,11 @@
       <form action="../includes/login.php" method="post">
         <h1>Sign In</h1>
         <div class="social-icons">
-          <a href="#" class="icon" id="googleLoginSignin">
-            <i class="fa-brands fa-google-plus-g"></i>
-          </a>
-          <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+          <div id="g_id_signin" class="icon"></div>
+
+          <!-- <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
-          <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a> -->
         </div>
         <span>or use your email password</span>
         <input type="email" name="email" placeholder="Email" required>
