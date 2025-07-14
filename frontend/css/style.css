@@ -8150,7 +8150,7 @@ a {
   -o-transition: .3s all ease;
   transition: .3s all ease;
   color: #dbcc8f; }
-  a:hover, a:focus {
+  a:hover, a:focus{
     text-decoration: none;
     color: #dbcc8f; }
 
