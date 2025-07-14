@@ -1,5 +1,5 @@
 <?php
-require_once '../db.inc.php';
+require_once 'includes/db.inc.php'; // this file should contain database connection
 require_once 'google-client.php'; // this file should contain Google_Client class
 
 $data = json_decode(file_get_contents("php://input"), true);
