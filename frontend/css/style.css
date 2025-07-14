@@ -10668,3 +10668,19 @@ textarea.form-control {
   100% {
     stroke-dasharray: 89, 200;
     stroke-dashoffset: -136px; } }
+.product .badge {
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    z-index: 2;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #dbcc8f; /* For in-stock */
+    color: black;
+}
+
+.product .badge.badge-danger {
+    background-color: #dc3545; /* For out-of-stock */
+}

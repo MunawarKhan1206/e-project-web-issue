@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<title>Minishop - Free Bootstrap 4 Template by Colorlib</title>
 	<meta charset="utf-8">
@@ -21,13 +22,14 @@
 <?php
 require_once '../includes/db.inc.php';
 try {
-    $stmt = $pdo->query("SELECT * FROM products");
-    $products = $stmt->fetchAll();
+	$stmt = $pdo->query("SELECT * FROM products");
+	$products = $stmt->fetchAll();
 } catch (PDOException $e) {
-    echo "Error fetching products: " . $e->getMessage();
-    $products = [];
+	echo "Error fetching products: " . $e->getMessage();
+	$products = [];
 }
 ?>
+
 <body class="goto-here">
 	<div class="py-1 bg-black">
 		<div class="container">
@@ -189,37 +191,53 @@ try {
 		</div>
 		<div class="container">
 			<div class="row">
-<?php foreach ($products as $row): ?>
-    <div class="col-md-3 d-flex">
-        <div class="product d-flex flex-column">
-            <a href="#" class="img-prod">
-                <img class="img-fluid" src="product/<?= htmlspecialchars($row['image']) ?>" alt="<?= htmlspecialchars($row['name']) ?>">
-                <div class="overlay"></div>
-            </a>
-            <div class="text py-3 pb-4 px-3">
-                <div class="d-flex">
-                    <div class="cat"><span>Stationery</span></div>
-                    <div class="rating">
-                        <p class="text-right mb-0">
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                            <a href="#"><span class="ion-ios-star-outline"></span></a>
-                        </p>
-                    </div>
-                </div>
-                <h3><a href="#"><?= htmlspecialchars($row['name']) ?></a></h3>
-                <div class="pricing"><p class="price"><span>Rs <?= number_format($row['price']) ?></span></p></div>
-                <p class="bottom-area d-flex px-3">
-                    <a href="#" class="add-to-cart text-center py-2 mr-1"><span>Add to cart <i class="ion-ios-add ml-1"></i></span></a>
-                    <a href="#" class="buy-now text-center py-2">Buy now <span><i class="ion-ios-cart ml-1"></i></span></a>
-                </p>
-            </div>
-        </div>
-    </div>
+				<?php foreach($products as $row): ?>
+	<div class="col-md-3 d-flex">
+		<div class="product d-flex flex-column position-relative">
+			<?php if($row['stock'] > 0): ?>
+				<span class="badge badge-success position-absolute" style="top: 10px; left: 10px;">In Stock</span>
+			<?php else: ?>
+				<span class="badge badge-danger position-absolute" style="top: 10px; left: 10px;">Out of Stock</span>
+			<?php endif; ?>
+
+			<a href="#" class="img-prod">
+				<img class="img-fluid" src="product/<?= htmlspecialchars($row['image']) ?>" alt="<?= htmlspecialchars($row['name']) ?>">
+				<div class="overlay"></div>
+			</a>
+
+			<div class="text py-3 pb-4 px-3">
+				<div class="d-flex">
+					<div class="cat"><span>Stationery</span></div>
+					<div class="rating">
+						<p class="text-right mb-0">
+							<a href="#"><span class="ion-ios-star-outline"></span></a>
+							<a href="#"><span class="ion-ios-star-outline"></span></a>
+							<a href="#"><span class="ion-ios-star-outline"></span></a>
+							<a href="#"><span class="ion-ios-star-outline"></span></a>
+							<a href="#"><span class="ion-ios-star-outline"></span></a>
+						</p>
+					</div>
+				</div>
+
+				<h3><a href="#"><?= htmlspecialchars($row['name']) ?></a></h3>
+				<div class="pricing">
+					<p class="price"><span>Rs <?= number_format($row['price']) ?></span></p>
+				</div>
+
+				<p class="bottom-area d-flex px-3">
+					<a href="#" class="add-to-cart text-center py-2 mr-1">
+						<span>Add to cart <i class="ion-ios-add ml-1"></i></span>
+					</a>
+					<a href="#" class="buy-now text-center py-2">
+						Buy now <span><i class="ion-ios-cart ml-1"></i></span>
+					</a>
+				</p>
+			</div>
+		</div>
+	</div>
 <?php endforeach; ?>
-</div>
+
+			</div>
 
 	</section>
 
@@ -588,7 +606,9 @@ try {
 
 					<p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 						Copyright &copy;
-						<script>document.write(new Date().getFullYear());</script> All rights reserved | This template
+						<script>
+							document.write(new Date().getFullYear());
+						</script> All rights reserved | This template
 						is made with <i class="icon-heart color-danger" aria-hidden="true"></i> by <a
 							href="https://colorlib.com" target="_blank">Colorlib</a>
 						<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
