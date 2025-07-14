@@ -8844,7 +8844,9 @@ h1, h2, h3, h4, h5,
       margin-bottom: 30px; } }
   .product .img-prod {
     position: relative;
-    display: block;
+    align-items: center;
+    display: flex;
+    justify-content: center;
     overflow: hidden;
     -webkit-box-shadow: inset 0px 0px 101px 21px rgba(0, 0, 0, 0.09);
     -moz-box-shadow: inset 0px 0px 101px 21px rgba(0, 0, 0, 0.09);
