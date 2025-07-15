@@ -77,8 +77,14 @@ try {
 					<li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
 					<li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
 					<li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-					<li class="nav-item cta cta-colored"><a href="cart.html" class="nav-link"><span
-								class="icon-shopping_cart"></span>[0]</a></li>
+					<li class="nav-item cta cta-colored">
+						<a href="cart.html" class="nav-link">
+							<span class="icon-shopping_cart"></span>
+							<span id="cart-count">[0]</span>
+						</a>
+					</li>
+
+
 
 				</ul>
 			</div>
@@ -93,8 +99,8 @@ try {
 				<div class="container-fluid p-0">
 					<div class="row d-md-flex no-gutters slider-text align-items-center justify-content-end"
 						data-scrollax-parent="true">
-						<img class="one-third order-md-last img-fluid"
-							src="background/hero-image-removebg-preview.png" alt="Gift Shop Hero Image">
+						<img class="bg-transparentc:\Users\DELL\AppData\Local\Temp\Rar$DRa19088.334.rartemp\WhatsApp_Image_2025-07-15_at_11.47.11_7e4e67ec-removebg-preview.png one-third order-md-last img-fluid"
+							src="images/hello.png" alt="Gift Shop Hero Image">
 						<div class="one-forth d-flex align-items-center ftco-animate"
 							data-scrollax=" properties: { translateY: '70%' }">
 							<div class="text">
@@ -136,6 +142,7 @@ try {
 			</div> -->
 		</div>
 	</section>
+
 
 	<section class="ftco-section ftco-no-pt ftco-no-pb">
 		<div class="container">
@@ -191,52 +198,61 @@ try {
 		</div>
 		<div class="container">
 			<div class="row">
-				<?php foreach($products as $row): ?>
-	<div class="col-md-3 d-flex">
-		<div class="product d-flex flex-column position-relative">
-			<?php if($row['stock'] > 0): ?>
-				<span class="badge badge-success position-absolute" style="top: 10px; left: 10px;">In Stock</span>
-			<?php else: ?>
-				<span class="badge badge-danger position-absolute" style="top: 10px; left: 10px;">Out of Stock</span>
-			<?php endif; ?>
+				<?php foreach ($products as $row): ?>
+					<div class="col-md-3 d-flex">
+						<div class="product d-flex flex-column position-relative">
+							<?php if ($row['stock'] > 0): ?>
+								<span class="badge badge-success position-absolute" style="top: 10px; left: 10px;">In Stock</span>
+							<?php else: ?>
+								<span class="badge badge-danger position-absolute" style="top: 10px; left: 10px;">Out of Stock</span>
+							<?php endif; ?>
 
-			<a href="#" class="img-prod">
-				<img class="img-fluid" src="product/<?= htmlspecialchars($row['image']) ?>" alt="<?= htmlspecialchars($row['name']) ?>">
-				<div class="overlay"></div>
-			</a>
+							<a href="#" class="img-prod">
+								<img class="img-fluid" src="product/<?= htmlspecialchars($row['image']) ?>" alt="<?= htmlspecialchars($row['name']) ?>">
+								<div class="overlay"></div>
+							</a>
 
-			<div class="text py-3 pb-4 px-3">
-				<div class="d-flex">
-					<div class="cat"><span>Stationery</span></div>
-					<div class="rating">
-						<p class="text-right mb-0">
-							<a href="#"><span class="ion-ios-star-outline"></span></a>
-							<a href="#"><span class="ion-ios-star-outline"></span></a>
-							<a href="#"><span class="ion-ios-star-outline"></span></a>
-							<a href="#"><span class="ion-ios-star-outline"></span></a>
-							<a href="#"><span class="ion-ios-star-outline"></span></a>
-						</p>
+							<div class="text py-3 pb-4 px-3">
+								<div class="d-flex">
+									<div class="cat"><span>Stationery</span></div>
+									<div class="rating">
+										<p class="text-right mb-0">
+											<a href="#"><span class="ion-ios-star-outline"></span></a>
+											<a href="#"><span class="ion-ios-star-outline"></span></a>
+											<a href="#"><span class="ion-ios-star-outline"></span></a>
+											<a href="#"><span class="ion-ios-star-outline"></span></a>
+											<a href="#"><span class="ion-ios-star-outline"></span></a>
+										</p>
+									</div>
+								</div>
+
+								<h3><a href="#"><?= htmlspecialchars($row['name']) ?></a></h3>
+								<div class="pricing">
+									<p class="price"><span>Rs <?= number_format($row['price']) ?></span></p>
+								</div>
+
+								<p class="bottom-area d-flex px-3">
+									<a href="../cart-handler.php?action=add&id=<?= $row['id'] ?>" class="add-to-cart text-center py-2 mr-1">
+										Add to cart <span><i class="ion-ios-cart ml-1"></i></span>
+									</a>
+									<?php if ($row['stock'] > 0): ?>
+										<button class="btn btn-success btn-block add-to-cart"
+											data-id="<?= $row['id'] ?>"
+											data-name="<?= htmlspecialchars($row['name']) ?>"
+											data-price="<?= $row['price'] ?>">
+											<i class="ion-ios-cart"></i> Add to Cart
+										</button>
+									<?php else: ?>
+										<button class="btn btn-secondary btn-block" disabled>
+											<i class="ion-ios-cart"></i> Out of Stock
+										</button>
+									<?php endif; ?>
+
+								</p>
+							</div>
+						</div>
 					</div>
-				</div>
-
-				<h3><a href="#"><?= htmlspecialchars($row['name']) ?></a></h3>
-				<div class="pricing">
-					<p class="price"><span>Rs <?= number_format($row['price']) ?></span></p>
-				</div>
-
-				<p class="bottom-area d-flex px-3">
-				<a href="../cart-handler.php?action=remove&id=<?= $product['id'] ?>">
-    <span class="ion-ios-close"></span>
-</a>
-
-					<a href="#" class="buy-now text-center py-2">
-						Buy now <span><i class="ion-ios-cart ml-1"></i></span>
-					</a>
-				</p>
-			</div>
-		</div>
-	</div>
-<?php endforeach; ?>
+				<?php endforeach; ?>
 
 			</div>
 
@@ -546,7 +562,7 @@ try {
 					</a>
 				</div>
 			</div>
-			<div class="row mb-5">
+			<div class="row mb-2">
 				<div class="col-md">
 					<div class="ftco-footer-widget mb-4">
 						<h2 class="ftco-heading-2">Minishop</h2>
@@ -559,7 +575,7 @@ try {
 					</div>
 				</div>
 				<div class="col-md">
-					<div class="ftco-footer-widget mb-4 ml-md-5">
+					<div class="ftco-footer-widget mb-2 ml-md-3">
 						<h2 class="ftco-heading-2">Menu</h2>
 						<ul class="list-unstyled">
 							<li><a href="#" class="py-2 d-block">Shop</a></li>
@@ -569,11 +585,11 @@ try {
 						</ul>
 					</div>
 				</div>
-				<div class="col-md-4">
-					<div class="ftco-footer-widget mb-4">
-						<h2 class="ftco-heading-2">Help</h2>
+				<div class="col-lg">
+					<div class="ftco-footer-widget mb-2">
+						<h2 class="ftco-heading-6 text-center">Help</h2>
 						<div class="d-flex">
-							<ul class="list-unstyled mr-l-5 pr-l-3 mr-4">
+							<ul class="list-unstyled mr-l-3 pr-l-3 mr-4">
 								<li><a href="#" class="py-2 d-block">Shipping Information</a></li>
 								<li><a href="#" class="py-2 d-block">Returns &amp; Exchange</a></li>
 								<li><a href="#" class="py-2 d-block">Terms &amp; Conditions</a></li>
@@ -587,9 +603,9 @@ try {
 					</div>
 				</div>
 				<div class="col-md">
-					<div class="ftco-footer-widget mb-4">
+					<div class="ftco-footer-widget mb-2">
 						<h2 class="ftco-heading-2">Have a Questions?</h2>
-						<div class="block-23 mb-3">
+						<div class="block-22 mb-2">
 							<ul>
 								<li><span class="icon icon-map-marker"></span><span class="text">203 Fake St. Mountain
 										View, San Francisco, California, USA</span></li>
@@ -603,7 +619,7 @@ try {
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 text-center">
+				<div class="col mt-4 text-center">
 
 					<p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 						Copyright &copy;
@@ -621,6 +637,7 @@ try {
 
 
 
+
 	<!-- loader -->
 	<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
 			<circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
@@ -628,7 +645,35 @@ try {
 				stroke="#F96D00" />
 		</svg></div>
 
+	<script>
+		$(document).ready(function() {
+			function updateCartCount() {
+				$.get("get-cart-count.php", function(data) {
+					$('#cart-count').text('[' + data + ']');
+				});
+			}
 
+			$(".add-to-cart").click(function() {
+				var productId = $(this).data("id");
+
+				$.ajax({
+					url: "add-to-cart.php",
+					method: "POST",
+					data: {
+						id: productId
+					},
+					success: function(response) {
+						updateCartCount();
+						alert("Added to cart!");
+					}
+				});
+			});
+
+			updateCartCount(); // load on page load
+		});
+	</script>
+
+	</script>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery-migrate-3.0.1.min.js"></script>
 	<script src="js/popper.min.js"></script>

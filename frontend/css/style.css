@@ -473,14 +473,11 @@ pre {
   margin-left: auto; }
 
 .row {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  margin-right: -15px;
-  margin-left: -15px; }
 
+}
 .no-gutters {
   margin-right: 0;
   margin-left: 0; }
@@ -9447,7 +9444,7 @@ h1, h2, h3, h4, h5,
     background-repeat: no-repeat;
     background-position: center center;
     position: relative;
-    padding: 1em 0;
+    /* padding: 1em 0; */
     background: #fff; }
 
 .subscribe-form .form-group {
@@ -9550,7 +9547,7 @@ textarea.form-control {
   font-size: 24px; }
 
 .ftco-section {
-  padding: 7em 0;
+  padding: 4em 0;
   position: relative; }
   @media (max-width: 767.98px) {
     .ftco-section {
@@ -9668,7 +9665,7 @@ textarea.form-control {
 
 .ftco-footer {
   font-size: 14px;
-  padding: 7em 0;
+  padding: 5em 0;
   color: rgba(255, 255, 255, 0.8);
   background: #4e4e4e;
   background: #000000; }
