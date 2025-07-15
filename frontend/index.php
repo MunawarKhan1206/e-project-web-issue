@@ -78,11 +78,14 @@ try {
 					<li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
 					<li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
 					<li class="nav-item cta cta-colored">
-						<a href="cart.html" class="nav-link">
-							<span class="icon-shopping_cart"></span>
-							<span id="cart-count">[0]</span>
-						</a>
-					</li>
+    <a href="cart.php" class="nav-link">
+        <span class="icon-shopping_cart"></span>
+        [<span class="cart-count">
+            <?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
+        </span>]
+    </a>
+</li>
+
 
 
 
@@ -232,7 +235,7 @@ try {
 								</div>
 
 								<p class="bottom-area d-flex px-3">
-									<a href="../cart-handler.php?action=add&id=<?= $row['id'] ?>" class="add-to-cart text-center py-2 mr-1">
+									<a href="cart-handler.php?action=add&id=<?= $row['id'] ?>" class="add-to-cart text-center py-2 mr-1">
 										Add to cart <span><i class="ion-ios-cart ml-1"></i></span>
 									</a>
 									<?php if ($row['stock'] > 0): ?>
@@ -645,33 +648,21 @@ try {
 				stroke="#F96D00" />
 		</svg></div>
 
-	<script>
-		$(document).ready(function() {
-			function updateCartCount() {
-				$.get("get-cart-count.php", function(data) {
-					$('#cart-count').text('[' + data + ']');
-				});
-			}
+<script>
+$(document).ready(function() {
+    $('.add-to-cart').click(function(e) {
+        e.preventDefault();
 
-			$(".add-to-cart").click(function() {
-				var productId = $(this).data("id");
+        const productId = $(this).data('id');
 
-				$.ajax({
-					url: "add-to-cart.php",
-					method: "POST",
-					data: {
-						id: productId
-					},
-					success: function(response) {
-						updateCartCount();
-						alert("Added to cart!");
-					}
-				});
-			});
+        $.get('cart-handler.php', { action: 'add', id: productId }, function(cartCount) {
+            $('.cart-count').text(cartCount); // Update cart icon count
+            alert('Added to cart!');
+        });
+    });
+});
+</script>
 
-			updateCartCount(); // load on page load
-		});
-	</script>
 
 	</script>
 	<script src="js/jquery.min.js"></script>

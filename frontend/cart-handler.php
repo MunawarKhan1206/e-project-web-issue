@@ -1,18 +1,32 @@
 <?php
 session_start();
-require_once '../includes/db.inc.php';
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-if($_GET['action'] == 'add' && isset($_GET['id'])){
-    $id = (int) $_GET['id'];
-    if(!isset($_SESSION['cart'][$id])){
-        $_SESSION['cart'][$id] = 1; // Add item with quantity 1
-    } else {
-        $_SESSION['cart'][$id]++; // Increment quantity if item already exists
+if (isset($_GET['action']) && isset($_GET['id'])) {
+    $id = $_GET['id'];
+
+    switch ($_GET['action']) {
+        case 'add':
+            // If already in cart, increase quantity
+            if (isset($_SESSION['cart'][$id])) {
+                $_SESSION['cart'][$id]['quantity'] += 1;
+            } else {
+                // Normally you'd fetch details from DB. For now, only ID is stored.
+                $_SESSION['cart'][$id] = ['quantity' => 1];
+            }
+            break;
+
+        case 'remove':
+            unset($_SESSION['cart'][$id]);
+            break;
+
+        case 'clear':
+            $_SESSION['cart'] = [];
+            break;
     }
-    header("Location: cart.php"); // Redirect to cart page after adding item
-    exit();
 }
-?>
+
+// For AJAX response (e.g., cart count)
+echo count($_SESSION['cart']);
