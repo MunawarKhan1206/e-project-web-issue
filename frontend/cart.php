@@ -38,27 +38,6 @@ $discount = 0;
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
-// if ($_GET['action'] === 'add' && isset($_GET['id'])) {
-//     $id = (int)$_GET['id'];
-
-//     // ✅ Check if product already in cart
-//     if (!isset($_SESSION['cart'][$id])) {
-//         $_SESSION['cart'][$id] = 1;
-//     } else {
-//         $_SESSION['cart'][$id]++; // increase quantity
-//     }
-
-//     header("Location: cart.php");
-//     exit;
-// }
-// if (isset($_GET['action']) && $_GET['action'] === 'remove' && isset($_GET['id'])) {
-// 	$id = (int)$_GET['id'];
-// 	if (isset($_SESSION['cart'][$id])) {
-// 		unset($_SESSION['cart'][$id]);
-// 	}
-// 	header("Location: cart.php");
-// 	exit;
-// }
 if (!empty($cart)) {
     $placeholders = implode(',', array_fill(0, count($cart), '?'));
     $stmt = $pdo->prepare("SELECT * FROM products WHERE id IN ($placeholders)");
@@ -188,8 +167,6 @@ if (!empty($cart)) {
 			if ($total > 2000) {
 				$discount = 300;
 			}
-
-			// Final total
 			$grandTotal = $total + $deliveryFee - $discount;
 
 			?>
