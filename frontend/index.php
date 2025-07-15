@@ -225,9 +225,10 @@ try {
 				</div>
 
 				<p class="bottom-area d-flex px-3">
-					<a href="#" class="add-to-cart text-center py-2 mr-1">
-						<span>Add to cart <i class="ion-ios-add ml-1"></i></span>
-					</a>
+				<a href="../cart-handler.php?action=remove&id=<?= $product['id'] ?>">
+    <span class="ion-ios-close"></span>
+</a>
+
 					<a href="#" class="buy-now text-center py-2">
 						Buy now <span><i class="ion-ios-cart ml-1"></i></span>
 					</a>
