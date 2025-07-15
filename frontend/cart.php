@@ -167,6 +167,8 @@ if (!empty($cart)) {
 			if ($total > 2000) {
 				$discount = 300;
 			}
+
+			// Final total
 			$grandTotal = $total + $deliveryFee - $discount;
 
 			?>
