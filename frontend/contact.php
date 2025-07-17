@@ -26,11 +26,38 @@
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/style.css">
   </head>
-  <?php
-require_once "../includes/db.inc.php";
-$alerts = '';
-include "contact.inc.php";  // this sets $alerts
+ <?php
+require_once "../includes/db.inc.php"; // Your PDO connection
+
+$errors = [];
+$success_message = '';
+$name = $email = $subject = $message = '';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit'])) {
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $subject = trim($_POST['subject'] ?? '');
+    $message = trim($_POST['message'] ?? '');
+
+    // Validation
+    if (empty($name)) $errors[] = "Name is required";
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Valid email is required";
+    if (empty($subject)) $errors[] = "Subject is required";
+    if (empty($message)) $errors[] = "Message is required";
+
+    if (empty($errors)) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO contacts (name, email, subject, message, created_at) VALUES (?, ?, ?, ?, NOW())");
+            $stmt->execute([$name, $email, $subject, $message]);
+            $success_message = "Thank you for contacting us, $name!";
+            $name = $email = $subject = $message = ''; // clear inputs
+        } catch (PDOException $e) {
+            $errors[] = "Something went wrong. Please try again later.";
+        }
+    }
+}
 ?>
+
   <body class="goto-here">
 		<div class="py-1 bg-black">
     	<div class="container">
@@ -312,7 +339,7 @@ include "contact.inc.php";  // this sets $alerts
   <script src="js/jquery-migrate-3.0.1.min.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script>
+  <!-- <script>
 document.querySelector('form.contact-form').addEventListener('submit', function(e) {
     const errors = [];
     const errorsList = document.getElementById('validationErrorsList');
@@ -393,7 +420,7 @@ document.querySelector('form.contact-form').addEventListener('submit', function(
         $('#validationModal').modal('show');
     }
 });
-</script>
+</script> -->
   <script src="js/jquery.easing.1.3.js"></script>
   <script src="js/jquery.waypoints.min.js"></script>
   <script src="js/jquery.stellar.min.js"></script>
@@ -408,43 +435,51 @@ document.querySelector('form.contact-form').addEventListener('submit', function(
   <script src="js/main.js"></script>
     <!-- Validation Modal -->
 <!-- Validation Modal -->
-<div class="modal fade" id="validationModal" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title" id="validationModalLabel">Please fix the following errors:</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+<!-- Success Modal -->
+<?php if (!empty($success_message)) : ?>
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-success text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">Message Sent!</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body bg-white text-dark">
-        <ul id="validationErrorsList" class="mb-0"></ul>
-      </div>
-      <div class="modal-footer bg-light">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-      </div>
+      <div class="modal-body"><?= $success_message ?></div>
     </div>
   </div>
 </div>
-<!-- Success Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="successModalLabel">Message Sent</h5>
-        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+<?php endif; ?>
+
+<!-- Error Modal -->
+<?php if (!empty($errors)) : ?>
+<div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-danger text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">Submission Error</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <p id="successMessageText"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+        <ul class="mb-0">
+          <?php foreach ($errors as $error): ?>
+            <li><?= $error ?></li>
+          <?php endforeach; ?>
+        </ul>
       </div>
     </div>
   </div>
 </div>
+<?php endif; ?>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    <?php if (!empty($success_message)) : ?>
+      new bootstrap.Modal(document.getElementById('successModal')).show();
+    <?php elseif (!empty($errors)) : ?>
+      new bootstrap.Modal(document.getElementById('errorModal')).show();
+    <?php endif; ?>
+  });
+</script>
+
 
   </body>
 </html>
