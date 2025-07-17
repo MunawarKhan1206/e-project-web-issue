@@ -5,28 +5,30 @@ if (!isset($_SESSION['cart'])) {
 }
 
 if (isset($_GET['action']) && isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $id = intval($_GET['id']);
 
     switch ($_GET['action']) {
         case 'add':
-            // If already in cart, increase quantity
             if (isset($_SESSION['cart'][$id])) {
                 $_SESSION['cart'][$id]['quantity'] += 1;
             } else {
-                // Normally you'd fetch details from DB. For now, only ID is stored.
                 $_SESSION['cart'][$id] = ['quantity' => 1];
             }
-            break;
+            // Optional: redirect back to shop/cart
+            header("Location: cart.php");
+            exit;
 
         case 'remove':
             unset($_SESSION['cart'][$id]);
-            break;
+            header("Location: cart.php");
+            exit;
 
         case 'clear':
             $_SESSION['cart'] = [];
-            break;
+            header("Location: cart.php");
+            exit;
     }
 }
 
-// For AJAX response (e.g., cart count)
+// For AJAX use (e.g. cart icon update)
 echo count($_SESSION['cart']);

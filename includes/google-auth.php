@@ -1,17 +1,25 @@
 <?php
-require_once 'includes/db.inc.php'; // this file should contain database connection
-require_once 'google-client.php'; // this file should contain Google_Client class
+require_once '../includes/db.inc.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 $id_token = $data['id_token'] ?? '';
 
-$client = new Google_Client(['client_id' => '547746583380-r0a21nabutv0jrurr3152ufnbqokvbo6.apps.googleusercontent.com']);
-$payload = $client->verifyIdToken($id_token);
+if (!$id_token) {
+    echo "No token received!";
+    exit;
+}
 
-if ($payload) {
+// Verify token via Google's tokeninfo endpoint
+$verify_url = "https://oauth2.googleapis.com/tokeninfo?id_token=" . urlencode($id_token);
+$response = file_get_contents($verify_url);
+$payload = json_decode($response, true);
+
+// Check if payload has required fields
+if (isset($payload['email']) && $payload['aud'] === '547746583380-r0a21nabutv0jrurr3152ufnbqokvbo6.apps.googleusercontent.com') {
     $name = $payload['name'] ?? '';
-    $email = $payload['email'] ?? '';
+    $email = $payload['email'];
 
+    // Check if user already exists
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND role = 'customer'");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
@@ -31,5 +39,5 @@ if ($payload) {
         echo "Logged in with Google!";
     }
 } else {
-    echo "Invalid token!";
+    echo "Invalid token or client ID mismatch!";
 }

@@ -1,7 +1,6 @@
 window.onload = function () {
   const clientId = "547746583380-r0a21nabutv0jrurr3152ufnbqokvbo6.apps.googleusercontent.com";
 
-  // Render Google Sign-In for Login
   google.accounts.id.initialize({
     client_id: clientId,
     callback: handleGoogleCredential,
@@ -9,16 +8,25 @@ window.onload = function () {
     context: "signin"
   });
 
-  google.accounts.id.renderButton(
-    document.getElementById("g_id_signin"),
-    { theme: "outline", size: "large", text: "continue_with" }
-  );
+  // Sign In button
+  const signinDiv = document.getElementById("g_id_signin");
+  if (signinDiv) {
+    google.accounts.id.renderButton(signinDiv, {
+      theme: "outline",
+      size: "large",
+      text: "continue_with"
+    });
+  }
 
-  // Render Google Sign-Up button
-  google.accounts.id.renderButton(
-    document.getElementById("g_id_signup"),
-    { theme: "outline", size: "large", text: "signup_with" }
-  );
+  // Sign Up button
+  const signupDiv = document.getElementById("g_id_signup");
+  if (signupDiv) {
+    google.accounts.id.renderButton(signupDiv, {
+      theme: "outline",
+      size: "large",
+      text: "signup_with"
+    });
+  }
 };
 
 function handleGoogleCredential(response) {
@@ -30,7 +38,8 @@ function handleGoogleCredential(response) {
     .then(res => res.text())
     .then(msg => {
       alert(msg);
-      // window.location.href = "dashboard.php"; // Optional
+      // Optionally redirect
+      // window.location.href = "dashboard.php";
     })
     .catch(err => console.error(err));
 }

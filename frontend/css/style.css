@@ -8988,9 +8988,11 @@ h1, h2, h3, h4, h5,
           color: #fff; }
       .product .text .bottom-area a.buy-now {
         background: #fff;
+        cursor: pointer;
         color: #000000; }
         .product .text .bottom-area a.buy-now:hover {
           background: #dbcc8f;
+          cursor: pointer;
           color: #fff; }
       @media (max-width: 991.98px) {
         .product .text .bottom-area {

@@ -30,22 +30,40 @@
 <?php
 session_start();
 require_once("../includes/db.inc.php");
-$cart = $_SESSION['cart'] ?? [];
-$products = [];
-$total = 0;
-$deliveryFee = 200; // flat rate
-$discount = 0;
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = [];
-}
-if (!empty($cart)) {
-    $placeholders = implode(',', array_fill(0, count($cart), '?'));
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE id IN ($placeholders)");
-    $stmt->execute(array_keys($cart));
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Handle cart actions (remove, clear)
+if (isset($_GET['action']) && isset($_GET['id'])) {
+	$id = intval($_GET['id']);
+	switch ($_GET['action']) {
+		case 'remove':
+			unset($_SESSION['cart'][$id]);
+			break;
+		case 'clear':
+			$_SESSION['cart'] = [];
+			break;
+	}
 }
 
+// Initialize cart if not already set
+if (!isset($_SESSION['cart'])) {
+	$_SESSION['cart'] = [];
+}
+
+$cart = $_SESSION['cart'];
+$products = [];
+$total = 0;
+$deliveryFee = 200;
+$discount = 0;
+
+// Fetch product details from DB if cart is not empty
+if (!empty($cart)) {
+	$placeholders = implode(',', array_fill(0, count($cart), '?'));
+	$stmt = $pdo->prepare("SELECT * FROM products WHERE id IN ($placeholders)");
+	$stmt->execute(array_keys($cart));
+	$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
+
 
 <body class="goto-here">
 	<div class="py-1 bg-black">
@@ -129,34 +147,35 @@ if (!empty($cart)) {
 							<tbody>
 								<?php foreach ($products as $product):
 									$productId = $product['id'];
-									$quantity = $cart[$productId];
+									$quantity = $cart[$productId]['quantity'];
+
 									$subtotal = $product['price'] * $quantity;
+
 									$total += $subtotal;
 								?>
-									<td class="product-remove">
-										<a href="cart.php?action=remove&id=<?= $product['id'] ?>">
-											<span class="ion-ios-close"></span>
-										</a>
-									</td>
+									<tr class="text-center">
+	<td class="product-remove">
+		<a href="cart.php?action=remove&id=<?= $product['id'] ?>">
+			<span class="ion-ios-close"></span>
+		</a>
+	</td>
 
+	<td class="image-prod">
+		<div class="img" style="background-image:url('product/<?= htmlspecialchars($product['image']) ?>');"></div>
+	</td>
 
+	<td class="product-name">
+		<h3><?= htmlspecialchars($product['name']) ?></h3>
+		<p><?= htmlspecialchars($product['description']) ?></p>
+	</td>
 
+	<td class="price">Rs <?= number_format($product['price']) ?></td>
 
-									<td class="image-prod">
-										<div class="img" style="background-image:url('product/<?= htmlspecialchars($product['image']) ?>');"></div>
-									</td>
+	<td class="quantity"><?= $quantity ?></td>
 
-									<td class="product-name">
-										<h3><?= htmlspecialchars($product['name']) ?></h3>
-										<p><?= htmlspecialchars($product['description']) ?></p>
-									</td>
+	<td class="total">Rs <?= number_format($subtotal) ?></td>
+</tr>
 
-									<td class="price">Rs <?= number_format($product['price']) ?></td>
-
-									<td class="quantity"><?= $quantity ?></td>
-
-									<td class="total">Rs <?= number_format($subtotal) ?></td>
-									</tr>
 								<?php endforeach; ?>
 							</tbody>
 						</table>

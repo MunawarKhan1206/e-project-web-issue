@@ -235,16 +235,16 @@ try {
 								</div>
 
 								<p class="bottom-area d-flex px-3">
-									<a href="cart-handler.php?action=add&id=<?= $row['id'] ?>" class="add-to-cart text-center py-2 mr-1">
+									<a href="cart-handler.php?action=add&id=<?= $row['id'] ?>" class="add-to-cart text-center py-2">
 										Add to cart <span><i class="ion-ios-cart ml-1"></i></span>
 									</a>
 									<?php if ($row['stock'] > 0): ?>
-										<button class="btn btn-success btn-block add-to-cart"
+										<a class="btn-block buy-now text-center py-2"
 											data-id="<?= $row['id'] ?>"
 											data-name="<?= htmlspecialchars($row['name']) ?>"
 											data-price="<?= $row['price'] ?>">
-											<i class="ion-ios-cart"></i> Add to Cart
-										</button>
+											<i class="ion-ios-plus-outline ml-1"></i> Buy Now
+									</a>
 									<?php else: ?>
 										<button class="btn btn-secondary btn-block" disabled>
 											<i class="ion-ios-cart"></i> Out of Stock
