@@ -1,39 +1,38 @@
 <?php
+session_start();
+
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login_btn"])) {
     $email = $_POST["email"];
     $password = $_POST["password"];
-    $role = $_POST["role"];
+
     try {
         require_once 'db.inc.php';
-        // Find user in users table
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND role = ?");
-        $stmt->execute([$email, $role]);
+
+        // Check user from database
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->execute([$email]);
         $user = $stmt->fetch();
-        if ($user && password_verify($password, $user['password'])) {
-            session_start();
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_role'] = $user['role'];
-            // Optional: Fetch extra role-specific info
-            /*
-            if ($role === "employee") {
-                $stmt = $pdo->prepare("SELECT department FROM employees WHERE user_id = ?");
-                $stmt->execute([$user['id']]);
-                $_SESSION['department'] = $stmt->fetchColumn();
-            }
-            */
-            echo "<script>alert('Login successful!');
-            window.location.href = '../dashboard.php';</script>";
-            // header("Location: dashboard.php"); exit;
+
+        if ($user && password_verify($password, $user["password"])) {
+            // Set session variables
+            $_SESSION["user_id"] = $user["id"];
+            $_SESSION["user_name"] = $user["name"];
+            $_SESSION["user_email"] = $user["email"];
+            $_SESSION["user_role"] = $user["role"];
+
+            echo "<script>
+                alert('Login successful!');
+                window.location.href = '../frontend/index.php'; // redirect to home
+            </script>";
         } else {
-            echo "<script>alert('Invalid email or password.');
-            window.location.href = '../form/index.php';</script>";
+            echo "<script>
+                alert('Invalid email or password.');
+                window.location.href = '../form/index.php';
+            </script>";
         }
+
     } catch (PDOException $e) {
-        echo "<script>alert('Error: " . $e->getMessage() . "');
-        window.location.href = '../form/index.php';</script>";
+        echo "Error: " . $e->getMessage();
     }
-} else {
-    echo "<script>alert('Invalid request method.');
-    window.location.href = '../form/index.php';</script>";
 }
 ?>

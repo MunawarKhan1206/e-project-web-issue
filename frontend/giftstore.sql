@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jul 17, 2025 at 08:29 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Pritësi (host): 127.0.0.1
+-- Koha e gjenerimit: Kor 19, 2025 në 03:48 MD
+-- Versioni i serverit: 10.4.27-MariaDB
+-- PHP Versioni: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `giftstore`
+-- Databaza: `giftstore`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admins`
+-- Struktura e tabelës për tabelën `admins`
 --
 
 CREATE TABLE `admins` (
@@ -37,7 +37,7 @@ CREATE TABLE `admins` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `customers`
+-- Struktura e tabelës për tabelën `customers`
 --
 
 CREATE TABLE `customers` (
@@ -51,7 +51,7 @@ CREATE TABLE `customers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `employees`
+-- Struktura e tabelës për tabelën `employees`
 --
 
 CREATE TABLE `employees` (
@@ -62,7 +62,7 @@ CREATE TABLE `employees` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `employees`
+-- Zbraz të dhënat për tabelën `employees`
 --
 
 INSERT INTO `employees` (`id`, `user_id`, `department`, `created_at`) VALUES
@@ -71,7 +71,7 @@ INSERT INTO `employees` (`id`, `user_id`, `department`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `feedback`
+-- Struktura e tabelës për tabelën `feedback`
 --
 
 CREATE TABLE `feedback` (
@@ -86,7 +86,7 @@ CREATE TABLE `feedback` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Struktura e tabelës për tabelën `orders`
 --
 
 CREATE TABLE `orders` (
@@ -100,7 +100,7 @@ CREATE TABLE `orders` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_items`
+-- Struktura e tabelës për tabelën `order_items`
 --
 
 CREATE TABLE `order_items` (
@@ -114,7 +114,7 @@ CREATE TABLE `order_items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Struktura e tabelës për tabelën `products`
 --
 
 CREATE TABLE `products` (
@@ -124,27 +124,29 @@ CREATE TABLE `products` (
   `price` decimal(10,2) NOT NULL,
   `stock` int(11) NOT NULL,
   `image` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `category` varchar(100) DEFAULT 'General',
+  `discount` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `products`
+-- Zbraz të dhënat për tabelën `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image`, `created_at`) VALUES
-(1, 'Hard-board', 'Comfortable for Work', 120.00, 10, 'product-board.png', '2025-07-14 15:57:00'),
-(2, 'Book Set', 'A collection of notebooks for students and professionals.', 350.00, 25, 'product-books.png', '2025-07-14 16:13:38'),
-(3, 'Scientific Calculator', 'Durable and accurate calculator for math and science.', 799.00, 15, 'product-calculator.png', '2025-07-14 16:13:38'),
-(4, 'Wooden Pen Holder', 'Organize your pens with this elegant holder.', 299.00, 30, 'product-penholder.png', '2025-07-14 16:13:38'),
-(5, 'Color Pencils Set', '12-piece bright colored pencils for artwork.', 199.00, 40, 'product-colours.png', '2025-07-14 16:13:38'),
-(6, 'Pack of Pens', 'Smooth-writing gel pens, pack of 5.', 150.00, 50, 'product-pens.png', '2025-07-14 16:13:38'),
-(7, 'Stationery Pouch', 'Zipper pouch for keeping all essentials.', 250.00, 35, 'product-pouch.png', '2025-07-14 16:13:38'),
-(8, 'Measuring Tape', '60-inch measuring tape for craft and tailoring.', 120.00, 20, 'product-measuringtape.png', '2025-07-14 16:13:38');
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image`, `created_at`, `category`, `discount`) VALUES
+(1, 'Hard-board', 'Comfortable for Work', '120.00', 10, 'product-board.png', '2025-07-14 15:57:00', 'General', 0),
+(2, 'Book Set', 'A collection of notebooks for students and professionals.', '350.00', 25, 'product-books.png', '2025-07-14 16:13:38', 'General', 0),
+(3, 'Simple Calculator', 'Durable and accurate calculator for math and science.', '799.00', 15, 'product-calculator.png', '2025-07-14 16:13:38', 'General', 0),
+(4, 'Wooden Pen Holder', 'Organize your pens with this elegant holder.', '299.00', 30, 'product-penholder.png', '2025-07-14 16:13:38', 'General', 0),
+(5, 'Color Pencils Set', '12-piece bright colored pencils for artwork.', '199.00', 40, 'product-colours.png', '2025-07-14 16:13:38', 'General', 0),
+(6, 'Pack of Pens', 'Smooth-writing gel pens, pack of 5.', '150.00', 50, 'product-pens.png', '2025-07-14 16:13:38', 'General', 0),
+(7, 'Stationery Pouch', 'Zipper pouch for keeping all essentials.', '250.00', 35, 'product-pouch.png', '2025-07-14 16:13:38', 'General', 0),
+(8, 'Measuring Tape', '60-inch measuring tape for craft and tailoring.', '120.00', 20, 'product-measuringtape.png', '2025-07-14 16:13:38', 'General', 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `returns`
+-- Struktura e tabelës për tabelën `returns`
 --
 
 CREATE TABLE `returns` (
@@ -158,7 +160,7 @@ CREATE TABLE `returns` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struktura e tabelës për tabelën `users`
 --
 
 CREATE TABLE `users` (
@@ -171,7 +173,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Zbraz të dhënat për tabelën `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
@@ -179,32 +181,32 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VA
 (3, ' hi', 'hi112@gmail.com', '$2y$10$QG7dnmKx4lUoO1pwW1viPuQrY8ejAgD/SQfXlC/iSdI60mds5hb76', 'employee', '2025-07-11 15:49:57');
 
 --
--- Indexes for dumped tables
+-- Indekset për tabelat e hedhura
 --
 
 --
--- Indexes for table `admins`
+-- Indekset për tabelë `admins`
 --
 ALTER TABLE `admins`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `customers`
+-- Indekset për tabelë `customers`
 --
 ALTER TABLE `customers`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `employees`
+-- Indekset për tabelë `employees`
 --
 ALTER TABLE `employees`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `feedback`
+-- Indekset për tabelë `feedback`
 --
 ALTER TABLE `feedback`
   ADD PRIMARY KEY (`id`),
@@ -212,14 +214,14 @@ ALTER TABLE `feedback`
   ADD KEY `product_id` (`product_id`);
 
 --
--- Indexes for table `orders`
+-- Indekset për tabelë `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
   ADD KEY `customer_id` (`customer_id`);
 
 --
--- Indexes for table `order_items`
+-- Indekset për tabelë `order_items`
 --
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`id`),
@@ -227,127 +229,127 @@ ALTER TABLE `order_items`
   ADD KEY `product_id` (`product_id`);
 
 --
--- Indexes for table `products`
+-- Indekset për tabelë `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `returns`
+-- Indekset për tabelë `returns`
 --
 ALTER TABLE `returns`
   ADD PRIMARY KEY (`id`),
   ADD KEY `order_id` (`order_id`);
 
 --
--- Indexes for table `users`
+-- Indekset për tabelë `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT për tabelat e hedhura
 --
 
 --
--- AUTO_INCREMENT for table `admins`
+-- AUTO_INCREMENT për tabelë `admins`
 --
 ALTER TABLE `admins`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `customers`
+-- AUTO_INCREMENT për tabelë `customers`
 --
 ALTER TABLE `customers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `employees`
+-- AUTO_INCREMENT për tabelë `employees`
 --
 ALTER TABLE `employees`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `feedback`
+-- AUTO_INCREMENT për tabelë `feedback`
 --
 ALTER TABLE `feedback`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT për tabelë `orders`
 --
 ALTER TABLE `orders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `order_items`
+-- AUTO_INCREMENT për tabelë `order_items`
 --
 ALTER TABLE `order_items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `products`
+-- AUTO_INCREMENT për tabelë `products`
 --
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `returns`
+-- AUTO_INCREMENT për tabelë `returns`
 --
 ALTER TABLE `returns`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT për tabelë `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Constraints for dumped tables
+-- Detyrimet për tabelat e hedhura
 --
 
 --
--- Constraints for table `admins`
+-- Detyrimet për tabelën `admins`
 --
 ALTER TABLE `admins`
   ADD CONSTRAINT `admins_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `customers`
+-- Detyrimet për tabelën `customers`
 --
 ALTER TABLE `customers`
   ADD CONSTRAINT `customers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `employees`
+-- Detyrimet për tabelën `employees`
 --
 ALTER TABLE `employees`
   ADD CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `feedback`
+-- Detyrimet për tabelën `feedback`
 --
 ALTER TABLE `feedback`
   ADD CONSTRAINT `feedback_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `feedback_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `orders`
+-- Detyrimet për tabelën `orders`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `order_items`
+-- Detyrimet për tabelën `order_items`
 --
 ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `returns`
+-- Detyrimet për tabelën `returns`
 --
 ALTER TABLE `returns`
   ADD CONSTRAINT `returns_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;

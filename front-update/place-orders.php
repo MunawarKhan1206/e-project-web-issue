@@ -39,8 +39,11 @@ foreach ($_SESSION['cart'] as $item) {
 }
 
 
+$recipient_name = $_POST['name']; // or wherever you store it
+$_SESSION['recipient_name'] = $recipient_name;
 // 4. Clear Cart
 unset($_SESSION['cart']);
 // 5. Redirect
 header("Location: thank-you.php?order=$order_id");
+// After successful order insertion
 exit;

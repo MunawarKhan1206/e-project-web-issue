@@ -37,9 +37,11 @@ function handleGoogleCredential(response) {
   })
     .then(res => res.text())
     .then(msg => {
-      alert(msg);
-      // Optionally redirect
-      // window.location.href = "dashboard.php";
+      if (msg.trim() === "success") {
+        window.location.href = "../frontend/index.php"; // Redirect here
+      } else {
+        alert(msg); // show any error or message
+      }
     })
     .catch(err => console.error(err));
 }

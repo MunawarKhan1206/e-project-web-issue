@@ -1,3 +1,14 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'customer') {
+    echo "<script>
+        alert('Please log in as a customer to continue.');
+        window.location.href = 'form/index.php';
+    </script>";
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,7 +39,7 @@
 	<link rel="stylesheet" href="css/style.css">
 </head>
 <?php
-session_start();
+// session_start();
 require_once("../includes/db.inc.php");
 
 // Handle cart actions (remove, clear)
@@ -189,7 +200,13 @@ if (!empty($cart)) {
 
 			// Final total
 			$grandTotal = $total + $deliveryFee - $discount;
-
+			
+			$_SESSION['totals'] = [
+				'subtotal' => $total,
+				'discount' => $discount,
+				'delivery' => $deliveryFee,
+				'grand_total' => $grandTotal
+			];
 			?>
 			<div class="row justify-content-start">
 				<div class="col col-lg-5 col-md-6 mt-5 cart-wrap ftco-animate">
@@ -213,8 +230,11 @@ if (!empty($cart)) {
 							<span>Rs <?= number_format($grandTotal) ?></span>
 						</p>
 					</div>
+<?php
+				// Save totals in session for checkout.php
 
-					<p class="text-center"><a href="checkout.html" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
+?>
+					<p class="text-center"><a href="checkout.php" class="btn btn-primary py-3 px-4">Proceed to Checkout</a></p>
 				</div>
 			</div>
 		</div>

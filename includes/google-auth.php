@@ -33,10 +33,13 @@ if (isset($payload['email']) && $payload['aud'] === '547746583380-r0a21nabutv0jr
         echo "Signed up with Google!";
     } else {
         // Login existing user
-        session_start();
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_role'] = $user['role'];
-        echo "Logged in with Google!";
+session_start();
+$_SESSION['user_id'] = $user['id'];
+$_SESSION['user_role'] = $user['role'];
+echo "success"; // just a success message
+exit;
+
+
     }
 } else {
     echo "Invalid token or client ID mismatch!";
