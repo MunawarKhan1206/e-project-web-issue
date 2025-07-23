@@ -146,13 +146,13 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
             <div class="col-md-6">
               <div class="form-group">
                 <label for="firstname">First Name</label>
-                <input type="text" name="firstname" class="form-control" required>
+                <input type="text" name="first_name" class="form-control" required>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label for="lastname">Last Name</label>
-                <input type="text" name="lastname" class="form-control" required>
+                <input type="text" name="last_name" class="form-control" required>
               </div>
             </div>
 
@@ -181,7 +181,7 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
             <div class="col-md-6">
               <div class="form-group">
                 <label for="streetaddress">Street Address</label>
-                <input type="text" name="street_address" class="form-control" placeholder="House number and street name" required>
+                <input type="text" name="address" class="form-control" placeholder="House number and street name" required>
               </div>
             </div>
             <div class="col-md-6">
