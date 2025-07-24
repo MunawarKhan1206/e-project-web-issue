@@ -1,6 +1,9 @@
 <?php
 session_start();
-$name = isset($_SESSION['recipient_name']) ? $_SESSION['recipient_name'] : 'Dear Customer';
+
+// Get values from session (set after order placed)
+$name = $_SESSION['recipient_name'] ?? 'Dear Customer';
+$orderNumber = $_SESSION['order_number'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +42,7 @@ $name = isset($_SESSION['recipient_name']) ? $_SESSION['recipient_name'] : 'Dear
 
     .thankyou-box p {
       font-size: 18px;
-      margin-bottom: 30px;
+      margin-bottom: 15px;
     }
 
     .thankyou-box .btn {
@@ -51,20 +54,32 @@ $name = isset($_SESSION['recipient_name']) ? $_SESSION['recipient_name'] : 'Dear
       0% { opacity: 0; transform: translateY(30px); }
       100% { opacity: 1; transform: translateY(0); }
     }
+
+    .order-code {
+      font-weight: bold;
+      color: #343a40;
+    }
   </style>
 
   <script>
     setTimeout(function() {
       window.location.href = 'index.php';
-    }, 5000);
+    }, 8000); // 8 seconds
   </script>
 </head>
 
 <body>
   <div class="thankyou-box">
     <h1>🎉 Thank You, <?= htmlspecialchars($name) ?>!</h1>
-    <p>Your order has been placed successfully.<br>We're preparing your gift now!</p>
-    <a href="index.php" class="btn btn-success">Back to Home</a>
+    <p>Your order has been placed successfully.</p>
+
+    <?php if ($orderNumber): ?>
+      <p>Your <strong>Order Number</strong> is:</p>
+      <p class="order-code"><?= htmlspecialchars($orderNumber) ?></p>
+      <p>Use this to track your delivery.</p>
+    <?php endif; ?>
+
+    <a href="index.php" class="btn btn-success mt-3">Back to Home</a>
   </div>
 </body>
 </html>

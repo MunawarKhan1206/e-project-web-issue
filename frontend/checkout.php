@@ -239,19 +239,19 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
                 <h3 class="billing-heading mb-4">Cart Total</h3>
 
                <?php
-$subtotal = 0;
-$delivery = 5;
+$totals = $_SESSION['totals'] ?? [
+    'subtotal' => 0,
+    'discount' => 0,
+    'delivery' => 0,
+    'grand_total' => 0
+];
+// Fallback if session is missing
+$totals = $_SESSION['totals'] ?? [];
 
-if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $price = isset($item['price']) ? floatval($item['price']) : 0;
-        $quantity = isset($item['quantity']) ? intval($item['quantity']) : 0;
-        $subtotal += $price * $quantity;
-    }
-}
-
-$discount = $subtotal * 0.10;
-$grandTotal = $subtotal - $discount + $delivery;
+$subtotal = $totals['subtotal'] ?? 0;
+$discount = $totals['discount'] ?? 0;
+$delivery = $totals['delivery'] ?? 0;
+$grand_total = $totals['grand_total'] ?? 0;
 
 // Optional: store in session
 // $_SESSION['cart_total'] = $subtotal;
@@ -262,23 +262,23 @@ $grandTotal = $subtotal - $discount + $delivery;
 
 <p class="d-flex justify-content-between">
     <span>Total</span>
-    <span>Rs <?= number_format($subtotal, 2) ?></span>
+    <span>Rs <?= number_format($totals['subtotal'], 2) ?></span>
 </p>
 <p class="d-flex justify-content-between">
     <span>Discount</span>
-    <span>- Rs <?= number_format($discount, 2) ?></span>
+    <span>- Rs <?= number_format($totals['discount'], 2) ?></span>
 </p>
 <p class="d-flex justify-content-between">
     <span>Delivery</span>
-    <span>Rs <?= number_format($delivery, 2) ?></span>
+    <span>Rs <?= number_format($totals['delivery'], 2) ?></span>
 </p>
 <hr>
 <p class="d-flex justify-content-between total-price">
     <strong>Grand Total</strong>
-    <strong>Rs <?= number_format($grand_total, 2) ?></strong>
+    <strong>Rs <?= number_format($totals['grand_total'], 2) ?></strong>
 </p>
 
-<input type="hidden" name="total_amount" value="<?= $grandTotal ?>">
+<input type="hidden" name="total_amount" value="<?= $totals['grand_total'] ?>">
               </div>
             </div>
 
@@ -286,39 +286,40 @@ $grandTotal = $subtotal - $discount + $delivery;
               <div class="cart-detail bg-light p-3 p-md-4">
                 <h3 class="billing-heading mb-4">Payment Method</h3>
 
-                <div class="form-group">
-                  <div class="col-md-12">
-                    <div class="radio">
-                      <label><input type="radio" name="payment_method" value="bank" class="mr-2" required> Direct Bank Transfer</label>
-                    </div>
-                  </div>
-                </div>
+<div class="form-group">
+  <div class="col-md-12">
+    <div class="radio">
+      <label><input type="radio" name="payment_method" value="bank" class="mr-2" required> Direct Bank Transfer</label>
+    </div>
+  </div>
+</div>
 
-                <div class="form-group">
-                  <div class="col-md-12">
-                    <div class="radio">
-                      <label><input type="radio" name="payment_method" value="check" class="mr-2"> Check Payment</label>
-                    </div>
-                  </div>
-                </div>
+<div class="form-group">
+  <div class="col-md-12">
+    <div class="radio">
+      <label><input type="radio" name="payment_method" value="check" class="mr-2"> Check Payment</label>
+    </div>
+  </div>
+</div>
 
-                <div class="form-group">
-                  <div class="col-md-12">
-                    <div class="radio">
-                      <label><input type="radio" name="payment_method" value="paypal" class="mr-2"> Paypal</label>
-                    </div>
-                  </div>
-                </div>
+<div class="form-group">
+  <div class="col-md-12">
+    <div class="radio">
+      <label><input type="radio" name="payment_method" value="paypal" class="mr-2"> Paypal</label>
+    </div>
+  </div>
+</div>
 
-                <div class="form-group">
-                  <div class="col-md-12">
-                    <div class="checkbox">
-                      <label><input type="checkbox" name="terms" class="mr-2" required> I have read and accept the terms and conditions</label>
-                    </div>
-                  </div>
-                </div>
+<div class="form-group">
+  <div class="col-md-12">
+    <div class="radio">
+      <label><input type="radio" name="payment_method" value="vpp" class="mr-2"> Cash on Delivery (VPP)</label>
+      <p><button type="submit" class="btn btn-primary py-3 px-4">Place an order</button></p>
+    </div>
+  </div>
+</div>
+    </div>
 
-                <p><button type="submit" class="btn btn-primary py-3 px-4">Place an order</button></p>
               </div>
             </div>
           </div>

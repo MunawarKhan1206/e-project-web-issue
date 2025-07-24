@@ -193,8 +193,8 @@ foreach ($orders as $order) {
 <div class="dashboard">
   <div class="sidebar">
     <h2>Customer Panel</h2>
-    <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
-    <a href="#"><i class="fas fa-shopping-cart"></i> My Orders</a>
+    <a href="customer_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="myorders.php"><i class="fas fa-shopping-cart"></i> My Orders</a>
     <a href="#"><i class="fas fa-user"></i> My Profile</a>
     <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>

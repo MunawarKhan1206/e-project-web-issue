@@ -29,11 +29,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
-    // Totals from session (already calculated in cart.php)
-    $subtotal = $_SESSION['subtotal'] ?? 0;
-    $discount = $_SESSION['discount'] ?? 0;
-    $delivery = $_SESSION['delivery'] ?? 0;
-    $grand_total = $_SESSION['grand_total'] ?? 0;
+    // Totals from session
+  $subtotal = $_SESSION['totals']['subtotal'] ?? 0;
+$discount = $_SESSION['totals']['discount'] ?? 0;
+$delivery = $_SESSION['totals']['delivery'] ?? 0;
+$grand_total = $_SESSION['totals']['grand_total'] ?? 0;
+
+
+    // Generate unique 16-digit order number
+    $prefix = strtoupper($payment_method) === 'VPP' ? 'VPP' : 'PP';
+    $order_number = $prefix . date('Ymd') . rand(100000, 999999);
 
     try {
         // Start transaction
@@ -41,10 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Insert into orders
         $order_stmt = $pdo->prepare("
-            INSERT INTO orders2 (customer_name, address, email, phone, payment_method, subtotal, discount, delivery, grand_total)
-            VALUES (:customer_name, :address, :email, :phone, :payment_method, :subtotal, :discount, :delivery, :grand_total)
+            INSERT INTO orders2 (order_number, customer_name, address, email, phone, payment_method, subtotal, discount, delivery, grand_total)
+            VALUES (:order_number, :customer_name, :address, :email, :phone, :payment_method, :subtotal, :discount, :delivery, :grand_total)
         ");
         $order_stmt->execute([
+            ':order_number' => $order_number,
             ':customer_name' => $customer_name,
             ':address' => $address,
             ':email' => $email,
@@ -59,31 +65,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $order_id = $pdo->lastInsertId();
 
         // Insert order items
-      $item_stmt = $pdo->prepare("
-    INSERT INTO order_items (order_id, product_id, quantity, price)
-    VALUES (:order_id, :product_id, :quantity, :price)
-");
+        $item_stmt = $pdo->prepare("
+            INSERT INTO order_items (order_id, product_id, quantity, price)
+            VALUES (:order_id, :product_id, :quantity, :price)
+        ");
 
-foreach ($cart as $product_id => $item) {
-    // Fetch price from database
-    $stmt = $pdo->prepare("SELECT price FROM products WHERE id = ?");
-    $stmt->execute([$product_id]);
-    $product = $stmt->fetch();
+        foreach ($cart as $product_id => $item) {
+            // Fetch price from database
+            $stmt = $pdo->prepare("SELECT price FROM products WHERE id = ?");
+            $stmt->execute([$product_id]);
+            $product = $stmt->fetch();
 
-    if (!$product) continue; // skip if product no longer exists
+            if (!$product) continue; // skip if product no longer exists
 
-    $item_stmt->execute([
-        ':order_id' => $order_id,
-        ':product_id' => $product_id,
-        ':quantity' => $item['quantity'],
-        ':price' => $product['price']
-    ]);
-}
-
- 
+            $item_stmt->execute([
+                ':order_id' => $order_id,
+                ':product_id' => $product_id,
+                ':quantity' => $item['quantity'],
+                ':price' => $product['price']
+            ]);
+        }
 
         // Commit
         $pdo->commit();
+
+        // Store order_number and name in session for thankyou page
+        $_SESSION['order_number'] = $order_number;
+        $_SESSION['recipient_name'] = $customer_name;
 
         // Clear cart session
         unset($_SESSION['cart'], $_SESSION['subtotal'], $_SESSION['discount'], $_SESSION['delivery'], $_SESSION['grand_total']);
