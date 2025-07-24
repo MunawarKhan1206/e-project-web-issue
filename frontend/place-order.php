@@ -41,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Insert into orders
         $order_stmt = $pdo->prepare("
-            INSERT INTO orders2 (customer_name, address, email, phone, payment_method, subtotal, discount, delivery, totals)
-            VALUES (:customer_name, :address, :email, :phone, :payment_method, :subtotal, :discount, :delivery, :totals)
+            INSERT INTO orders2 (customer_name, address, email, phone, payment_method, subtotal, discount, delivery, grand_total)
+            VALUES (:customer_name, :address, :email, :phone, :payment_method, :subtotal, :discount, :delivery, :grand_total)
         ");
         $order_stmt->execute([
             ':customer_name' => $customer_name,
@@ -53,26 +53,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ':subtotal' => $subtotal,
             ':discount' => $discount,
             ':delivery' => $delivery,
-            ':totals' => $grand_total
+            ':grand_total' => $grand_total
         ]);
 
         $order_id = $pdo->lastInsertId();
 
         // Insert order items
-        $item_stmt = $pdo->prepare("
-            INSERT INTO order_items (order_id, product_id, product_name, quantity, price)
-            VALUES (:order_id, :product_id, :product_name, :quantity, :price)
-        ");
+      $item_stmt = $pdo->prepare("
+    INSERT INTO order_items (order_id, product_id, quantity, price)
+    VALUES (:order_id, :product_id, :quantity, :price)
+");
 
-        foreach ($cart as $item) {
-            $item_stmt->execute([
-                ':order_id' => $order_id,
-                ':product_id' => $item['id'],
-                ':product_name' => $item['name'],
-                ':quantity' => $item['quantity'],
-                ':price' => $item['price']
-            ]);
-        }
+foreach ($cart as $product_id => $item) {
+    // Fetch price from database
+    $stmt = $pdo->prepare("SELECT price FROM products WHERE id = ?");
+    $stmt->execute([$product_id]);
+    $product = $stmt->fetch();
+
+    if (!$product) continue; // skip if product no longer exists
+
+    $item_stmt->execute([
+        ':order_id' => $order_id,
+        ':product_id' => $product_id,
+        ':quantity' => $item['quantity'],
+        ':price' => $product['price']
+    ]);
+}
+
+ 
 
         // Commit
         $pdo->commit();
