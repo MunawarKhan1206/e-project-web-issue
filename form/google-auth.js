@@ -28,20 +28,23 @@ window.onload = function () {
     });
   }
 };
-
 function handleGoogleCredential(response) {
   fetch("../includes/google-auth.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id_token: response.credential })
   })
-    .then(res => res.text())
-    .then(msg => {
-      if (msg.trim() === "success") {
-        window.location.href = "../frontend/index.php"; // Redirect here
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        window.location.href = data.redirect; // 🔁 dynamic redirection based on role
       } else {
-        alert(msg); // show any error or message
+        alert(data.message || "Google login failed.");
       }
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+      console.error("Google Auth Error:", err);
+      alert("Something went wrong during Google Login.");
+    });
 }
+

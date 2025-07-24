@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login_btn"])) {
     try {
         require_once 'db.inc.php';
 
-        // Check user from database
+        // Fetch user by email
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
@@ -20,11 +20,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login_btn"])) {
             $_SESSION["user_email"] = $user["email"];
             $_SESSION["user_role"] = $user["role"];
 
-            echo "<script>
-                alert('Login successful!');
-                window.location.href = '../frontend/index.php'; // redirect to home
-            </script>";
+            // ✅ Redirect based on user role
+            switch ($user['role']) {
+                case 'admin':
+                    header("Location: ../admin/dashboard.php");
+                    break;
+                case 'employee':
+                    header("Location: ../employee/dashboard.php");
+                    break;
+                case 'customer':
+                    header("Location: ../frontend/customer_dashboard.php");
+                    break;
+                default:
+                    header("Location: ../form/index.php");
+                    break;
+            }
+            exit;
+
         } else {
+            // ❌ Login failed
             echo "<script>
                 alert('Invalid email or password.');
                 window.location.href = '../form/index.php';

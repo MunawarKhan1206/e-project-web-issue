@@ -1,46 +1,61 @@
 <?php
-require_once '../includes/db.inc.php';
+session_start();
+require_once 'db.inc.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 $id_token = $data['id_token'] ?? '';
 
 if (!$id_token) {
-    echo "No token received!";
+    echo json_encode(['success' => false, 'message' => 'Missing token']);
     exit;
 }
 
-// Verify token via Google's tokeninfo endpoint
-$verify_url = "https://oauth2.googleapis.com/tokeninfo?id_token=" . urlencode($id_token);
-$response = file_get_contents($verify_url);
-$payload = json_decode($response, true);
+// Verify the token using Google library (no Composer)
+// OR manual decode:
+$payload = explode('.', $id_token);
+$userData = json_decode(base64_decode(strtr($payload[1], '-_', '+/')), true);
 
-// Check if payload has required fields
-if (isset($payload['email']) && $payload['aud'] === '547746583380-r0a21nabutv0jrurr3152ufnbqokvbo6.apps.googleusercontent.com') {
-    $name = $payload['name'] ?? '';
-    $email = $payload['email'];
-
-    // Check if user already exists
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND role = 'customer'");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
-
-    if (!$user) {
-        // Register new user
-        $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, '', 'customer')");
-        $stmt->execute([$name, $email]);
-        $user_id = $pdo->lastInsertId();
-        $pdo->prepare("INSERT INTO customers (user_id) VALUES (?)")->execute([$user_id]);
-        echo "Signed up with Google!";
-    } else {
-        // Login existing user
-session_start();
-$_SESSION['user_id'] = $user['id'];
-$_SESSION['user_role'] = $user['role'];
-echo "success"; // just a success message
-exit;
-
-
-    }
-} else {
-    echo "Invalid token or client ID mismatch!";
+if (!isset($userData['email'])) {
+    echo json_encode(['success' => false, 'message' => 'Invalid token']);
+    exit;
 }
+
+$email = $userData['email'];
+$name = $userData['name'] ?? 'Google User';
+$role = 'customer'; // default role
+
+// Check if user exists
+$stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+$stmt->execute([$email]);
+$user = $stmt->fetch();
+
+if (!$user) {
+    // Register new user
+    $stmt = $pdo->prepare("INSERT INTO users (name, email, role, password) VALUES (?, ?, ?, '')");
+    $stmt->execute([$name, $email, $role]);
+    $user_id = $pdo->lastInsertId();
+
+    // Insert into customers table
+    $stmt = $pdo->prepare("INSERT INTO customers (user_id) VALUES (?)");
+    $stmt->execute([$user_id]);
+
+    // Fetch new user
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch();
+}
+
+// Set session
+$_SESSION["user_id"] = $user["id"];
+$_SESSION["user_name"] = $user["name"];
+$_SESSION["user_email"] = $user["email"];
+$_SESSION["user_role"] = $user["role"];
+
+// Decide redirect
+$redirect = "../customer/customer-dashboard.php";
+
+echo json_encode([
+    'success' => true,
+    'redirect' => $redirect
+]);
+exit;

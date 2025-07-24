@@ -41,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Insert into orders
         $order_stmt = $pdo->prepare("
-            INSERT INTO orders2 (customer_name, address, email, phone, payment_method, subtotal, discount, delivery, total)
-            VALUES (:customer_name, :address, :email, :phone, :payment_method, :subtotal, :discount, :delivery, :total)
+            INSERT INTO orders2 (customer_name, address, email, phone, payment_method, subtotal, discount, delivery, totals)
+            VALUES (:customer_name, :address, :email, :phone, :payment_method, :subtotal, :discount, :delivery, :totals)
         ");
         $order_stmt->execute([
             ':customer_name' => $customer_name,
@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ':subtotal' => $subtotal,
             ':discount' => $discount,
             ':delivery' => $delivery,
-            ':total' => $grand_total
+            ':totals' => $grand_total
         ]);
 
         $order_id = $pdo->lastInsertId();
