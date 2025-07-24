@@ -196,7 +196,7 @@ foreach ($orders as $order) {
     <a href="customer_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
     <a href="myorders.php"><i class="fas fa-shopping-cart"></i> My Orders</a>
     <a href="#"><i class="fas fa-user"></i> My Profile</a>
-    <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
   <div class="main">

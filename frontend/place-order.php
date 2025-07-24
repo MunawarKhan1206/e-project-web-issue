@@ -30,11 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Totals from session
-  $subtotal = $_SESSION['totals']['subtotal'] ?? 0;
-$discount = $_SESSION['totals']['discount'] ?? 0;
-$delivery = $_SESSION['totals']['delivery'] ?? 0;
-$grand_total = $_SESSION['totals']['grand_total'] ?? 0;
-
+    $subtotal = $_SESSION['totals']['subtotal'] ?? 0;
+    $discount = $_SESSION['totals']['discount'] ?? 0;
+    $delivery = $_SESSION['totals']['delivery'] ?? 0;
+    $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
 
     // Generate unique 16-digit order number
     $prefix = strtoupper($payment_method) === 'VPP' ? 'VPP' : 'PP';
@@ -71,30 +70,40 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
         ");
 
         foreach ($cart as $product_id => $item) {
-            // Fetch price from database
-            $stmt = $pdo->prepare("SELECT price FROM products WHERE id = ?");
+            // Fetch product details from DB
+            $stmt = $pdo->prepare("SELECT price, stock FROM products WHERE id = ?");
             $stmt->execute([$product_id]);
             $product = $stmt->fetch();
 
-            if (!$product) continue; // skip if product no longer exists
+            if (!$product) continue; // Skip if product no longer exists
 
+            $quantity = $item['quantity'];
+            $price = $product['price'];
+            $stock = $product['stock'];
+
+            // Insert into order_items
             $item_stmt->execute([
                 ':order_id' => $order_id,
                 ':product_id' => $product_id,
-                ':quantity' => $item['quantity'],
-                ':price' => $product['price']
+                ':quantity' => $quantity,
+                ':price' => $price
             ]);
+
+            // Update product stock
+            $new_stock = max(0, $stock - $quantity);
+            $update_stock_stmt = $pdo->prepare("UPDATE products SET stock = ? WHERE id = ?");
+            $update_stock_stmt->execute([$new_stock, $product_id]);
         }
 
         // Commit
         $pdo->commit();
 
-        // Store order_number and name in session for thankyou page
+        // Store order info in session
         $_SESSION['order_number'] = $order_number;
         $_SESSION['recipient_name'] = $customer_name;
 
-        // Clear cart session
-        unset($_SESSION['cart'], $_SESSION['subtotal'], $_SESSION['discount'], $_SESSION['delivery'], $_SESSION['grand_total']);
+        // Clear cart and totals
+        unset($_SESSION['cart'], $_SESSION['totals']);
 
         echo "<script>
             alert('Order placed successfully!');
