@@ -12,15 +12,34 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Return Requests - Employee</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f8f9fa;
+    }
+    .sidebar {
+      min-height: 100vh;
+    }
+    .sidebar .nav-link.active {
+      background-color: #c29958 !important;
+      color: white !important;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1055;
+    }
+  </style>
 </head>
 <body>
 <div class="container-fluid">
   <div class="row">
+    <!-- Sidebar -->
     <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
       <div class="position-sticky pt-3">
         <h4 class="text-white px-3">Employee Panel</h4>
@@ -33,18 +52,20 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </div>
     </nav>
 
+    <!-- Main Content -->
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <button class="btn btn-outline-dark d-md-none mt-3 mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="btn btn-outline-dark d-md-none mt-3 mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
         <i class="fas fa-bars"></i>
       </button>
       <h2 class="my-4">Return Requests</h2>
+
       <div class="table-responsive">
         <table class="table table-bordered table-striped align-middle">
           <thead class="table-dark">
             <tr>
               <th>Order #</th>
               <th>Reason</th>
-              <th>Date</th>
+              <th>Return Date</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -55,13 +76,17 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($ret['reason']) ?></td>
                 <td><?= date("M d, Y", strtotime($ret['return_date'])) ?></td>
                 <td>
-                  <span class="badge bg-<?php
-                    if ($ret['status'] === 'Approved') echo 'success';
-                    elseif ($ret['status'] === 'Rejected') echo 'danger';
-                    else echo 'warning';
-                  ?>">
-                    <?= ucfirst($ret['status']) ?>
-                  </span>
+                  <?php if ($ret['status'] === 'Pending'): ?>
+                    <select class="form-select status-select" data-id="<?= $ret['id'] ?>">
+                      <option selected disabled>Pending</option>
+                      <option value="Approved">Approve</option>
+                      <option value="Rejected">Reject</option>
+                    </select>
+                  <?php else: ?>
+                    <span class="badge bg-<?= $ret['status'] === 'Approved' ? 'success' : 'danger' ?>">
+                      <?= $ret['status'] ?>
+                    </span>
+                  <?php endif; ?>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -71,6 +96,46 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </main>
   </div>
 </div>
+
+<!-- Toast Alert -->
+<div class="toast align-items-center text-bg-dark border-0" id="toast" role="alert">
+  <div class="d-flex">
+    <div class="toast-body" id="toast-msg">Status updated</div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+  </div>
+</div>
+
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.querySelectorAll(".status-select").forEach(select => {
+    select.addEventListener("change", function () {
+      const returnId = this.dataset.id;
+      const status = this.value;
+
+      fetch("update_return.php", {
+        method: "POST",
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `id=${returnId}&status=${status}`
+      })
+      .then(res => res.text())
+      .then(data => {
+        if (data.trim() === "success") {
+          showToast(`Return marked as ${status}`);
+          setTimeout(() => location.reload(), 1500);
+        } else {
+          showToast("Failed to update status");
+        }
+      })
+      .catch(() => showToast("Server error!"));
+    });
+  });
+
+  function showToast(msg) {
+    document.getElementById("toast-msg").textContent = msg;
+    const toast = new bootstrap.Toast(document.getElementById('toast'));
+    toast.show();
+  }
+</script>
 </body>
 </html>

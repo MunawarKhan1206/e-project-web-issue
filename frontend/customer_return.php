@@ -10,18 +10,17 @@ require_once("../includes/db.inc.php");
 $user_email = $_SESSION['user_email'] ?? null;
 if (!$user_email) die("Email not found.");
 
-// Handle form submission
+// Handle Return Form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $order_number = $_POST['order_number'] ?? '';
     $reason = trim($_POST['reason'] ?? '');
 
-    // Check for duplicates
     $check = $pdo->prepare("SELECT COUNT(*) FROM returns WHERE order_number = ?");
     $check->execute([$order_number]);
     if ($check->fetchColumn() > 0) {
         $error = "Return already requested for this order.";
     } elseif (empty($reason)) {
-        $error = "Please provide a reason for return.";
+        $error = "Please provide a reason.";
     } else {
         $stmt = $pdo->prepare("INSERT INTO returns (order_number, reason, return_date, status) VALUES (?, ?, NOW(), 'Pending')");
         $stmt->execute([$order_number, $reason]);
@@ -29,17 +28,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch recent orders eligible for return (within 7 days)
-$stmt = $pdo->prepare("SELECT order_number, grand_total, status, created_at FROM orders2 WHERE email = ? AND status = 'Delivered' ORDER BY created_at DESC");
-
+$stmt = $pdo->prepare("SELECT order_number, grand_total, status, created_at FROM orders2 WHERE email = ? ORDER BY created_at DESC");
 $stmt->execute([$user_email]);
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 function isReturnable($date) {
     $orderDate = new DateTime($date);
     $now = new DateTime();
-    $interval = $now->diff($orderDate)->days;
-    return $interval <= 7;
+    return $now->diff($orderDate)->days <= 7;
+}
+
+$returned = $pdo->prepare("SELECT order_number, status FROM returns WHERE order_number IN (" .
+    implode(',', array_fill(0, count($orders), '?')) . ")");
+$orderNums = array_column($orders, 'order_number');
+$returnStatus = [];
+
+if (count($orderNums)) {
+    $returned->execute($orderNums);
+    foreach ($returned->fetchAll(PDO::FETCH_ASSOC) as $rtn) {
+        $returnStatus[$rtn['order_number']] = $rtn['status'];
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -72,6 +80,7 @@ function isReturnable($date) {
       border-radius: 10px;
       box-shadow: 0 5px 20px rgba(0,0,0,0.05);
       margin-bottom: 40px;
+      overflow-x: auto;
     }
     th, td {
       padding: 14px 20px;
@@ -81,16 +90,21 @@ function isReturnable($date) {
       background: #f2ebe0;
       color: #5c4434;
     }
-    tr:nth-child(even) {
-      background: #fdfdfd;
+    tr:nth-child(even) { background: #fdfdfd; }
+    tr:hover { background: #f7f1e6; }
+    .badge {
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: white;
     }
-    tr:hover {
-      background: #f7f1e6;
-    }
+    .badge.Pending { background-color: #f0ad4e; }
+    .badge.Approved { background-color: #5cb85c; }
+    .badge.Rejected { background-color: #d9534f; }
     form {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       margin-top: 10px;
     }
     textarea {
@@ -108,14 +122,16 @@ function isReturnable($date) {
       border-radius: 8px;
       cursor: pointer;
     }
-    button:hover {
-      background: #a87d3e;
+    button:hover { background: #a87d3e; }
+    @media (max-width: 768px) {
+      body { padding: 20px; }
+      table, th, td { font-size: 14px; }
     }
   </style>
 </head>
 <body>
 
-<h2>Return Eligible Orders</h2>
+<h2>Return Eligible & Submitted Orders</h2>
 
 <?php if (!empty($success)): ?>
   <div class="message success"><?= $success ?></div>
@@ -130,36 +146,37 @@ function isReturnable($date) {
       <th>Date</th>
       <th>Total</th>
       <th>Status</th>
-      <th>Action</th>
+      <th>Return</th>
     </tr>
   </thead>
   <tbody>
- <?php
-// Inside foreach loop
-foreach ($orders as $order):
-  $isDelivered = strtolower($order['status']) === 'delivered';
-  $isWithin7Days = isReturnable($order['created_at']);
-
-  if ($isDelivered && $isWithin7Days):
-?>
+    <?php
+    foreach ($orders as $order):
+      $orderNum = $order['order_number'];
+      $created = $order['created_at'];
+      $already = isset($returnStatus[$orderNum]);
+      $returnable = strtolower($order['status']) === 'delivered' && isReturnable($created);
+    ?>
     <tr>
-      <td>#<?= $order['order_number'] ?></td>
-      <td><?= date("M d, Y", strtotime($order['created_at'])) ?></td>
+      <td>#<?= htmlspecialchars($orderNum) ?></td>
+      <td><?= date("M d, Y", strtotime($created)) ?></td>
       <td>Rs. <?= number_format($order['grand_total'], 2) ?></td>
       <td><?= ucfirst($order['status']) ?></td>
       <td>
+        <?php if ($already): ?>
+          <span class="badge <?= $returnStatus[$orderNum] ?>"> <?= $returnStatus[$orderNum] ?> </span>
+        <?php elseif ($returnable): ?>
         <form method="POST">
-          <input type="hidden" name="order_number" value="<?= $order['order_number'] ?>">
+          <input type="hidden" name="order_number" value="<?= htmlspecialchars($orderNum) ?>">
           <textarea name="reason" rows="2" placeholder="Reason for return..." required></textarea>
           <button type="submit">Request Return</button>
         </form>
+        <?php else: ?>
+          <span class="text-muted">Not Eligible</span>
+        <?php endif; ?>
       </td>
     </tr>
-<?php
-  endif;
-endforeach;
-?>
-
+    <?php endforeach; ?>
   </tbody>
 </table>
 
