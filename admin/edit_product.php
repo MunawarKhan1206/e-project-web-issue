@@ -7,44 +7,53 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
 
 require_once '../includes/db.inc.php';
 
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["update_product"])) {
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["edit_product"])) {
     $id = $_POST["product_id"];
-    $name = $_POST["name"];
-    $category = $_POST["category"];
-    $price = $_POST["price"];
-    $stock = $_POST["stock"];
-    $description = $_POST["description"];
+    $name = $_POST["name"] ?? '';
+    $category = $_POST["category"] ?? '';
+    $price = $_POST["price"] ?? 0;
+    $stock = $_POST["stock"] ?? 0;
+    $description = $_POST["description"] ?? '';
+    $onlyStock = isset($_POST["only_stock"]);
 
-    // Check if image is uploaded
-    if (!empty($_FILES["image"]["name"])) {
-        $target_dir = "../frontend/product/";
-        $image_name = basename($_FILES["image"]["name"]);
-        $target_file = $target_dir . $image_name;
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    // ✅ Only update stock
+    if ($onlyStock) {
+        $stmt = $pdo->prepare("UPDATE products SET stock = ? WHERE id = ?");
+        $stmt->execute([$stock, $id]);
+        header("Location: products.php?updated=1");
+        exit;
+    }
 
-        // Optional: validate image type
-        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
-        if (!in_array($imageFileType, $allowed)) {
-            die("Only JPG, JPEG, PNG & GIF files are allowed.");
-        }
+    // ✅ Full update (possibly with image)
+    $image_name = $_FILES["image"]["name"] ?? '';
+    $target_dir = "../frontend/product/";
+    $target_file = $target_dir . basename($image_name);
 
-        // Move new image
+    if (!empty($image_name)) {
+        // Get old image from DB
+        $oldStmt = $pdo->prepare("SELECT image FROM products WHERE id = ?");
+        $oldStmt->execute([$id]);
+        $oldImage = $oldStmt->fetchColumn();
+
+        // Upload new image
         if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-            // Update with new image
+            // Delete old image
+            if (!empty($oldImage) && file_exists($target_dir . $oldImage)) {
+                unlink($target_dir . $oldImage);
+            }
+
+            // Update all fields including image
             $sql = "UPDATE products SET name = ?, category = ?, price = ?, stock = ?, image = ?, description = ? WHERE id = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$name, $category, $price, $stock, $image_name, $description, $id]);
-        } else {
-            die("Failed to upload new image.");
         }
     } else {
-        // Update without changing image
+        // Update all fields except image
         $sql = "UPDATE products SET name = ?, category = ?, price = ?, stock = ?, description = ? WHERE id = ?";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$name, $category, $price, $stock, $description, $id]);
     }
 
-    // Redirect back with success
     header("Location: products.php?updated=1");
     exit;
 } else {

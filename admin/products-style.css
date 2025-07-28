@@ -71,3 +71,29 @@ body {
     padding: 20px;
   }
 }
+/* Filters row spacing */
+form.row > .col-md-2,
+form.row > .col-md-3 {
+  padding-right: 10px;
+}
+
+/* Badge styling */
+.badge-warning {
+  background-color: #f0ad4e;
+  color: white;
+}
+.badge-info {
+  background-color: #5bc0de;
+  color: white;
+}
+.badge-success {
+  background-color: #5cb85c;
+  color: white;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  form.row .form-control {
+    margin-bottom: 10px;
+  }
+}

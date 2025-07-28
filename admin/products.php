@@ -44,6 +44,19 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </style>
 </head>
 <body>
+<?php if (isset($_GET['updated'])): ?>
+  <div class="alert alert-success alert-dismissible fade show mx-4 mt-3" role="alert" style="z-index: 9999;">
+    <strong>✅ Product updated successfully!</strong>
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  </div>
+<?php endif; ?>
+<?php if (isset($_GET['deleted'])): ?>
+  <div class="alert alert-danger alert-dismissible fade show mx-4 mt-3" role="alert" style="z-index: 9999;">
+    <strong>🗑️ Product deleted successfully!</strong>
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  </div>
+<?php endif; ?>
+
 
 <div class="dashboard">
   <!-- Sidebar -->
@@ -110,7 +123,13 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <i class="fas fa-pen"></i>
 </button>
 
-                  <button class="btn btn-sm" style="background: #ff6b6b; color: white; border-radius: 6px;"><i class="fas fa-trash"></i></button>
+            <button class="btn btn-sm" style="background: #ff6b6b; color: white; border-radius: 6px;" 
+        data-toggle="modal" data-target="#deleteProductModal"
+        data-id="<?= $p['id'] ?>"
+        data-name="<?= htmlspecialchars($p['name']) ?>">
+  <i class="fas fa-trash"></i>
+</button>
+
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -189,6 +208,25 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 </div>
 
+<!-- Delete Product Modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" method="POST" action="delete_product.php">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Delete Product</h5>
+        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong id="delete_product_name">this product</strong>?
+        <input type="hidden" name="delete_id" id="delete_product_id">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" type="submit" name="delete_product">Yes, Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -216,6 +254,14 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $('#edit_description').val(button.data('description'));
     $('#edit_image_preview').attr("src", "../frontend/product/" + button.data('image'));
   });
+  $('#deleteProductModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget);
+  var productId = button.data('id');
+  var productName = button.data('name');
+  $('#delete_product_id').val(productId);
+  $('#delete_product_name').text(productName);
+});
+
 </script>
 
 </body>
