@@ -19,7 +19,7 @@
   <div class="container" id="container">
 
     <!-- SIGN UP FORM -->
-    <div class="form-container sign-up">
+    <div class="form-container sign-up" id="signup-redirect">
       <form action="../includes/signup.php" method="post">
         <h1>Create Account</h1>
         <div class="social-icons">
@@ -38,12 +38,12 @@
         </select>
         <input type="password" name="password" placeholder="Password" required>
         <button type="submit" name="register_btn">Sign Up</button>
-        <p class="mobile-toggle-link">Already have an account? <a href="#" id="mobileToggleSignin">Sign In</a></p>
+        <!-- <p class="mobile-toggle-link">Already have an account? <a href="#login-redirect" id="mobileToggleSignin">Sign In</a></p> -->
       </form>
     </div>
 
     <!-- SIGN IN FORM -->
-    <div class="form-container sign-in">
+    <div class="form-container sign-in" id="login-redirect">
       <form action="../includes/login.php" method="post">
         <h1>Sign In</h1>
         <div class="social-icons">
@@ -64,7 +64,7 @@
         <input type="password" name="password" placeholder="Password" required>
         <a href="#">Forgot Your Password?</a>
         <button type="submit" name="login_btn" value="Sign In">Sign In</button>
-        <p class="mobile-toggle-link">Don’t have an account? <a href="#" id="mobileToggleSignup">Sign Up</a></p>
+        <!-- <p class="mobile-toggle-link">Don’t have an account? <a href="#signup-redirect" id="mobileToggleSignup">Sign Up</a></p> -->
       </form>
     </div>
 
@@ -86,6 +86,28 @@
   </div>
 
   <script src="script.js"></script>
+  <div id="toast" style="display:none; position: fixed; bottom: 20px; right: 20px; background: #333; color: #fff; padding: 15px 25px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 9999;">
+    <span id="toastMessage"></span>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const msg = localStorage.getItem("toastMessage");
+    if (msg) {
+      const toast = document.getElementById("toast");
+      const toastMessage = document.getElementById("toastMessage");
+      toastMessage.textContent = msg;
+      toast.style.display = "block";
+
+      // Hide after 3 seconds
+      setTimeout(() => {
+        toast.style.display = "none";
+        localStorage.removeItem("toastMessage");
+      }, 3000);
+    }
+  });
+</script>
+
 </body>
 
 </html>

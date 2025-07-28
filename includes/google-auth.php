@@ -52,7 +52,7 @@ $_SESSION["user_email"] = $user["email"];
 $_SESSION["user_role"] = $user["role"];
 
 // Decide redirect
-$redirect = "../customer/customer-dashboard.php";
+$redirect = "../customer_dashboard.php";
 
 echo json_encode([
     'success' => true,

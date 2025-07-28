@@ -1,0 +1,73 @@
+/* Your uploaded beige dashboard styling */
+* {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+body {
+  background: #f7f6f3;
+  color: #333;
+}
+.dashboard {
+  display: flex;
+}
+.sidebar {
+  width: 240px;
+  background: #2f2b25;
+  min-height: 100vh;
+  padding: 40px 20px;
+  position: fixed;
+  top: 0; left: 0;
+}
+.sidebar h2 {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 40px;
+}
+.sidebar a {
+  display: block;
+  padding: 12px 20px;
+  margin: 10px 0;
+  color: #eee;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.sidebar a:hover,
+.sidebar a.active {
+  background: #c29958;
+  color: #fff;
+}
+.main {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  padding: 40px 30px;
+}
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #3a2f27;
+}
+.section {
+  margin-top: 30px;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    position: absolute;
+    left: -240px;
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+  .sidebar.d-none {
+    left: -240px;
+  }
+  .sidebar.show {
+    left: 0;
+  }
+  .main {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px;
+  }
+}

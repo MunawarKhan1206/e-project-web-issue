@@ -9,6 +9,8 @@ require_once("../includes/db.inc.php");
   <meta charset="UTF-8">
   <title>Track Your Order</title>
   <link rel="stylesheet" href="../assets/css/dashboard-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -16,12 +18,12 @@ require_once("../includes/db.inc.php");
     }
 
     .track-container {
-      max-width: 650px;
+      max-width: 700px;
       margin: 60px auto;
       background: #fff;
       padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
 
     h3 {
@@ -42,7 +44,7 @@ require_once("../includes/db.inc.php");
     button {
       width: 100%;
       padding: 12px;
-      background: #ff6f00;
+      background: linear-gradient(90deg, #f97316, #f59e0b);
       color: #fff;
       border: none;
       border-radius: 10px;
@@ -53,14 +55,14 @@ require_once("../includes/db.inc.php");
     }
 
     button:hover {
-      background: #e65c00;
+      background: linear-gradient(90deg, #ea580c, #d97706);
     }
 
     .order-info {
       background: #f9fafb;
       padding: 25px 20px;
       margin-top: 30px;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid #e5e7eb;
     }
 
@@ -89,64 +91,61 @@ require_once("../includes/db.inc.php");
     .badge-primary { background-color: #3b82f6; }
     .badge-secondary { background-color: #6b7280; }
 
-   .progress-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin: 40px 0 10px;
-  position: relative;
-  padding: 0 10px;
-}
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      margin: 40px 0 10px;
+      padding: 0 10px;
+    }
 
-.progress-step {
-  flex: 1;
-  text-align: center;
-  position: relative;
-  color: #9ca3af;
-  font-size: 13px;
-}
+    .progress-line {
+      position: absolute;
+      top: 22px;
+      left: 50px;
+      right: 50px;
+      height: 4px;
+      background: linear-gradient(to right, #10b981 0%, #d1d5db 100%);
+      z-index: 0;
+      border-radius: 2px;
+    }
 
-.progress-step .icon {
-  font-size: 22px;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
-  background: #d1d5db;
-  border-radius: 50%;
-  margin: 0 auto 6px;
-  position: relative;
-  z-index: 2;
-}
+    .progress-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
 
-.progress-step.active .icon {
-  background: #10b981;
-  color: #fff;
-}
+    .progress-step .icon {
+      font-size: 20px;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      background: #d1d5db;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.4s ease;
+    }
 
-.progress-step::after {
-  content: '';
-  position: absolute;
-  top: 15px;
-  left: 50%;
-  width: 100%;
-  height: 3px;
-  background: #d1d5db;
-  z-index: 1;
-  transform: translateX(-50%);
-}
+    .progress-step.active .icon {
+      background: #10b981;
+    }
 
-.progress-step:last-child::after {
-  display: none;
-}
+    .progress-step .label {
+      font-size: 13px;
+      color: #9ca3af;
+    }
 
-.progress-step.active::after {
-  background: #10b981;
-}
-
-.progress-step.active {
-  color: #111827;
-  font-weight: 600;
-}
+    .progress-step.active .label {
+      color: #111827;
+      font-weight: 600;
+    }
 
     .btn-back {
       display: inline-block;
@@ -170,6 +169,7 @@ require_once("../includes/db.inc.php");
 
     .center-btn {
       text-align: center;
+      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -185,19 +185,17 @@ require_once("../includes/db.inc.php");
   <?php
   if (isset($_POST['track'])) {
       $order_number = trim($_POST['order_number']);
-
       $stmt = $pdo->prepare("SELECT * FROM orders2 WHERE order_number = ?");
       $stmt->execute([$order_number]);
       $order = $stmt->fetch(PDO::FETCH_ASSOC);
 
       if ($order) {
-          $status_raw = strtolower($order['status'] ?? 'pending');
+          $status_raw = strtolower($order['status'] ?? 'processed');
           $status = ucfirst($status_raw);
           $status_class = match($status_raw) {
-              'pending'   => 'badge-warning',
-              'approved'  => 'badge-success',
-              'delivered' => 'badge-primary',
-              'cancelled' => 'badge-danger',
+              'processed' => 'badge-warning',
+              'shipped'   => 'badge-primary',
+              'delivered' => 'badge-success',
               default     => 'badge-secondary'
           };
 
@@ -208,19 +206,28 @@ require_once("../includes/db.inc.php");
           echo "<p><strong>Total:</strong> Rs. " . number_format($order['grand_total'], 0) . "</p>";
           echo "<p><strong>Payment:</strong> " . htmlspecialchars($order['payment_method']) . "</p>";
 
-          // Steps for tracking
-          $steps = ['pending' => '🕒', 'approved' => '✅', 'delivered' => '📦'];
-          echo '<div class="progress-container">';
-          foreach (array_keys($steps) as $step) {
-              $active = array_search($status_raw, array_keys($steps)) >= array_search($step, array_keys($steps)) ? 'active' : '';
-              echo "<div class='progress-step {$active}'>";
-              echo "<div class='icon'>{$steps[$step]}</div>";
-              echo ucfirst($step);
-              echo "</div>";
-          }
-          echo '</div>';
+          $steps = [
+              'processed' => ['label' => 'Processed', 'icon' => 'fa-solid fa-gear'],
+              'shipped'   => ['label' => 'Shipped', 'icon' => 'fa-solid fa-truck'],
+              'delivered' => ['label' => 'Delivered', 'icon' => 'fa-solid fa-box-open']
+          ];
+          $statusKeys = array_keys($steps);
+          $currentIndex = array_search($status_raw, $statusKeys);
 
-          echo '</div>';
+          echo '<div class="progress-container">';
+          echo '<div class="progress-line"></div>';
+
+          $i = 0;
+          foreach ($steps as $key => $step) {
+              $isActive = $i <= $currentIndex ? 'active' : '';
+              echo "<div class='progress-step {$isActive}'>";
+              echo "<div class='icon'><i class='{$step['icon']}'></i></div>";
+              echo "<div class='label'>{$step['label']}</div>";
+              echo "</div>";
+              $i++;
+          }
+          echo '</div>'; // progress-container
+          echo '</div>'; // order-info
       } else {
           echo '<div class="order-info"><p style="color:red;">⚠ No order found with that number.</p></div>';
       }
@@ -228,9 +235,22 @@ require_once("../includes/db.inc.php");
   ?>
 
   <div class="center-btn">
-    <a href="customer_dashboard.php" class="btn-back">⬅ Back to Dashboard</a>
+    <a href="customer_dashboard.php" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+  </div>
+  <div class="center-btn">
+    <a href="../frontend/index.php" class="btn-back"><i class="fas fa-home"></i> Return to Home</a>
   </div>
 </div>
+
+<script>
+  gsap.from(".progress-step .icon", {
+    scale: 0,
+    opacity: 0,
+    duration: 0.6,
+    stagger: 0.2,
+    ease: "back.out(1.7)"
+  });
+</script>
 
 </body>
 </html>
