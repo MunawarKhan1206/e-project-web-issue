@@ -1,7 +1,9 @@
 <?php session_start(); ?>
 <?php
 require_once '../includes/db.inc.php';
-$products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+$products = $pdo->query("SELECT * FROM products ORDER BY RAND()")->fetchAll(PDO::FETCH_ASSOC);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -96,41 +98,59 @@ $products = $pdo->query("SELECT * FROM products ORDER BY created_at DESC")->fetc
 	<section class="ftco-section bg-light">
   <div class="container">
     <div class="row">
-      <?php foreach ($products as $product): ?>
-        <div class="col-sm-12 col-md-12 col-lg-4 ftco-animate d-flex">
-  <div class="product d-flex flex-column">
-    <a href="#" class="img-prod">
-      <img class="img-fluid" src="product/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
-      <div class="overlay"></div>
-    </a>
-    <div class="text py-3 pb-4 px-3">
-      <h3><a href="#"><?= htmlspecialchars($product['name']) ?></a></h3>
-      <div class="pricing">
-        <p class="price"><span>$<?= $product['price'] ?></span></p>
-      </div>
-      <p class="bottom-area d-flex px-3">
-        <a href="cart-handler.php?action=add&id=<?= $product['id'] ?>" class="add-to-cart text-center py-2 mr-1">
-          Add to cart <span><i class="ion-ios-cart ml-1"></i></span>
-        </a>
-        <?php if ($product['stock'] > 0): ?>
-          <a class="btn-block buy-now text-center py-2"
-             data-id="<?= $product['id'] ?>"
-             data-name="<?= htmlspecialchars($product['name']) ?>"
-             data-price="<?= $product['price'] ?>">
-            <i class="ion-ios-plus-outline ml-1"></i> Buy Now
-          </a>
-        <?php else: ?>
-          <button class="btn btn-secondary btn-block" disabled>
-            <i class="ion-ios-cart"></i> Out of Stock
-          </button>
-        <?php endif; ?>
-      </p>
-    </div> <!-- .text -->
-  </div> <!-- .product -->
-</div> <!-- .col -->
+  <?php foreach ($products as $row): ?>
+    <div class="col-md-3 d-flex">
+      <div class="product d-flex flex-column position-relative">
 
-      <?php endforeach; ?>
-    </div>
+        <?php if ($row['stock'] > 0): ?>
+          <span class="badge badge-success position-absolute" style="top: 10px; left: 10px;">In Stock</span>
+        <?php else: ?>
+          <span class="badge badge-danger position-absolute" style="top: 10px; left: 10px;">Out of Stock</span>
+        <?php endif; ?>
+
+        <a href="#" class="img-prod">
+          <img class="img-fluid" src="product/<?= htmlspecialchars($row['image']) ?>"  alt="<?= htmlspecialchars($row['name']) ?>" style="height: 274px!important;">
+          <div class="overlay"></div>
+        </a>
+
+        <div class="text py-3 pb-4 px-3">
+          <div class="d-flex">
+            <div class="cat"><span>Stationery</span></div>
+            <div class="rating">
+              <p class="text-right mb-0">
+                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                <a href="#"><span class="ion-ios-star-outline"></span></a>
+                <a href="#"><span class="ion-ios-star-outline"></span></a>
+              </p>
+            </div>
+          </div>
+
+          <h3><a href="#"><?= htmlspecialchars($row['name']) ?></a></h3>
+
+          <div class="pricing">
+            <p class="price"><span>Rs <?= number_format($row['price']) ?></span></p>
+          </div>
+
+          <p class="bottom-area d-flex px-3">
+            <?php if ($row['stock'] > 0): ?>
+              <a href="cart-handler.php?action=add&id=<?= $row['id'] ?>" class="add-to-cart text-center py-2 btn-block">
+                Add to cart <span><i class="ion-ios-cart ml-1"></i></span>
+              </a>
+            <?php else: ?>
+              <button class="btn btn-secondary btn-block text-center py-2" disabled>
+                <i class="ion-ios-cart"></i> Out of Stock
+              </button>
+            <?php endif; ?>
+          </p>
+
+        </div> <!-- .text -->
+      </div> <!-- .product -->
+    </div> <!-- .col -->
+  <?php endforeach; ?>
+</div>
+
   </div>
 </section>
 

@@ -23,12 +23,13 @@
 <?php
 require_once '../includes/db.inc.php';
 try {
-	$stmt = $pdo->query("SELECT * FROM products");
-	$products = $stmt->fetchAll();
+    $stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC LIMIT 4");
+    $products = $stmt->fetchAll();
 } catch (PDOException $e) {
-	echo "Error fetching products: " . $e->getMessage();
-	$products = [];
+    echo "Error fetching products: " . $e->getMessage();
+    $products = [];
 }
+
 ?>
 
 <body class="goto-here">
@@ -210,7 +211,7 @@ try {
 							<?php else: ?>
 								<span class="badge badge-danger position-absolute" style="top: 10px; left: 10px;">Out of Stock</span>
 							<?php endif; ?>
-
+								
 							<a href="#" class="img-prod">
 								<img class="img-fluid" src="product/<?= htmlspecialchars($row['image']) ?>" alt="<?= htmlspecialchars($row['name']) ?>">
 								<div class="overlay"></div>
@@ -235,29 +236,31 @@ try {
 									<p class="price"><span>Rs <?= number_format($row['price']) ?></span></p>
 								</div>
 
-								<p class="bottom-area d-flex px-3">
-									<a href="cart-handler.php?action=add&id=<?= $row['id'] ?>" class="add-to-cart text-center py-2">
-										Add to cart <span><i class="ion-ios-cart ml-1"></i></span>
-									</a>
-									<?php if ($row['stock'] > 0): ?>
-										<a class="btn-block buy-now text-center py-2"
-											data-id="<?= $row['id'] ?>"
-											data-name="<?= htmlspecialchars($row['name']) ?>"
-											data-price="<?= $row['price'] ?>">
-											<i class="ion-ios-plus-outline ml-1"></i> Buy Now
-									</a>
-									<?php else: ?>
-										<button class="btn btn-secondary btn-block" disabled>
-											<i class="ion-ios-cart"></i> Out of Stock
-										</button>
-									<?php endif; ?>
+							<p class="bottom-area d-flex px-3">
+	<?php if ($row['stock'] > 0): ?>
+		<a href="cart-handler.php?action=add&id=<?= $row['id'] ?>" class="add-to-cart text-center py-2 btn-block">
+			Add to cart <span><i class="ion-ios-cart ml-1"></i></span>
+		</a>
+	<?php else: ?>
+		<button class="btn btn-secondary btn-block text-center py-2" disabled>
+			<i class="ion-ios-cart"></i> Out of Stock
+		</button>
+	<?php endif; ?>
+</p>
+
 
 								</p>
 							</div>
 						</div>
 					</div>
 				<?php endforeach; ?>
-
+				
+				
+			</div>
+			<div class="d-flex justify-content-center mt-4">
+				<a href="shop.php" class="btn btn-primary px-4 py-2">
+					See More Products
+				</a>
 			</div>
 
 	</section>

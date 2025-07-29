@@ -1,9 +1,4 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    http_response_code(403);
-    exit;
-}
 require_once '../includes/db.inc.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['action'])) {
@@ -12,7 +7,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['action'
 
     if (!in_array($action, ['approve', 'reject'])) {
         http_response_code(400);
-        exit("Invalid action");
+        echo "Invalid action";
+        exit;
     }
 
     $status = $action === 'approve' ? 'approved' : 'rejected';
@@ -21,5 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'], $_POST['action'
     $stmt->execute([$status, $id]);
 
     echo "success";
+} else {
+    http_response_code(400);
+    echo "Invalid request";
 }
-?>

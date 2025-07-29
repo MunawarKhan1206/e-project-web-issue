@@ -1,20 +1,18 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-    header("Location: ../form/index.php");
-    exit;
+  header("Location: ../form/index.php");
+  exit;
 }
 require_once '../includes/db.inc.php';
 
-// Filter by status (optional)
 $statusFilter = $_GET['status'] ?? '';
-
 $sql = "SELECT * FROM returns";
 $params = [];
 
 if (!empty($statusFilter)) {
-    $sql .= " WHERE status = ?";
-    $params[] = $statusFilter;
+  $sql .= " WHERE status = ?";
+  $params[] = $statusFilter;
 }
 
 $sql .= " ORDER BY return_date DESC";
@@ -25,6 +23,7 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Admin - Returns</title>
@@ -33,132 +32,227 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="products-style.css" />
 </head>
+
 <body>
-<div class="dashboard">
-  <!-- Sidebar -->
-  <div class="sidebar" id="adminSidebar">
-    <h2>Admin Panel</h2>
-    <a href="dashboard.php"><i class="fas fa-chart-line"></i> Dashboard</a>
-    <a href="products.php"><i class="fas fa-box"></i> Products</a>
-    <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
-    <a href="returns.php" class="active"><i class="fas fa-undo"></i> Returns</a>
-    <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
-    <a href="../frontend/index.php"><i class="fas fa-store"></i> Shop</a>
-    <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-  </div>
-
-  <!-- Main -->
-  <div class="main">
-    <div class="dashboard-title d-flex justify-content-between align-items-center">
-      <span>Return Requests</span>
+  <div class="dashboard">
+    <div class="sidebar" id="adminSidebar">
+      <h2>Admin Panel</h2>
+      <a href="dashboard.php"><i class="fas fa-chart-line"></i> Dashboard</a>
+      <a href="products.php"><i class="fas fa-box"></i> Products</a>
+      <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
+      <a href="returns.php" class="active"><i class="fas fa-undo"></i> Returns</a>
+      <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
+      <a href="../frontend/index.php"><i class="fas fa-store"></i> Shop</a>
+      <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
-    <!-- Filter -->
-    <form method="GET" class="row mb-4">
-      <div class="col-md-4">
-        <select name="status" class="form-control">
-          <option value="">All Status</option>
-          <option <?= $statusFilter === 'pending' ? 'selected' : '' ?>>pending</option>
-          <option <?= $statusFilter === 'approved' ? 'selected' : '' ?>>approved</option>
-          <option <?= $statusFilter === 'rejected' ? 'selected' : '' ?>>rejected</option>
-        </select>
+    <div class="main">
+      <div class="dashboard-title d-flex justify-content-between align-items-center">
+        <span>Return Requests</span>
       </div>
-      <div class="col-md-2">
-        <button class="btn btn-dark w-100"><i class="fas fa-filter"></i> Filter</button>
-      </div>
-    </form>
 
-    <div class="bg-white p-4 shadow-sm rounded" style="overflow-x:auto;">
-      <table class="table table-bordered table-hover" style="min-width: 900px;">
-        <thead class="thead-light">
-          <tr>
-            <th>#</th>
-            <th>Order #</th>
-            <th>Reason</th>
-            <th>Return Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php if (count($returns) > 0): ?>
-            <?php foreach ($returns as $r): ?>
-              <tr id="return-row-<?= $r['id'] ?>">
-                <td><?= $r['id'] ?></td>
-                <td><?= htmlspecialchars($r['order_number']) ?></td>
-               <td>
-  <button class="btn btn-sm btn-info view-reason-btn" 
-          data-reason="<?= htmlspecialchars($r['reason']) ?>" 
-          data-toggle="modal" 
-          data-target="#viewReasonModal">
-    View Reason
-  </button>
-</td>
+      <form method="GET" class="row mb-4">
+        <div class="col-md-4">
+          <select name="status" class="form-control">
+            <option value="">All Status</option>
+            <option <?= $statusFilter === 'pending' ? 'selected' : '' ?>>pending</option>
+            <option <?= $statusFilter === 'approved' ? 'selected' : '' ?>>approved</option>
+            <option <?= $statusFilter === 'rejected' ? 'selected' : '' ?>>rejected</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-dark w-100"><i class="fas fa-filter"></i> Filter</button>
+        </div>
+      </form>
 
-                <td><?= date("d M Y", strtotime($r['return_date'])) ?></td>
-                <td class="return-status">
-                  <span class="badge badge-<?= 
-                    $r['status'] === 'approved' ? 'success' : 
-                    ($r['status'] === 'rejected' ? 'danger' : 'warning') ?>">
-                    <?= ucfirst($r['status']) ?>
-                  </span>
-                </td>
-                <td class="return-action-cell">
-                  <?php if ($r['status'] === 'pending'): ?>
-                    <div class="d-flex">
-                      <button class="btn btn-sm btn-success mr-1 return-action" data-id="<?= $r['id'] ?>" data-action="approve"><i class="fas fa-check"></i></button>
-                      <button class="btn btn-sm btn-danger return-action" data-id="<?= $r['id'] ?>" data-action="reject"><i class="fas fa-times"></i></button>
-                    </div>
-                  <?php else: ?>
-                    <i class="text-muted">—</i>
-                  <?php endif; ?>
-                </td>
+      <div class="bg-white p-4 shadow-sm rounded" style="overflow-x:auto;">
+        <table class="table table-bordered table-hover" style="min-width: 900px;">
+          <thead class="thead-light">
+            <tr>
+              <th>#</th>
+              <th>Order #</th>
+              <th>Return Reason</th>
+              <th>Return Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if (count($returns) > 0): ?>
+              <?php foreach ($returns as $r): ?>
+                <tr id="return-row-<?= $r['id'] ?>">
+                  <td><?= $r['id'] ?></td>
+                  <td><?= htmlspecialchars($r['order_number']) ?></td>
+                  <td>
+
+                    <?php
+// Fetch order details
+$orderRow = $pdo->prepare("SELECT * FROM orders2 WHERE order_number = ?");
+$orderRow->execute([$r['order_number']]);
+$orderRow = $orderRow->fetch(PDO::FETCH_ASSOC);
+
+?>
+<button class="btn btn-sm btn-info view-details-btn"
+  data-id="<?= $r['id'] ?>"
+  data-order="<?= $r['order_number'] ?>"
+  data-reason="<?= htmlspecialchars($r['reason']) ?>"
+  data-status="<?= $r['status'] ?>"
+  data-date="<?= $r['return_date'] ?>"
+  data-customer="<?= $orderRow['customer_name'] ?>"
+  data-email="<?= $orderRow['email'] ?>"
+  data-phone="<?= $orderRow['phone'] ?>"
+  data-address="<?= $orderRow['address'] ?>"
+  data-payment="<?= $orderRow['payment_method'] ?>"
+  data-subtotal="<?= $orderRow['subtotal'] ?>"
+  data-delivery="<?= $orderRow['delivery'] ?>"
+  data-grandtotal="<?= $orderRow['grand_total'] ?>"
+  data-toggle="modal"
+  data-target="#viewDetailsModal">
+  View Details
+</button>
+
+    </td>
+
+                  <td><?= date("d M Y", strtotime($r['return_date'])) ?></td>
+                  <td class="return-status">
+                    <span class="badge badge-<?=
+                                              $r['status'] === 'approved' ? 'success' : ($r['status'] === 'rejected' ? 'danger' : 'warning') ?>">
+                      <?= ucfirst($r['status']) ?>
+                    </span>
+                  </td>
+                  <td class="return-action-cell">
+                    <?php if ($r['status'] === 'pending'): ?>
+                      <div class="d-flex">
+                        <button class="btn btn-sm btn-success mr-1 return-action" data-id="<?= $r['id'] ?>" data-action="approve"><i class="fas fa-check"></i></button>
+                        <button class="btn btn-sm btn-danger return-action" data-id="<?= $r['id'] ?>" data-action="reject"><i class="fas fa-times"></i></button>
+                      </div>
+                    <?php else: ?>
+                      <i class="text-muted">—</i>
+                    <?php endif; ?>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="6" class="text-center text-muted">No return requests found.</td>
               </tr>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <tr><td colspan="6" class="text-center text-muted">No return requests found.</td></tr>
-          <?php endif; ?>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-<!-- View Reason Modal -->
-<div class="modal fade" id="viewReasonModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header bg-dark text-white">
-        <h5 class="modal-title">Return Reason</h5>
-        <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p id="modalReasonText" class="mb-0" style="white-space: pre-wrap;"></p>
+            <?php endif; ?>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+  <!-- View Details Modal -->
+  <div class="modal fade" id="viewDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title">Return & Order Details</h5>
+          <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Order #:</strong> <span id="detailOrder"></span></p>
+          <p><strong>Status:</strong> <span id="detailStatus" class="badge badge-secondary"></span></p>
+          <p><strong>Return Date:</strong> <span id="detailDate"></span></p>
+          <p><strong>Days Left:</strong> <span id="detailDaysLeft" class="text-danger"></span></p>
+          <hr>
+          <p><strong>Reason:</strong></p>
+          <p id="detailReason" style="white-space: pre-wrap;"></p>
+          <hr>
+          <p><strong>Order Items:</strong></p>
+          <table class="table table-sm table-bordered">
+            <thead>
+              <!-- <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Price</th>
+              </tr> -->
+            </thead>
+            <tbody id="detailItemsBody"></tbody>
+          </table>
+          <div class="d-flex justify-content-end mt-3" id="statusBtns">
+            <button class="btn btn-success btn-sm mr-2" id="modalApproveBtn">Approve</button>
+            <button class="btn btn-danger btn-sm" id="modalRejectBtn">Reject</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
   $(document).ready(function () {
-    $('.return-action').click(function () {
-      const button = $(this);
-      const id = button.data('id');
-      const action = button.data('action');
-      const row = $('#return-row-' + id);
+    $('.view-details-btn').click(function () {
+      const btn = $(this);
+      const order = btn.data('order');
+      const reason = btn.data('reason');
+      const status = btn.data('status');
+      const date = btn.data('date');
+      const id = btn.data('id');
+
+      const customer = btn.data('customer');
+      const email = btn.data('email');
+      const phone = btn.data('phone');
+      const address = btn.data('address');
+      const payment = btn.data('payment');
+      const subtotal = btn.data('subtotal');
+      const delivery = btn.data('delivery');
+      const grandtotal = btn.data('grandtotal');
+
+      // Populate header data
+      $('#detailOrder').text(order);
+      $('#detailReason').text(reason);
+      $('#detailDate').text(new Date(date).toDateString());
+
+      $('#detailStatus')
+        .removeClass()
+        .addClass('badge badge-' + (status === 'approved' ? 'success' : status === 'rejected' ? 'danger' : 'warning'))
+        .text(status.charAt(0).toUpperCase() + status.slice(1));
+
+      // Days left
+      const daysPassed = Math.floor((new Date() - new Date(date)) / (1000 * 60 * 60 * 24));
+      const daysLeft = Math.max(0, 7 - daysPassed);
+      $('#detailDaysLeft').text(daysLeft > 0 ? `${daysLeft} day(s)` : 'Expired');
+
+      // Action buttons
+      $('#modalApproveBtn').data('id', id);
+      $('#modalRejectBtn').data('id', id);
+      $('#statusBtns').toggle(status === 'pending');
+
+      // Order Summary (Single row data)
+      const rows = `
+        <tr><td><strong>Customer</strong></td><td>${customer}</td></tr>
+        <tr><td><strong>Email</strong></td><td>${email}</td></tr>
+        <tr><td><strong>Phone</strong></td><td>${phone}</td></tr>
+        <tr><td><strong>Address</strong></td><td>${address}</td></tr>
+        <tr><td><strong>Payment</strong></td><td>${payment}</td></tr>
+        <tr><td><strong>Subtotal</strong></td><td>Rs. ${subtotal}</td></tr>
+        <tr><td><strong>Delivery</strong></td><td>Rs. ${delivery}</td></tr>
+        <tr><td><strong><b>Grand Total</b></strong></td><td><strong>Rs. ${grandtotal}</strong></td></tr>
+      `;
+      $('#detailItemsBody').html(rows);
+
+      $('#viewDetailsModal').modal('show');
+    });
+
+    $('#modalApproveBtn, #modalRejectBtn').click(function () {
+      const id = $(this).data('id');
+      const action = this.id.includes('Approve') ? 'approve' : 'reject';
 
       $.post('update_return_status.php', { id: id, action: action }, function () {
+        const row = $('#return-row-' + id);
         row.find('.return-status').html(`<span class="badge badge-${action === 'approve' ? 'success' : 'danger'}">${action}d</span>`);
         row.find('.return-action-cell').html('<i class="text-muted">—</i>');
+        $('#viewDetailsModal').modal('hide');
       });
     });
-  });$('.view-reason-btn').click(function () {
-  const reason = $(this).data('reason');
-  $('#modalReasonText').text(reason);
-});
-
+  });
 </script>
+
+
 </body>
+
 </html>
