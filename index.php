@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,12 +23,13 @@
 <?php
 require_once '../includes/db.inc.php';
 try {
-	$stmt = $pdo->query("SELECT * FROM products");
+	$stmt = $pdo->query("SELECT * FROM products ORDER BY created_at DESC LIMIT 4");
 	$products = $stmt->fetchAll();
 } catch (PDOException $e) {
 	echo "Error fetching products: " . $e->getMessage();
 	$products = [];
 }
+
 ?>
 
 <body class="goto-here">
@@ -39,12 +41,12 @@ try {
 						<div class="col-md pr-4 d-flex topper align-items-center">
 							<div class="icon mr-2 d-flex justify-content-center align-items-center"><span
 									class="icon-phone2"></span></div>
-							<span class="text">+923012345678</span>
+							<span class="text">+ 1235 2355 98</span>
 						</div>
 						<div class="col-md pr-4 d-flex topper align-items-center">
 							<div class="icon mr-2 d-flex justify-content-center align-items-center"><span
 									class="icon-paper-plane"></span></div>
-							<span class="text">ministore@email.com</span>
+							<span class="text">minishop@email.com</span>
 						</div>
 						<div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
 							<span class="text">3-5 Business days delivery &amp; Free Returns</span>
@@ -54,41 +56,9 @@ try {
 			</div>
 		</div>
 	</div>
-	<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-		<div class="container">
-			<a class="navbar-brand" href="index.html">Minishop</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
-				aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="oi oi-menu"></span> Menu
-			</button>
-			<div class="collapse navbar-collapse" id="ftco-nav">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item active"><a href="index.html" class="nav-link">Home</a></li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="false">Catalog</a>
-						<div class="dropdown-menu" aria-labelledby="dropdown04">
-							<a class="dropdown-item" href="shop.html">Shop</a>
-							<a class="dropdown-item" href="product-single.html">Single Product</a>
-							<a class="dropdown-item" href="cart.html">Cart</a>
-							<a class="dropdown-item" href="checkout.html">Checkout</a>
-						</div>
-					</li>
-					<li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-					<li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-					<li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
-					<li class="nav-item cta cta-colored">
-						<a href="cart.php" class="nav-link">
-							<span class="icon-shopping_cart"></span>
-							[<span class="cart-count">
-								<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>
-							</span>]
-						</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</nav>
+	 <?php
+	include ("navbar.php");
+   ?>
 	<!-- END nav -->
 
 	<section id="home-section" class="hero">
@@ -103,21 +73,46 @@ try {
 						<div class="one-forth d-flex align-items-center ftco-animate"
 							data-scrollax=" properties: { translateY: '70%' }">
 							<div class="text">
-								<span class="subheading">#New Arrival</span>
+								<span class="subheading">#New Arrivals</span>
 								<div class="horizontal">
-									<h1 class="mb-4 mt-3">Stationery Collection</h1>
-									<p class="mb-4">Discover a curated selection of quality stationery essentials to
-										inspire your creativity and keep you organized. From elegant notebooks to
-										vibrant pens, find everything you need for your writing and crafting needs.</p>
-									<p><a href="#" class="btn-custom">Discover Now</a></p>
+									<h1 class="mb-4 mt-3">Charming Gifts & Stationery</h1>
+									<p class="mb-4">Discover elegant gifts, creative stationery, and unique accessories
+										that make every occasion special. Thoughtfully curated for your moments of joy.
+									</p>
 								</div>
+								<p><a href="#" class="btn-custom">Discover Now</a></p>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<!-- <div class="slider-item js-fullheight">
+				<div class="overlay"></div>
+				<div class="container-fluid p-0">
+					<div class="row d-flex no-gutters slider-text align-items-center justify-content-end"
+						data-scrollax-parent="true">
+						<img class="one-third order-md-last img-fluid" src="images/bg_2.png" alt="">
+						<div class="one-forth d-flex align-items-center ftco-animate"
+							data-scrollax=" properties: { translateY: '70%' }">
+							<div class="text">
+								<span class="subheading">#New Arrival</span>
+								<div class="horizontal">
+									<h1 class="mb-4 mt-3">New Shoes Winter Collection</h1>
+									<p class="mb-4">A small river named Duden flows by their place and supplies it with
+										the necessary regelialia. It is a paradisematic country.</p>
+
+									<p><a href="#" class="btn-custom">Discover Now</a></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> -->
+		</div>
 	</section>
+
 
 	<section class="ftco-section ftco-no-pt ftco-no-pb">
 		<div class="container">
@@ -129,9 +124,10 @@ try {
 						</div>
 						<div class="media-body">
 							<h3 class="heading">Free Shipping</h3>
-							<p>Enjoy free shipping on all orders, no matter how far away you are—bringing your favorite
-								stationery straight to your doorstep with no extra cost.</p>
+							<p>Enjoy fast and free delivery on all orders above PKR 1500. We bring your gifts and
+								stationery right to your doorstep—nationwide.</p>
 						</div>
+
 					</div>
 				</div>
 				<div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
@@ -140,10 +136,11 @@ try {
 							<span class="flaticon-customer-service"></span>
 						</div>
 						<div class="media-body">
-							<h3 class="heading">Support Customer</h3>
-							<p>Our friendly customer support team is always here to help, ready to assist you with any
-								questions or concerns—just a message away.</p>
+							<h3 class="heading">Customer Support</h3>
+							<p>Have questions or need help with your order? Our support team is always ready to assist
+								you — before and after your purchase.</p>
 						</div>
+
 					</div>
 				</div>
 				<div class="col-lg-4 text-center d-flex align-self-stretch ftco-animate">
@@ -153,9 +150,10 @@ try {
 						</div>
 						<div class="media-body">
 							<h3 class="heading">Secure Payments</h3>
-							<p>Shop with confidence knowing that all payments are processed securely using the latest
-								encryption technology to protect your information.</p>
+							<p>Pay confidently with our secure checkout. We support multiple trusted payment methods to
+								ensure your information stays safe.</p>
 						</div>
+
 					</div>
 				</div>
 			</div>
@@ -167,9 +165,10 @@ try {
 			<div class="row justify-content-center mb-3 pb-3">
 				<div class="col-md-12 heading-section text-center ftco-animate">
 					<h2 class="mb-4">New Arrivals</h2>
-					<p>Discover the latest additions to our collection — fresh styles and must-have stationery to
-					inspire you.</p>
+					<p>Discover our latest collection of gifts, stationery, accessories, bags and bottles — perfect for
+						every occasion, from school to celebrations.</p>
 				</div>
+
 			</div>
 		</div>
 		<div class="container">
@@ -187,13 +186,14 @@ try {
 
 							<a href="#" class="img-prod">
 								<img class="img-fluid" src="product/<?= htmlspecialchars($row['image']) ?>"
-									alt="<?= htmlspecialchars($row['name']) ?>">
+									alt="<?= htmlspecialchars($row['name']) ?>" style="height: 274px !important; ">
 								<div class="overlay"></div>
 							</a>
 
 							<div class="text py-3 pb-4 px-3">
 								<div class="d-flex">
-									<div class="cat"><span>Stationery</span></div>
+									<div class="cat"><span><?= htmlspecialchars($row['category']) ?></span></div>
+
 									<div class="rating">
 										<p class="text-right mb-0">
 											<a href="#"><span class="ion-ios-star-outline"></span></a>
@@ -206,25 +206,24 @@ try {
 								</div>
 
 								<h3><a href="#"><?= htmlspecialchars($row['name']) ?></a></h3>
+								<!-- <p class="mb-2"><?= htmlspecialchars($row['description']) ?></p> -->
 								<div class="pricing">
 									<p class="price"><span>Rs <?= number_format($row['price']) ?></span></p>
 								</div>
 
 								<p class="bottom-area d-flex px-3">
-									<a href="cart-handler.php?action=add&id=<?= $row['id'] ?>"
-										class="add-to-cart text-center py-2">
-										Add to cart <span><i class="ion-ios-cart ml-1"></i></span>
-									</a>
 									<?php if ($row['stock'] > 0): ?>
-										<a class="btn-block buy-now text-center py-2" data-id="<?= $row['id'] ?>"
-											data-name="<?= htmlspecialchars($row['name']) ?>" data-price="<?= $row['price'] ?>">
-											<i class="ion-ios-plus-outline ml-1"></i> Buy Now
+										<a href="cart-handler.php?action=add&id=<?= $row['id'] ?>"
+											class="add-to-cart text-center py-2 btn-block">
+											Add to cart <span><i class="ion-ios-cart ml-1"></i></span>
 										</a>
 									<?php else: ?>
-										<button class="btn btn-secondary btn-block" disabled>
+										<button class="btn btn-secondary btn-block text-center py-2" disabled>
 											<i class="ion-ios-cart"></i> Out of Stock
 										</button>
 									<?php endif; ?>
+								</p>
+
 
 								</p>
 							</div>
@@ -232,6 +231,12 @@ try {
 					</div>
 				<?php endforeach; ?>
 
+
+			</div>
+			<div class="d-flex justify-content-center mt-4">
+				<a href="shop.php" class="btn btn-primary px-4 py-2" style="font-weight:bolder;">
+					See More Products
+				</a>
 			</div>
 
 	</section>
@@ -246,10 +251,11 @@ try {
 						style="background-image: url(product/main-col-1.png);">
 
 						<div class="text text-center text-white px-2">
-							<span class="subheading">School Stationery</span>
-							<h2>Quality Stationery</h2>
-							<p>Discover a wide variety of top-quality branded stationery designed to inspire and support
-								your school needs.</p>
+							<span class="subheading">Gift Sets for Him</span>
+							<h2>Stationery Highlights</h2>
+							<p>Explore premium notebooks, stylish pens, organizers, and creative supplies — perfect for
+								school, office, or gifting.</p>
+
 							<p><a href="#" class="btn btn-black px-3 py-2">Shop now</a></p>
 						</div>
 					</div>
@@ -261,10 +267,12 @@ try {
 								style="background-image: url(product/WhatsApp\ Image\ 2025-07-14\ at\ 12.18.47_27dfa101.jpg);">
 								<div class="col-md-7 d-flex align-items-center">
 									<div class="text text-white px-5">
-										<span class="subheading">Gift Collection</span>
-										<h2>Stylish Bags for Every Occasion</h2>
-										<p>Explore our exclusive range of elegant bags—perfect gifts that combine
-											fashion and function for your loved ones.</p>
+										<span class="subheading">Gift Sets for Her</span>
+									<h2>Nike Bags Collection</h2>
+<p>Discover our exclusive range of authentic Nike backpacks, duffel bags, and gym sacks — perfect for school, sports, travel, and everyday use. Built for durability and iconic style.</p>
+
+
+
 										<p><a href="#" class="btn btn-black px-3 py-2">Shop now</a></p>
 									</div>
 								</div>
@@ -276,11 +284,12 @@ try {
 									<div
 										class="choose-wrap wrap img align-self-stretch bg-light d-flex align-items-center">
 										<div class="text text-center px-5">
-											<span class="subheading">Summer Sale</span>
-											<<h2>Extra 50% Off</h2>
-												<p>Grab your favorite items now with an additional 50% discount. Don’t
-													miss out on these amazing savings!</p>
-												<p><a href="#" class="btn btn-black px-3 py-2">Shop now</a></p>
+											<span class="subheading">Featured Collection</span>
+											<h2>Exclusive Gift Picks</h2>
+											<p>Discover our handpicked range of premium gifts, planners, and creative
+												essentials — perfect for any occasion.</p>
+
+											<p><a href="#" class="btn btn-black px-3 py-2">Shop now</a></p>
 										</div>
 									</div>
 								</div>
@@ -288,12 +297,13 @@ try {
 									<div class="choose-wrap wrap img align-self-stretch d-flex align-items-center"
 										style="background-image: url(product/image.png);">
 										<div class="text text-center text-white px-5">
-											<span class="subheading">Gifts & Stationery</span>
-											<h2>Customer Favorites</h2>
-											<p>Explore our most loved gifts and stationery items, carefully selected to
-												inspire and delight.</p>
-											<p><a href="#" class="btn btn-black px-3 py-2">Shop now</a></p>
+											<span class="subheading">Top Picks</span>
+											<h2>Best Sellers</h2>
+											<p>Discover our most popular items — from stylish bags and eco-friendly
+												bottles to premium notebooks and thoughtful gifts. Handpicked favorites
+												our customers love.</p>
 
+											<p><a href="#" class="btn btn-black px-3 py-2">Shop now</a></p>
 										</div>
 									</div>
 								</div>
@@ -348,10 +358,10 @@ try {
 							</div>
 							<div class="text">
 								<h3>Free Shipping</h3>
-								<p class="mb-0">Enjoy free shipping on all orders, delivered straight to your doorstep
-									with no extra cost.</p>
-							</div>
+								<p class="mb-0">Enjoy free delivery on all orders — no minimum spend required. Fast,
+									secure, and hassle-free.</p>
 
+							</div>
 						</div>
 						<div class="services-2 p-4 d-flex ftco-animate">
 							<div class="icon">
@@ -359,8 +369,9 @@ try {
 							</div>
 							<div class="text">
 								<h3>Valuable Gifts</h3>
-								<p class="mb-0">Find thoughtful and unique gifts that make every occasion special and
-									memorable.</p>
+								<p class="mb-0">Discover handpicked gifts that are thoughtful, elegant, and perfect for
+									every occasion.</p>
+
 							</div>
 						</div>
 						<div class="services-2 p-4 d-flex ftco-animate">
@@ -369,8 +380,9 @@ try {
 							</div>
 							<div class="text">
 								<h3>All Day Support</h3>
-								<p class="mb-0">Our dedicated team is here 24/7 to assist you with any questions or
-									concerns.</p>
+								<p class="mb-0">Our team is here to assist you 24/7 with orders, returns, and product
+									inquiries.</p>
+
 							</div>
 						</div>
 						<div class="services-2 p-4 d-flex ftco-animate">
@@ -379,16 +391,19 @@ try {
 							</div>
 							<div class="text">
 								<h3>All Day Support</h3>
-								<p class="mb-0">We’re here around the clock to help you whenever you need us.</p>
+								<p class="mb-0">Need help? Our support team is available around the clock to assist you
+									anytime.</p>
+
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-7">
 					<div class="heading-section ftco-animate mb-5">
-						<h2 class="mb-4">What Our Happy Customers Say</h2>
-						<p>Hear from our satisfied customers who love our products and service. Their stories inspire us
-							every day.</p>
+						<h2 class="mb-4">What Our Customers Say</h2>
+						<p>We value your trust! Read what our happy customers have to say about their experience
+							shopping for gifts, bags, and bottles at our store.</p>
+
 					</div>
 					<div class="carousel-testimony owl-carousel">
 						<div class="item">
@@ -399,10 +414,12 @@ try {
 									</span>
 								</div>
 								<div class="text">
-									<p class="mb-4 pl-4 line">“I’ve been amazed by the quality and variety of products.
-										Exceptional service and timely delivery every time!”</p>
+									<p class="mb-4 pl-4 line">I was impressed with the quality of products and fast
+										delivery. The gift packaging was thoughtful and elegant—perfect for every
+										occasion!</p>
 									<p class="name">Garreth Smith</p>
 									<span class="position">Marketing Manager</span>
+
 								</div>
 							</div>
 						</div>
@@ -414,9 +431,9 @@ try {
 									</span>
 								</div>
 								<div class="text">
-									<p class="mb-4 pl-4 line">“The quality and design of the products exceeded my
-										expectations. Highly recommend to anyone looking for reliable stationery and
-										gifts!”</p>
+									<p class="mb-4 pl-4 line">This store has become my go-to for premium gifts and
+										stationery. Everything—from the wrapping to the delivery—was flawless and
+										timely.</p>
 									<p class="name">Garreth Smith</p>
 									<span class="position">Interface Designer</span>
 								</div>
@@ -430,8 +447,9 @@ try {
 									</span>
 								</div>
 								<div class="text">
-									<p class="mb-4 pl-4 line">“Excellent products and outstanding customer service—I've
-										been a loyal customer for years!”</p>
+									<p class="mb-4 pl-4 line">Absolutely loved the range of creative stationery and gift
+										options! The packaging was elegant, and the support team was incredibly helpful.
+									</p>
 									<p class="name">Garreth Smith</p>
 									<span class="position">UI Designer</span>
 
@@ -446,11 +464,11 @@ try {
 									</span>
 								</div>
 								<div class="text">
-									<p class="mb-4 pl-4 line">“The quality and variety of the stationery collection have
-										truly impressed me. Great service and fast delivery every time!”</p>
+									<p class="mb-4 pl-4 line">A fantastic place for finding thoughtful gifts and quality
+										stationery. The website is smooth, and the delivery was right on time!</p>
 									<p class="name">Garreth Smith</p>
 									<span class="position">Web Developer</span>
-
+									>
 								</div>
 							</div>
 						</div>
@@ -462,10 +480,11 @@ try {
 									</span>
 								</div>
 								<div class="text">
-									<p class="mb-4 pl-4 line">“I appreciate the reliable quality and thoughtful design
-										of their products. A trusted choice for all my stationery needs.”</p>
-									<p class="name">Garreth Smith</p>
+									<p class="mb-4 pl-4 line">Absolutely loved the unique collection of gifts and
+										stationery. The design and quality exceeded my expectations!</p>
+									<p class="name">Zaid Malik</p>
 									<span class="position">System Analyst</span>
+									>
 								</div>
 							</div>
 						</div>
@@ -480,8 +499,9 @@ try {
 			<div class="row justify-content-center">
 				<div class="col-md-8 heading-section text-center mb-4 ftco-animate">
 					<h2 class="mb-4">Follow Us On Instagram</h2>
-					<p>Stay inspired with our latest stationery and gift collections. Follow us for exclusive updates,
-						offers, and creative ideas!</p>
+					<p>Discover the latest in gifts, stylish bags, and eco-friendly bottles. Follow us for daily
+						inspiration, product updates, and exclusive offers!</p>
+
 				</div>
 			</div>
 		</div>
@@ -552,8 +572,9 @@ try {
 				<div class="col-md">
 					<div class="ftco-footer-widget mb-4">
 						<h2 class="ftco-heading-2">Minishop</h2>
-						<p>Your one-stop shop for quality stationery and thoughtful gifts, crafted to brighten your day.
-						</p>
+						<p>Your one-stop shop for gifts, trendy bags, and eco-friendly bottles — thoughtfully curated
+							for every occasion.</p>
+
 						<ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
 							<li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
 							<li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
