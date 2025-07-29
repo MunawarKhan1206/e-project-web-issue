@@ -72,6 +72,12 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
     <link rel="stylesheet" href="css/flaticon.css">
     <link rel="stylesheet" href="css/icomoon.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+      .border-danger {
+    border: 2px solid #dc3545 !important;
+}
+
+    </style>
   </head>
   <body class="goto-here">
 		<div class="py-1 bg-black">
@@ -140,7 +146,7 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-xl-10 ftco-animate">
-        <form action="place-order.php" method="POST" class="billing-form">
+        <form action="place-order.php" method="POST" class="billing-form" onsubmit="return validateCheckout()">
           <h3 class="mb-4 billing-heading">Billing Details</h3>
           <div class="row align-items-end">
             <div class="col-md-6">
@@ -160,17 +166,17 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
 
             <div class="col-md-12">
               <div class="form-group">
-                <label for="country">State / Country</label>
+                <label for="country">City</label>
                 <div class="select-wrap">
                   <div class="icon"><span class="ion-ios-arrow-down"></span></div>
                   <select name="country" class="form-control" required>
-                    <option value="">Select Country</option>
-                    <option value="France">France</option>
-                    <option value="Italy">Italy</option>
-                    <option value="Philippines">Philippines</option>
-                    <option value="South Korea">South Korea</option>
-                    <option value="Hongkong">Hongkong</option>
-                    <option value="Japan">Japan</option>
+                    <option value="">Select City</option>
+                    <option value="Karachi">Karachi</option>
+                    <option value="Lahore">Lahore</option>
+                    <option value="Islamabad">Islamabad</option>
+                    <option value="Faisalabad">Faisalabad</option>
+                    <option value="Quetta">Quetta</option>
+                    <option value="Peshawar">Peshawar</option>
                   </select>
                 </div>
               </div>
@@ -427,6 +433,18 @@ $grand_total = $totals['grand_total'] ?? 0;
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
   <script src="js/google-map.js"></script>
   <script src="js/main.js"></script>
+<div aria-live="polite" aria-atomic="true" style="position: fixed; top: 1rem; right: 1rem; z-index: 9999;">
+  <div id="errorToast" class="toast" data-delay="4000">
+    <div class="toast-header bg-danger text-white">
+      <strong class="mr-auto">Form Error</strong>
+      <small>Now</small>
+      <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast">&times;</button>
+    </div>
+    <div class="toast-body" id="toastMessage">
+      Something went wrong.
+    </div>
+  </div>
+</div>
 
   <script>
 		$(document).ready(function(){
@@ -464,6 +482,78 @@ $grand_total = $totals['grand_total'] ?? 0;
 		    
 		});
 	</script>
-    
+   <script>
+function showToast(message) {
+  const toastMessage = document.getElementById("toastMessage");
+  toastMessage.textContent = message;
+  $('#errorToast').toast('show');
+}
+
+function validateCheckout() {
+    const form = document.getElementById("checkoutForm");
+    const requiredFields = form.querySelectorAll("[required]");
+    let isValid = true;
+    let errorMsg = "";
+
+    requiredFields.forEach(field => field.classList.remove("border-danger"));
+
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add("border-danger");
+            isValid = false;
+        }
+    });
+
+    const emailField = form.querySelector("input[name='email']");
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailField && !emailRegex.test(emailField.value.trim())) {
+        emailField.classList.add("border-danger");
+        isValid = false;
+        errorMsg = "Please enter a valid email address.";
+        showToast(errorMsg);
+        return false;
+    }
+
+    const phoneField = form.querySelector("input[name='phone']");
+    const phoneRegex = /^03[0-9]{9}$/;
+    if (phoneField && !phoneRegex.test(phoneField.value.trim())) {
+        phoneField.classList.add("border-danger");
+        isValid = false;
+        errorMsg = "Please enter a valid Pakistani phone number (e.g. 03xxxxxxxxx).";
+        showToast(errorMsg);
+        return false;
+    }
+
+    const zipField = form.querySelector("input[name='postcode']");
+    const zipRegex = /^[0-9]{4,6}$/;
+    if (zipField && !zipRegex.test(zipField.value.trim())) {
+        zipField.classList.add("border-danger");
+        isValid = false;
+        errorMsg = "Please enter a valid postcode (4-6 digits).";
+        showToast(errorMsg);
+        return false;
+    }
+
+    const paymentMethods = form.querySelectorAll("input[name='payment_method']");
+    let paymentSelected = false;
+    paymentMethods.forEach(method => {
+        if (method.checked) paymentSelected = true;
+    });
+    if (!paymentSelected) {
+        errorMsg = "Please select a payment method.";
+        showToast(errorMsg);
+        return false;
+    }
+
+    // Final check for empty required fields
+    if (!isValid) {
+        showToast("Please fill all required fields correctly.");
+    }
+
+    return isValid;
+}
+</script>
+
+
   </body>
 </html>

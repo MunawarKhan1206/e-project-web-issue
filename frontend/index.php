@@ -46,7 +46,7 @@ try {
 						<div class="col-md pr-4 d-flex topper align-items-center">
 							<div class="icon mr-2 d-flex justify-content-center align-items-center"><span
 									class="icon-paper-plane"></span></div>
-							<span class="text">youremail@email.com</span>
+							<span class="text">minishop@email.com</span>
 						</div>
 						<div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
 							<span class="text">3-5 Business days delivery &amp; Free Returns</span>
@@ -58,27 +58,26 @@ try {
 	</div>
 	<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 		<div class="container">
-			<a class="navbar-brand" href="index.html">Minishop</a>
+			<a class="navbar-brand" href="index.php">Minishop</a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
 				aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="oi oi-menu"></span> Menu
 			</button>
 			<div class="collapse navbar-collapse" id="ftco-nav">
 				<ul class="navbar-nav ml-auto">
-					<li class="nav-item active"><a href="index.html" class="nav-link">Home</a></li>
+					<li class="nav-item active"><a href="index.php" class="nav-link">Home</a></li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown"
 							aria-haspopup="true" aria-expanded="false">Catalog</a>
 						<div class="dropdown-menu" aria-labelledby="dropdown04">
-							<a class="dropdown-item" href="shop.html">Shop</a>
-							<a class="dropdown-item" href="product-single.html">Single Product</a>
-							<a class="dropdown-item" href="cart.html">Cart</a>
-							<a class="dropdown-item" href="checkout.html">Checkout</a>
+							<a class="dropdown-item" href="shop.php">Shop</a>
+							<a class="dropdown-item" href="cart.php">Cart</a>
+							<!-- <a class="dropdown-item" href="checkout.html">Checkout</a> -->
 						</div>
 					</li>
 					<li class="nav-item"><a href="about.html" class="nav-link">About</a></li>
-					<li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li>
-					<li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+					<!-- <li class="nav-item"><a href="blog.html" class="nav-link">Blog</a></li> -->
+					<li class="nav-item"><a href="contact.php" class="nav-link">Contact</a></li>
 					<li class="nav-item cta cta-colored">
     <a href="cart.php" class="nav-link">
         <span class="icon-shopping_cart"></span>
@@ -221,7 +220,6 @@ try {
 								<div class="d-flex">
 								<div class="cat"><span><?= htmlspecialchars($row['category']) ?></span></div>
 
-
 									<div class="rating">
 										<p class="text-right mb-0">
 											<a href="#"><span class="ion-ios-star-outline"></span></a>
@@ -234,6 +232,7 @@ try {
 								</div>
 
 								<h3><a href="#"><?= htmlspecialchars($row['name']) ?></a></h3>
+								<!-- <p class="mb-2"><?= htmlspecialchars($row['description']) ?></p> -->
 								<div class="pricing">
 									<p class="price"><span>Rs <?= number_format($row['price']) ?></span></p>
 								</div>
@@ -260,7 +259,7 @@ try {
 				
 			</div>
 			<div class="d-flex justify-content-center mt-4">
-				<a href="shop.php" class="btn btn-primary px-4 py-2">
+				<a href="shop.php" class="btn btn-primary px-4 py-2" style="font-weight:bolder;">
 					See More Products
 				</a>
 			</div>
