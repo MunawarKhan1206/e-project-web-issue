@@ -10,8 +10,7 @@ if (!$id_token) {
     exit;
 }
 
-// Verify the token using Google library (no Composer)
-// OR manual decode:
+// Decode token manually
 $payload = explode('.', $id_token);
 $userData = json_decode(base64_decode(strtr($payload[1], '-_', '+/')), true);
 
@@ -22,7 +21,7 @@ if (!isset($userData['email'])) {
 
 $email = $userData['email'];
 $name = $userData['name'] ?? 'Google User';
-$role = 'customer'; // default role
+$role = 'customer'; // default role if new user
 
 // Check if user exists
 $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
@@ -39,7 +38,7 @@ if (!$user) {
     $stmt = $pdo->prepare("INSERT INTO customers (user_id) VALUES (?)");
     $stmt->execute([$user_id]);
 
-    // Fetch new user
+    // Fetch newly inserted user
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch();
@@ -51,8 +50,8 @@ $_SESSION["user_name"] = $user["name"];
 $_SESSION["user_email"] = $user["email"];
 $_SESSION["user_role"] = $user["role"];
 
-// Decide redirect
-$redirect = "../customer_dashboard.php";
+// Redirect based on role
+$redirect = ($user["role"] === 'admin') ? "../admin/dashboard.php" : "../frontend/customer_dashboard.php";
 
 echo json_encode([
     'success' => true,

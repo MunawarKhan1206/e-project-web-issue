@@ -219,7 +219,9 @@ try {
 
 							<div class="text py-3 pb-4 px-3">
 								<div class="d-flex">
-									<div class="cat"><span>Stationery</span></div>
+								<div class="cat"><span><?= htmlspecialchars($row['category']) ?></span></div>
+
+
 									<div class="rating">
 										<p class="text-right mb-0">
 											<a href="#"><span class="ion-ios-star-outline"></span></a>
