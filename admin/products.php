@@ -73,8 +73,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   <!-- Main Content -->
   <div class="main">
-    <button id="toggleSidebar" class="btn btn-sm btn-dark d-md-none mb-3">
-  <i class="fas fa-bars"></i> Menu
+   <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
 </button>
 
 
@@ -270,20 +269,27 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $('#delete_product_name').text(productName);
 });
 </script>
-  <script>
-  $(document).ready(function () {
-    $('#toggleSidebar').click(function () {
-      $('#adminSidebar').toggleClass('show');
-    });
+<!-- <script>
+  const toggle = document.getElementById('menu-toggle');
+  const sidebar = document.querySelector('.sidebar');
 
-    // Optional: close sidebar on clicking outside
-    $(document).click(function (e) {
-      if (!$(e.target).closest('#adminSidebar, #toggleSidebar').length) {
-        $('#adminSidebar').removeClass('show');
-      }
-    });
+  toggle.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
   });
-</script>
+
+  // Close sidebar if clicked outside on small screens
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 992 && sidebar.classList.contains('active')) {
+      const isClickInsideSidebar = sidebar.contains(e.target);
+      const isClickOnToggle = toggle.contains(e.target);
+
+      if (!isClickInsideSidebar && !isClickOnToggle) {
+        sidebar.classList.remove('active');
+      }
+    }
+  });
+</script> -->
+<script src="menu.js"></script>
 
 
 

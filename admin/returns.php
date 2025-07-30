@@ -47,6 +47,7 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <div class="main">
+          <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
       <div class="dashboard-title d-flex justify-content-between align-items-center">
         <span>Return Requests</span>
       </div>
@@ -66,15 +67,16 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </form>
 
       <div class="bg-white p-4 shadow-sm rounded" style="overflow-x:auto;">
-        <table class="table table-bordered table-hover" style="min-width: 900px;">
-          <thead class="thead-light">
-            <tr>
-              <th>#</th>
-              <th>Order #</th>
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>Order #</th>
               <th>Return Reason</th>
               <th>Return Date</th>
               <th>Status</th>
-              <th>Actions</th>
+              <!-- <th>Actions</th> -->
             </tr>
           </thead>
           <tbody>
@@ -120,16 +122,7 @@ $orderRow = $orderRow->fetch(PDO::FETCH_ASSOC);
                       <?= ucfirst($r['status']) ?>
                     </span>
                   </td>
-                  <td class="return-action-cell">
-                    <?php if ($r['status'] === 'pending'): ?>
-                      <div class="d-flex">
-                        <button class="btn btn-sm btn-success mr-1 return-action" data-id="<?= $r['id'] ?>" data-action="approve"><i class="fas fa-check"></i></button>
-                        <button class="btn btn-sm btn-danger return-action" data-id="<?= $r['id'] ?>" data-action="reject"><i class="fas fa-times"></i></button>
-                      </div>
-                    <?php else: ?>
-                      <i class="text-muted">—</i>
-                    <?php endif; ?>
-                  </td>
+               
                 </tr>
               <?php endforeach; ?>
             <?php else: ?>
@@ -251,7 +244,7 @@ $orderRow = $orderRow->fetch(PDO::FETCH_ASSOC);
     });
   });
 </script>
-
+<script src="menu.js"></script>
 
 </body>
 

@@ -38,6 +38,7 @@ $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   <!-- Main -->
   <div class="main">
+        <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
     <div class="dashboard-title d-flex justify-content-between align-items-center">
       <span>Manage Employees</span>
       <button class="btn btn-dark" data-toggle="modal" data-target="#addEmployeeModal">
@@ -46,10 +47,11 @@ $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <div class="bg-white p-3 shadow-sm rounded" style="overflow-x: auto;">
-      <table class="table table-bordered table-hover" style="min-width: 700px;">
-        <thead class="thead-light">
-          <tr>
-            <th>#</th>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="thead-light">
+            <tr>
+            <!-- <th>#</th> -->
             <th>Name</th>
             <th>Email</th>
             <th>Registered</th>
@@ -60,7 +62,7 @@ $employees = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <?php if (count($employees) > 0): ?>
             <?php foreach ($employees as $e): ?>
               <tr>
-                <td><?= $e['id'] ?></td>
+             
                 <td><?= htmlspecialchars($e['name']) ?></td>
                 <td><?= htmlspecialchars($e['email']) ?></td>
                 <td><?= date("d M Y", strtotime($e['created_at'])) ?></td>
