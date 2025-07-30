@@ -146,7 +146,7 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-xl-10 ftco-animate">
-        <form action="place-order.php" method="POST" class="billing-form" onsubmit="return validateCheckout()">
+        <form action="place-order.php" method="POST" id="checkout-form" class="billing-form" onsubmit="return validateCheckout()">
           <h3 class="mb-4 billing-heading">Billing Details</h3>
           <div class="row align-items-end">
             <div class="col-md-6">
@@ -228,14 +228,7 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
 
             <div class="w-100"></div>
 
-            <div class="col-md-12">
-              <div class="form-group mt-4">
-                <div class="radio">
-                  <label class="mr-3"><input type="radio" name="create_account" value="1"> Create an Account?</label>
-                  <label><input type="radio" name="ship_different" value="1"> Ship to different address</label>
-                </div>
-              </div>
-            </div>
+          
           </div>
 
           <!-- Cart Total and Payment -->
@@ -288,45 +281,32 @@ $grand_total = $totals['grand_total'] ?? 0;
               </div>
             </div>
 
-            <div class="col-md-6">
-              <div class="cart-detail bg-light p-3 p-md-4">
-                <h3 class="billing-heading mb-4">Payment Method</h3>
+    <div class="col-md-6">
+  <div class="cart-detail bg-light p-3 p-md-4">
+    <h3 class="billing-heading mb-4">Payment Method</h3>
 
-<div class="form-group">
+   <div class="form-group">
   <div class="col-md-12">
     <div class="radio">
-      <label><input type="radio" name="payment_method" value="bank" class="mr-2" required> Direct Bank Transfer</label>
+      <label><input type="radio" name="payment_method" value="cod" class="mr-2" checked> Cash on Delivery</label>
+    </div>
+    <div class="radio">
+      <label><input type="radio" name="payment_method" value="card" class="mr-2"> Credit/Debit Card</label>
     </div>
   </div>
 </div>
 
-<div class="form-group">
-  <div class="col-md-12">
-    <div class="radio">
-      <label><input type="radio" name="payment_method" value="check" class="mr-2"> Check Payment</label>
+    <div class="form-group mt-4">
+      <div class="col-md-12">
+        <p>
+          <button type="submit" class="btn btn-primary py-3 px-4 w-100">Place an order</button>
+        </p>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="form-group">
-  <div class="col-md-12">
-    <div class="radio">
-      <label><input type="radio" name="payment_method" value="paypal" class="mr-2"> Paypal</label>
-    </div>
-  </div>
-</div>
 
-<div class="form-group">
-  <div class="col-md-12">
-    <div class="radio">
-      <label><input type="radio" name="payment_method" value="vpp" class="mr-2"> Cash on Delivery (VPP)</label>
-      <p><button type="submit" class="btn btn-primary py-3 px-4">Place an order</button></p>
-    </div>
-  </div>
-</div>
-    </div>
-
-              </div>
             </div>
           </div>
         </form>
@@ -553,6 +533,28 @@ function validateCheckout() {
     return isValid;
 }
 </script>
+<script>
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+  const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
+  if (selectedMethod && selectedMethod.value === 'card') {
+    e.preventDefault(); // prevent normal submission
+    const formData = new FormData(e.target);
+
+    fetch('mockgateway.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.text())
+    .then(html => {
+      document.open();
+      document.write(html);
+      document.close();
+    })
+    .catch(err => console.error('Mock gateway error:', err));
+  }
+});
+</script>
+
 
 
   </body>

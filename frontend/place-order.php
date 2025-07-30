@@ -1,49 +1,58 @@
 <?php
 session_start();
-require_once("../includes/db.inc.php"); // This defines $pdo
+require_once("../includes/db.inc.php");
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Validate required fields
-    $required_fields = ['first_name', 'last_name', 'address', 'email', 'phone', 'payment_method'];
-    foreach ($required_fields as $field) {
-        if (empty($_POST[$field])) {
-            echo "Missing required field: " . $field;
+if ($_SERVER["REQUEST_METHOD"] === "POST" || 
+    ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['payment']) && $_GET['payment'] === 'success')) {
+
+    // Restore POST data for mock payment (from session)
+    if ($_SERVER["REQUEST_METHOD"] === "GET") {
+        $_POST = $_SESSION['mock_post'] ?? [];
+        if (empty($_POST)) {
+            $_SESSION['toast'] = ['type' => 'danger', 'msg' => "Session expired. Please try again."];
+            header("Location: checkout.php");
             exit;
         }
     }
 
-    // Get form data
+    // Validate form inputs
+    $required_fields = ['first_name', 'last_name', 'address', 'email', 'phone', 'payment_method'];
+    foreach ($required_fields as $field) {
+        if (empty($_POST[$field])) {
+            $_SESSION['toast'] = ['type' => 'danger', 'msg' => "Missing required field: $field"];
+            header("Location: ../checkout.php");
+            exit;
+        }
+    }
+
     $first_name = trim($_POST['first_name']);
     $last_name = trim($_POST['last_name']);
-    $customer_name = $first_name . ' ' . $last_name;
-
+    $customer_name = "$first_name $last_name";
     $address = $_POST['address'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $payment_method = $_POST['payment_method'];
 
-    // Fetch cart data from session
+    // Ensure cart exists
     $cart = $_SESSION['cart'] ?? [];
     if (empty($cart)) {
-        echo "Your cart is empty.";
+        $_SESSION['toast'] = ['type' => 'warning', 'msg' => "Your cart is empty."];
+        header("Location: ../checkout.php");
         exit;
     }
 
-    // Totals from session
     $subtotal = $_SESSION['totals']['subtotal'] ?? 0;
     $discount = $_SESSION['totals']['discount'] ?? 0;
     $delivery = $_SESSION['totals']['delivery'] ?? 0;
     $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
 
-    // Generate unique 16-digit order number
-    $prefix = strtoupper($payment_method) === 'VPP' ? 'VPP' : 'PP';
+    $prefix = strtoupper($payment_method) === 'cod' ? 'COD' : 'PP';
     $order_number = $prefix . date('Ymd') . rand(100000, 999999);
 
     try {
-        // Start transaction
         $pdo->beginTransaction();
 
-        // Insert into orders
+        // Insert order
         $order_stmt = $pdo->prepare("
             INSERT INTO orders2 (order_number, customer_name, address, email, phone, payment_method, subtotal, discount, delivery, grand_total)
             VALUES (:order_number, :customer_name, :address, :email, :phone, :payment_method, :subtotal, :discount, :delivery, :grand_total)
@@ -70,50 +79,43 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ");
 
         foreach ($cart as $product_id => $item) {
-            // Fetch product details from DB
             $stmt = $pdo->prepare("SELECT price, stock FROM products WHERE id = ?");
             $stmt->execute([$product_id]);
             $product = $stmt->fetch();
 
-            if (!$product) continue; // Skip if product no longer exists
+            if (!$product) continue;
 
-            $quantity = $item['quantity'];
-            $price = $product['price'];
-            $stock = $product['stock'];
-
-            // Insert into order_items
             $item_stmt->execute([
                 ':order_id' => $order_id,
                 ':product_id' => $product_id,
-                ':quantity' => $quantity,
-                ':price' => $price
+                ':quantity' => $item['quantity'],
+                ':price' => $product['price']
             ]);
 
-            // Update product stock
-            $new_stock = max(0, $stock - $quantity);
-            $update_stock_stmt = $pdo->prepare("UPDATE products SET stock = ? WHERE id = ?");
-            $update_stock_stmt->execute([$new_stock, $product_id]);
+            $new_stock = max(0, $product['stock'] - $item['quantity']);
+            $pdo->prepare("UPDATE products SET stock = ? WHERE id = ?")->execute([$new_stock, $product_id]);
         }
 
-        // Commit
         $pdo->commit();
 
-        // Store order info in session
+        // Store details and clear session
         $_SESSION['order_number'] = $order_number;
         $_SESSION['recipient_name'] = $customer_name;
+        unset($_SESSION['cart'], $_SESSION['totals'], $_SESSION['mock_post']);
 
-        // Clear cart and totals
-        unset($_SESSION['cart'], $_SESSION['totals']);
+        $_SESSION['toast'] = ['type' => 'success', 'msg' => 'Order placed successfully!'];
+        header("Location: thankyou.php");
+        exit;
 
-        echo "<script>
-            alert('Order placed successfully!');
-            window.location.href = 'thankyou.php';
-        </script>";
     } catch (PDOException $e) {
         $pdo->rollBack();
-        echo "Order failed: " . $e->getMessage();
+        $_SESSION['toast'] = ['type' => 'danger', 'msg' => "Order failed: " . $e->getMessage()];
+        header("Location: checkout.php");
+        exit;
     }
 } else {
-    echo "Invalid request.";
+    $_SESSION['toast'] = ['type' => 'danger', 'msg' => "Invalid request."];
+    header("Location: checkout.php");
+    exit;
 }
 ?>
