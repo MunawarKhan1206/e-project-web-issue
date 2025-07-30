@@ -1,28 +1,38 @@
 * {
-  margin: 0; padding: 0;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
   font-family: 'Inter', sans-serif;
 }
+
 body {
   background: #f7f6f3;
   color: #333;
 }
+
 .dashboard {
   display: flex;
 }
+
+/* Sidebar */
 .sidebar {
   width: 240px;
   background: #2f2b25;
   min-height: 100vh;
   padding: 40px 20px;
   position: fixed;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
+  transition: left 0.3s ease;
+  z-index: 1000;
 }
+
 .sidebar h2 {
   color: #fff;
   text-align: center;
   margin-bottom: 40px;
 }
+
 .sidebar a {
   display: block;
   padding: 12px 20px;
@@ -32,27 +42,34 @@ body {
   text-decoration: none;
   transition: 0.3s;
 }
+
 .sidebar a:hover,
 .sidebar a.active {
   background: #c29958;
   color: #fff;
 }
+
+/* Main Content */
 .main {
   margin-left: 240px;
   width: calc(100% - 240px);
   padding: 40px 30px;
 }
+
 .dashboard-title {
   font-size: 26px;
   font-weight: 700;
   margin-bottom: 30px;
   color: #3a2f27;
 }
+
+/* Stat Cards */
 .stats {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
 }
+
 .stat-card {
   background: #fff;
   border-left: 6px solid #c29958;
@@ -60,38 +77,81 @@ body {
   min-width: 200px;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
 }
+
 .stat-card:hover {
   transform: translateY(-5px);
 }
+
 .stat-title {
   font-size: 14px;
   color: #777;
 }
+
 .stat-value {
   font-size: 28px;
   font-weight: 600;
   color: #c29958;
 }
+
+/* Chart Section */
 .section {
   margin-top: 50px;
 }
+
 .section h3 {
   font-size: 20px;
   color: #3a2f27;
   margin-bottom: 20px;
 }
-@media (max-width: 768px) {
-  .sidebar {
-    position: relative;
-    width: 100%;
-    height: auto;
+
+.chart-container {
+  width: 100%;
+  height: 400px;
+}
+
+/* Toggle Button for Mobile */
+.menu-toggle {
+  display: none;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #3a2f27;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+/* Mobile Styles */
+@media (max-width: 992px) {
+  .menu-toggle {
+    display: block;
   }
+
+  .sidebar {
+    left: -100%;
+    height: 100%;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
   .main {
     margin-left: 0;
     width: 100%;
-    padding: 20px;
+    padding: 80px 20px 20px;
+  }
+
+  .stats {
+    flex-direction: column;
+  }
+
+  .chart-container {
+    height: 450px;
   }
 }

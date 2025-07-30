@@ -102,10 +102,12 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Orders Table -->
     <div class="bg-white p-3 shadow-sm rounded" style="overflow-x: auto;">
-      <table class="table table-bordered table-hover" style="min-width: 900px;">
-        <thead class="thead-light">
-          <tr>
-            <th>Order ID</th>
+      <div class="table-responsive">
+
+        <table class="table table-bordered table-hover" >
+          <thead class="thead-light">
+            <tr>
+              <!-- <th>Order ID</th> -->
             <th>Email</th>
             <th>Payment</th>
             <th>Status</th>
@@ -118,7 +120,7 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <?php if (count($orders) > 0): ?>
             <?php foreach ($orders as $o): ?>
               <tr>
-                <td>#<?= $o['id'] ?></td>
+                
                 <td><?= htmlspecialchars($o['email']) ?></td>
                 <td><?= ucfirst($o['payment_method']) ?></td>
                 <td>
@@ -140,12 +142,13 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
               </tr>
               <?php endforeach; ?>
               <?php else: ?>
-            <tr><td colspan="6" class="text-center text-muted">No orders found</td></tr>
-            <?php endif; ?>
-      
-
-        </tbody>
-    </table>
+                <tr><td colspan="6" class="text-center text-muted">No orders found</td></tr>
+                <?php endif; ?>
+                
+                
+              </tbody>
+            </table>
+          </div>
 </div>
 </div>
 </div>

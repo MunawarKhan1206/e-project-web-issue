@@ -73,6 +73,11 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   <!-- Main Content -->
   <div class="main">
+    <button id="toggleSidebar" class="btn btn-sm btn-dark d-md-none mb-3">
+  <i class="fas fa-bars"></i> Menu
+</button>
+
+
     <div class="dashboard-title d-flex justify-content-between align-items-center">
       <span>Manage Products</span>
       <button class="btn btn-add px-4 py-2" data-toggle="modal" data-target="#addProductModal">
@@ -82,64 +87,67 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="section">
       <h3>Current Products</h3>
-      <div class="bg-white p-4 shadow-sm rounded" style="overflow-x: auto;">
-        <table class="table table-bordered table-hover" style="min-width: 900px;">
-          <thead style="background: #f2ebe0; color: #5c4434;">
-            <tr>
-              <th>ID</th>
-              <th>Image</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price (Rs)</th>
-              <th>Stock</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($products as $p): ?>
-              <tr>
-                <td><?= $p['id'] ?></td>
-                <td>
-                  <?php if (!empty($p['image']) && file_exists("../frontend/product/" . $p['image'])): ?>
-                    <img src="../frontend/product/<?= $p['image'] ?>" style="width: 50px; height: 50px; border-radius: 6px; object-fit: cover;" />
-                  <?php else: ?>
-                    <span class="text-muted">N/A</span>
-                  <?php endif; ?>
-                </td>
-                <td><?= htmlspecialchars($p['name']) ?></td>
-                <td><?= htmlspecialchars($p['category']) ?></td>
-                <td>Rs. <?= number_format($p['price'], 2) ?></td>
-                <td><?= $p['stock'] ?></td>
-                <td>
-               <button class="btn btn-sm" style="background: #ffcf67; color: #333; border-radius: 6px;" data-toggle="modal"
-        data-target="#editProductModal"
-        data-id="<?= $p['id'] ?>"
-        data-name="<?= htmlspecialchars($p['name']) ?>"
-        data-category="<?= htmlspecialchars($p['category']) ?>"
-        data-price="<?= $p['price'] ?>"
-        data-stock="<?= $p['stock'] ?>"
-        data-image="<?= $p['image'] ?>"
-        data-description="<?= htmlspecialchars($p['description']) ?>">
-  <i class="fas fa-pen"></i>
-</button>
-
-            <button class="btn btn-sm" style="background: #ff6b6b; color: white; border-radius: 6px;" 
-        data-toggle="modal" data-target="#deleteProductModal"
-        data-id="<?= $p['id'] ?>"
-        data-name="<?= htmlspecialchars($p['name']) ?>">
-  <i class="fas fa-trash"></i>
-</button>
-
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
+  <div class="bg-white p-4 shadow-sm rounded" style="overflow-x: auto;">
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead style="background: #f2ebe0; color: #5c4434;">
+        <tr>
+          <!-- <th>ID</th> -->
+          <th>Image</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price (Rs)</th>
+          <th>Stock</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($products as $p): ?>
+          <tr>
+       
+            <td>
+              <?php if (!empty($p['image']) && file_exists("../frontend/product/" . $p['image'])): ?>
+                <img src="../frontend/product/<?= $p['image'] ?>" style="width: 50px; height: 50px; border-radius: 6px; object-fit: cover;" />
+              <?php else: ?>
+                <span class="text-muted">N/A</span>
+              <?php endif; ?>
+            </td>
+            <td><?= htmlspecialchars($p['name']) ?></td>
+            <td><?= htmlspecialchars($p['category']) ?></td>
+            <td>Rs. <?= number_format($p['price'], 2) ?></td>
+            <td><?= $p['stock'] ?></td>
+            <td>
+              <button class="btn btn-sm" style="background: #ffcf67; color: #333; border-radius: 6px;" 
+                data-toggle="modal"
+                data-target="#editProductModal"
+                data-id="<?= $p['id'] ?>"
+                data-name="<?= htmlspecialchars($p['name']) ?>"
+                data-category="<?= htmlspecialchars($p['category']) ?>"
+                data-price="<?= $p['price'] ?>"
+                data-stock="<?= $p['stock'] ?>"
+                data-image="<?= $p['image'] ?>"
+                data-description="<?= htmlspecialchars($p['description']) ?>">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="btn btn-sm" style="background: #ff6b6b; color: white; border-radius: 6px;" 
+                data-toggle="modal" data-target="#deleteProductModal"
+                data-id="<?= $p['id'] ?>"
+                data-name="<?= htmlspecialchars($p['name']) ?>">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
   </div>
 </div>
 
+
+    </div>
+  </div>
+</div>
+          
 <!-- Modal -->
 <div class="modal fade" id="addProductModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
@@ -261,8 +269,23 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $('#delete_product_id').val(productId);
   $('#delete_product_name').text(productName);
 });
-
 </script>
+  <script>
+  $(document).ready(function () {
+    $('#toggleSidebar').click(function () {
+      $('#adminSidebar').toggleClass('show');
+    });
+
+    // Optional: close sidebar on clicking outside
+    $(document).click(function (e) {
+      if (!$(e.target).closest('#adminSidebar, #toggleSidebar').length) {
+        $('#adminSidebar').removeClass('show');
+      }
+    });
+  });
+</script>
+
+
 
 </body>
 </html>

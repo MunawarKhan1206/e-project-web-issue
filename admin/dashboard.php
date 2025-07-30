@@ -54,6 +54,8 @@ $stmt2 = $pdo->prepare("SELECT COUNT(*) FROM returns WHERE MONTH(return_date) = 
 
   <!-- Main Content -->
   <div class="main">
+    <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
+
     <div class="dashboard-title">Welcome Admin 👋</div>
 
     <div class="stats">
@@ -77,7 +79,10 @@ $stmt2 = $pdo->prepare("SELECT COUNT(*) FROM returns WHERE MONTH(return_date) = 
 
     <div class="section">
       <h3>Monthly Stats</h3>
-      <canvas id="ordersChart" height="100"></canvas>
+<div class="chart-container">
+  <canvas id="ordersChart"></canvas>
+</div>
+
     </div>
   </div>
 </div>
@@ -118,5 +123,27 @@ $stmt2 = $pdo->prepare("SELECT COUNT(*) FROM returns WHERE MONTH(return_date) = 
     }
   });
 </script>
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const sidebar = document.querySelector('.sidebar');
+
+  toggle.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+  });
+
+  // Close sidebar if clicked outside on small screens
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 992 && sidebar.classList.contains('active')) {
+      const isClickInsideSidebar = sidebar.contains(e.target);
+      const isClickOnToggle = toggle.contains(e.target);
+
+      if (!isClickInsideSidebar && !isClickOnToggle) {
+        sidebar.classList.remove('active');
+      }
+    }
+  });
+</script>
+
+
 </body>
 </html>
