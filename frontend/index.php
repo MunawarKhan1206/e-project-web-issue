@@ -61,57 +61,58 @@ try {
    ?>
 	<!-- END nav -->
 
-	<section id="home-section" class="hero">
-		<div class="home-slider owl-carousel">
-			<div class="slider-item js-fullheight">
-				<div class="overlay"></div>
-				<div class="container-fluid p-0">
-					<div class="row d-md-flex no-gutters slider-text align-items-center justify-content-end"
-						data-scrollax-parent="true">
-						<img class="bg-transparentc:\Users\DELL\AppData\Local\Temp\Rar$DRa19088.334.rartemp\WhatsApp_Image_2025-07-15_at_11.47.11_7e4e67ec-removebg-preview.png one-third order-md-last img-fluid"
-							src="images/hello.png" alt="Gift Shop Hero Image">
-						<div class="one-forth d-flex align-items-center ftco-animate"
-							data-scrollax=" properties: { translateY: '70%' }">
-							<div class="text">
-								<span class="subheading">#New Arrivals</span>
-								<div class="horizontal">
-									<h1 class="mb-4 mt-3">Charming Gifts & Stationery</h1>
-									<p class="mb-4">Discover elegant gifts, creative stationery, and unique accessories
-										that make every occasion special. Thoughtfully curated for your moments of joy.
-									</p>
-								</div>
-								<p><a href="#" class="btn-custom">Discover Now</a></p>
-							</div>
-						</div>
-					</div>
-				</div>
+<section id="home-section" class="hero js-fullheight" style="position: relative; overflow: hidden;">
+	<!-- Background Image -->
+	<img src="images/artboard-studio-c-KRSHct7Ho-unsplash.jpg" alt="Hero Background"
+		style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+
+	<!-- Text Content -->
+	<div class="container-fluid p-0 h-100">
+		<div class="row no-gutters align-items-center justify-content-center text-center h-100"
+			style="position: relative; z-index: 2;">
+			<div class="text px-4 px-md-5 ftco-animate">
+				<span class="subheading d-block mb-3" style="
+					font-size: 1.1rem;
+					color: #fff;
+					text-transform: uppercase;
+					letter-spacing: 2px;
+					font-weight: bolder;
+					text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);">
+					#New Arrivals
+				</span>
+
+				<h1 class="mb-4 mt-2" style="
+					color: #fff;
+					font-size: 2.4rem;
+					font-weight: 800;
+					text-shadow: 4px 4px 8px rgba(0,0,0,0.8);">
+					Charming Gifts & Stationery
+				</h1>
+
+				<p class="mb-4 px-2 px-md-5" style="
+					color: #f8f9fa;
+					font-size: 1.2rem;
+					text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+					font-weight:bold;
+					">
+					Discover elegant gifts, creative stationery, and unique accessories that make every occasion special.
+				</p>
+
+				<p>
+					<a href="#" class="btn btn-warning px-4 py-2 rounded-pill font-weight-bold shadow-lg">
+						Discover Now
+					</a>
+				</p>
 			</div>
 		</div>
+	</div>
+</section>
 
-		<!-- <div class="slider-item js-fullheight">
-				<div class="overlay"></div>
-				<div class="container-fluid p-0">
-					<div class="row d-flex no-gutters slider-text align-items-center justify-content-end"
-						data-scrollax-parent="true">
-						<img class="one-third order-md-last img-fluid" src="images/bg_2.png" alt="">
-						<div class="one-forth d-flex align-items-center ftco-animate"
-							data-scrollax=" properties: { translateY: '70%' }">
-							<div class="text">
-								<span class="subheading">#New Arrival</span>
-								<div class="horizontal">
-									<h1 class="mb-4 mt-3">New Shoes Winter Collection</h1>
-									<p class="mb-4">A small river named Duden flows by their place and supplies it with
-										the necessary regelialia. It is a paradisematic country.</p>
 
-									<p><a href="#" class="btn-custom">Discover Now</a></p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div> -->
-		</div>
-	</section>
+
+
+
+
 
 
 	<section class="ftco-section ftco-no-pt ftco-no-pb">
