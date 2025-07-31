@@ -68,6 +68,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <a href="returns.php"><i class="fas fa-undo"></i> Returns</a>
     <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
     <a href="../frontend/index.php"><i class="fas fa-store"></i> Shop</a>
+    <a href="contact.php"><i class="fas fa-envelope"></i> Contact Messages</a>
     <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
@@ -277,20 +278,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script>
-  // GSAP Animations
-  gsap.from(".sidebar", { x: -200, duration: 0.8, ease: "power2.out" });
-  gsap.from(".main", { opacity: 0, y: 30, duration: 0.6, delay: 0.2 });
-  gsap.from(".btn-add, .dashboard-title, .section", {
-    y: 50,
-    opacity: 0,
-    stagger: 0.2,
-    duration: 0.8,
-    delay: 0.5,
-    ease: "back.out(1.7)",
-  });
-</script>
+
 
 <script>
   $('#toggleSidebar').click(function () {

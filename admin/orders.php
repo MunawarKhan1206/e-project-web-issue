@@ -94,6 +94,8 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <a href="returns.php"><i class="fas fa-undo"></i> Returns</a>
     <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
     <a href="../frontend/index.php"><i class="fas fa-store"></i> Shop</a>
+    <a href="contact.php"><i class="fas fa-envelope"></i> Contact Messages</a>
+
     <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 

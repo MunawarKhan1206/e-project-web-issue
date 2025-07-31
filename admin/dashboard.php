@@ -43,12 +43,13 @@ $stmt2 = $pdo->prepare("SELECT COUNT(*) FROM returns WHERE MONTH(return_date) = 
   <!-- Sidebar -->
   <div class="sidebar">
     <h2>Admin Panel</h2>
-    <a href="#" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
+    <a href="dashboard.php" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
     <a href="products.php"><i class="fas fa-box"></i> Products</a>
     <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
     <a href="returns.php"><i class="fas fa-undo-alt"></i> Returns</a>
     <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
     <a href="../frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
+    <a href="contact.php"><i class="fas fa-envelope"></i> Contact Messages</a>
     <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
