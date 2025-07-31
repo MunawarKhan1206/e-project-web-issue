@@ -232,6 +232,41 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     border-collapse: collapse;
   }
 }
+/* Beige Dashboard Table Styling */
+.custom-table {
+  background-color: #fffdf9;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.custom-thead th {
+  background-color: #f9f4ef; /* soft beige */
+  color: #333;
+  font-weight: 600;
+  border-bottom: 2px solid #e4dccc;
+}
+
+.custom-table td {
+  background-color: #fffdf9;
+  color: #444;
+  vertical-align: middle;
+  border-color: #e8ded0;
+}
+
+.custom-table.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #fefaf3;
+}
+
+.custom-table .btn-outline-primary {
+  border-color: #c6a87d;
+  color: #5a3e1b;
+}
+
+.custom-table .btn-outline-primary:hover {
+  background-color: #c6a87d;
+  color: white;
+}
 
   </style>
 </head>
@@ -241,13 +276,15 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
     <!-- Sidebar -->
-    <div class="sidebar">
-      <h2>Customer Panel</h2>
-      <a href="customer_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
-      <a href="myorders.php" class="active"><i class="fas fa-shopping-cart"></i> My Orders</a>
-      <a href="#"><i class="fas fa-user"></i> My Profile</a>
-      <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
-    </div>
+  <div class="sidebar">
+    <h2>Customer Panel</h2>
+    <a href="customer_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="myorders.php"><i class="fas fa-shopping-cart"></i> My Orders</a>
+    <a href="customer_return.php"><i class="fas fa-undo-alt"></i> Returns</a>
+    <a href="#"><i class="fas fa-user"></i> My Profile</a>
+    <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+
 
     <!-- Main Content -->
     <div class="main">
@@ -261,8 +298,8 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
      <!-- Desktop & Tablet View (Table) -->
 <!-- Table view for desktop -->
 <div class="table-responsive d-none d-md-block">
-  <table class="table table-bordered table-striped text-center">
-    <thead class="thead-dark">
+  <table class="table table-bordered text-center custom-table">
+   <thead class="custom-thead">
       <tr>
         <th>#</th>
         <th>Order No.</th>
@@ -353,6 +390,15 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     duration: 0.5,
     stagger: 0.1,
     delay: 0.4
+  });
+</script>
+<script>
+  document.addEventListener("click", function (e) {
+    const sidebar = document.querySelector(".sidebar");
+    const toggle = document.querySelector(".menu-toggle");
+    if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+      sidebar.classList.remove("active");
+    }
   });
 </script>
 </body>

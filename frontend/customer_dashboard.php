@@ -45,7 +45,7 @@ foreach ($orders as $order) {
 </head>
 <body>
 <div class="dashboard">
- <div class="sidebar">
+  <div class="sidebar">
     <h2>Customer Panel</h2>
     <a href="customer_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
     <a href="myorders.php"><i class="fas fa-shopping-cart"></i> My Orders</a>
@@ -53,6 +53,7 @@ foreach ($orders as $order) {
     <a href="#"><i class="fas fa-user"></i> My Profile</a>
     <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
+
 
   
   <div class="main">
@@ -81,8 +82,8 @@ foreach ($orders as $order) {
   <h3>Recent Orders</h3>
   <!-- Desktop Table (visible on md and up) -->
 <div class="table-responsive d-none d-md-block">
-  <table class="table table-bordered table-striped text-center">
-    <thead class="thead-dark">
+  <table class="table table-bordered text-center custom-table">
+   <thead class="custom-thead">
       <tr>
         <th>#Order</th>
         <th>Date</th>

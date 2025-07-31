@@ -1,8 +1,8 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'employee') {
-    header("Location: ../form/index.php");
-    exit;
+  header("Location: ../form/index.php");
+  exit;
 }
 require_once("../includes/db.inc.php");
 
@@ -15,129 +15,228 @@ $processed_orders = count(array_filter($orders, fn($o) => strtolower($o['status'
 $shipped_orders = count(array_filter($orders, fn($o) => strtolower($o['status']) === 'shipped'));
 $pending_orders = count(array_filter($orders, fn($o) => strtolower($o['status']) === 'pending'));
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Employee Dashboard</title>
+  <link rel="stylesheet" href="customer.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
-    body { background-color: #f8f9fa; }
     .toast-container {
       position: fixed;
-      bottom: 20px;
+      top: 20px;
       right: 20px;
       z-index: 1055;
     }
-    .sidebar-collapse {
-      display: none;
-    }
-    @media (max-width: 768px) {
-      .sidebar-collapse {
-        display: block;
-        margin-bottom: 1rem;
-      }
-    }
+  </style>
+
   </style>
 </head>
-<body>
-<div class="container-fluid">
-  <div class="row">
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
-      <div class="position-sticky pt-3">
-        <h4 class="text-white px-3">Employee Panel</h4>
-        <ul class="nav flex-column">
-          <li class="nav-item"><a class="nav-link text-white active" href="employee_dashboard.php"><i class="fas fa-home me-2"></i>Dashboard</a></li>
-            <li class="nav-item"><a class="nav-link text-white active" href="stock.php"><i class="fas fa-boxes me-2"></i>Stock</a></li>
-             <li class="nav-item"><a class="nav-link text-white active" href="employee_return.php"><i class="fas fa-undo me-2"></i>Returns</a></li>
-          <li class="nav-item"><a class="nav-link text-white" href="logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
-        </ul>
-      </div>
-    </nav>
 
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <button class="btn btn-outline-dark d-md-none sidebar-collapse" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+<body>
+  <div class="dashboard">
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <h2>Employee Panel</h2>
+      <a href="employee_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="stock.php"><i class="fas fa-boxes"></i> Stock</a>
+      <a href="employee_return.php"><i class="fas fa-undo"></i> Returns</a>
+      <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <button class="menu-toggle btn btn-sm btn-warning d-md-none" onclick="document.getElementById('sidebar').classList.toggle('active')">
         <i class="fas fa-bars"></i>
       </button>
 
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h2>Welcome, <?= $_SESSION['user_name'] ?? 'Employee' ?> 👋</h2>
-      </div>
+      <h2 class="dashboard-title">Welcome, <?= $_SESSION['user_name'] ?? 'Employee' ?> 👋</h2>
 
-      <div class="row g-3 mb-4">
-        <div class="col-md-3 col-sm-6"><div class="card text-bg-light"><div class="card-body"><h6>Total Orders</h6><h3><?= $total_orders ?></h3></div></div></div>
-        <div class="col-md-3 col-sm-6"><div class="card text-bg-success"><div class="card-body"><h6>Delivered</h6><h3><?= $delivered_orders ?></h3></div></div></div>
-        <div class="col-md-3 col-sm-6"><div class="card text-bg-warning"><div class="card-body"><h6>Processed</h6><h3><?= $processed_orders ?></h3></div></div></div>
-        <div class="col-md-3 col-sm-6"><div class="card text-bg-info"><div class="card-body"><h6>Shipped</h6><h3><?= $shipped_orders ?></h3></div></div></div>
-        <div class="col-md-3 col-sm-6"><div class="card text-bg-secondary"><div class="card-body"><h6>Pending</h6><h3><?= $pending_orders ?></h3></div></div></div>
+      <!-- Stats -->
+      <div class="stats mb-4">
+        <div class="stat-card">
+          <div class="stat-title">Total Orders</div>
+          <div class="stat-value"><?= $total_orders ?></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Delivered</div>
+          <div class="stat-value"><?= $delivered_orders ?></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Processed</div>
+          <div class="stat-value"><?= $processed_orders ?></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Shipped</div>
+          <div class="stat-value"><?= $shipped_orders ?></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Pending</div>
+          <div class="stat-value"><?= $pending_orders ?></div>
+        </div>
       </div>
+<?php
+function getStatusColorClass($status) {
+  switch (strtolower($status)) {
+    case 'pending': return 'secondary';
+    case 'processed': return 'info';
+    case 'shipped': return 'primary';
+    case 'delivered': return 'success';
+    default: return 'dark';
+  }
+}
+?>
 
-      <h4 class="mt-4">All Orders</h4>
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-          <thead class="table-dark">
-            <tr><th>#Order</th><th>Customer</th><th>Total</th><th>Status</th><th>Update</th><th>Date</th></tr>
-          </thead>
-          <tbody>
-            <?php foreach ($orders as $order): ?>
+      <!-- Orders Section -->
+      <div class="section">
+        <h3>All Orders</h3>
+
+        <!-- Desktop Table -->
+        <div class="table-responsive d-none d-md-block">
+          <table class="table custom-table table-striped align-middle">
+            <thead class="custom-thead">
               <tr>
-                <td>#<?= $order['order_number'] ?></td>
-                <td><?= htmlspecialchars($order['customer_name']) ?></td>
-                <td>Rs. <?= number_format($order['grand_total'], 2) ?></td>
-                <td><span class="badge bg-<?= strtolower($order['status']) === 'delivered' ? 'success' : 'warning' ?>"><?= ucfirst($order['status']) ?></span></td>
-                <td>
-                  <select class="form-select status-select" data-id="<?= $order['id'] ?>">
-                    <option <?= $order['status'] == 'Pending' ? 'selected' : '' ?>>Pending</option>
-                    <option <?= $order['status'] == 'Processed' ? 'selected' : '' ?>>Processed</option>
-                    <option <?= $order['status'] == 'Shipped' ? 'selected' : '' ?>>Shipped</option>
-                    <option <?= $order['status'] == 'Delivered' ? 'selected' : '' ?>>Delivered</option>
-                  </select>
-                </td>
-                <td><?= date("M d, Y", strtotime($order['created_at'])) ?></td>
+                <th>#Order</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Update</th>
+                <th>Date</th>
               </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <?php foreach ($orders as $order): ?>
+                <tr>
+                  <td>#<?= $order['order_number'] ?></td>
+                  <td><?= htmlspecialchars($order['customer_name']) ?></td>
+                  <td>Rs. <?= number_format($order['grand_total'], 2) ?></td>
+                  <td><span class="badge 
+  <?= $order['status'] === 'Pending' ? 'bg-warning text-dark' : '' ?>
+  <?= $order['status'] === 'Processed' ? 'bg-primary' : '' ?>
+  <?= $order['status'] === 'Shipped' ? 'bg-info text-dark' : '' ?>
+  <?= $order['status'] === 'Delivered' ? 'bg-success' : '' ?>">
+  <?= ucfirst($order['status']) ?>
+</span>
+</td>
+                  <td>
+                    <select class="form-select form-select-sm status-select" data-id="<?= $order['id'] ?>">
+                      <?php foreach (['Pending', 'Processed', 'Shipped', 'Delivered'] as $status): ?>
+                        <option <?= $order['status'] === $status ? 'selected' : '' ?>><?= $status ?></option>
+                      <?php endforeach; ?>
+                    </select>
+                  </td>
+                  <td><?= date("M d, Y", strtotime($order['created_at'])) ?></td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Cards -->
+      <div class="d-md-none">
+  <?php foreach ($orders as $order): ?>
+    <div class="order-card mb-3 p-3 border rounded bg-light">
+      <div class="d-flex justify-content-between mb-2">
+        <strong>#<?= $order['order_number'] ?></strong>
+        <!-- Colored status badge -->
+        <span class="badge badge-<?= strtolower($order['status']) ?>">
+          <?= ucfirst($order['status']) ?>
+        </span>
       </div>
-    </main>
-  </div>
+
+      <p class="mb-1"><strong>Customer:</strong> <?= htmlspecialchars($order['customer_name']) ?></p>
+      <p class="mb-1"><strong>Total:</strong> Rs. <?= number_format($order['grand_total'], 2) ?></p>
+      <p class="mb-1"><strong>Date:</strong> <?= date("M d, Y", strtotime($order['created_at'])) ?></p>
+
+      <!-- Status update dropdown -->
+      <div class="mb-2">
+        <strong>Update Status:</strong><br>
+        <select class="form-control form-control-sm mt-1 status-dropdown" 
+                data-order-id="<?= $order['order_number'] ?>">
+          <?php foreach (['Pending', 'Processed', 'Shipped', 'Delivered'] as $status): ?>
+            <option value="<?= $status ?>" <?= $order['status'] === $status ? 'selected' : '' ?>>
+              <?= $status ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
+    </div>
+  <?php endforeach; ?>
 </div>
 
-<div class="toast-container">
-  <div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert">
-    <div class="d-flex">
-      <div class="toast-body"></div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+
+
+      </div>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Toast -->
+  <div class="toast-container">
+    <div id="toast" class="toast align-items-center text-white bg-primary border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script>
-document.querySelectorAll('.status-select').forEach(select => {
-  select.addEventListener('change', function () {
-    const orderId = this.dataset.id;
-    const newStatus = this.value;
-    fetch('update_status_ajax.php', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `order_id=${orderId}&status=${newStatus}`
-    }).then(res => res.text()).then(data => {
-      const toastEl = document.getElementById('toast');
-      const toastBody = toastEl.querySelector('.toast-body');
-      toastBody.textContent = (data.trim() === 'success') ? `Status updated to ${newStatus}` : 'Failed to update';
-      const toast = new bootstrap.Toast(toastEl);
-      toast.show();
-    }).catch(() => {
-      const toastEl = document.getElementById('toast');
-      toastEl.querySelector('.toast-body').textContent = 'Server error!';
-      const toast = new bootstrap.Toast(toastEl);
-      toast.show();
-    });
+  gsap.from(".sidebar", {x: -200, duration: 0.8, ease: "power2.out"});
+  gsap.from(".main", {opacity: 0, y: 30, duration: 0.6, delay: 0.2});
+  gsap.from("table tbody tr", {
+    opacity: 0,
+    y: 20,
+    duration: 0.5,
+    stagger: 0.1,
+    delay: 0.4
   });
-});
+</script>
+  <script>
+    document.querySelectorAll('.status-select').forEach(select => {
+      select.addEventListener('change', function() {
+        const orderId = this.dataset.id;
+        const newStatus = this.value;
+        fetch('update_status_ajax.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `order_id=${orderId}&status=${newStatus}`
+          })
+          .then(res => res.text())
+          .then(data => {
+            const toastEl = document.getElementById('toast');
+            const toastBody = toastEl.querySelector('.toast-body');
+            toastBody.textContent = (data.trim() === 'success') ? `Status updated to ${newStatus}` : 'Failed to update';
+            new bootstrap.Toast(toastEl).show();
+          })
+          .catch(() => {
+            const toastEl = document.getElementById('toast');
+            toastEl.querySelector('.toast-body').textContent = 'Server error!';
+            new bootstrap.Toast(toastEl).show();
+          });
+      });
+    });
+    $('#Toast').toast({ delay: 3000 }).toast('show');
+
+  </script>
+  <script>
+  document.addEventListener("click", function (e) {
+    const sidebar = document.querySelector(".sidebar");
+    const toggle = document.querySelector(".menu-toggle");
+    if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+      sidebar.classList.remove("active");
+    }
+  });
 </script>
 </body>
+
 </html>
