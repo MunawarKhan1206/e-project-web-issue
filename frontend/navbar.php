@@ -1,7 +1,6 @@
 <?php
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
-
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
 	<div class="container">
 		<a class="navbar-brand" href="index.php">Minishop</a>
@@ -22,6 +21,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
 				</li>
 				<li class="nav-item <?= $current_page == 'contact.php' ? 'active' : '' ?>">
 					<a href="contact.php" class="nav-link">Contact</a>
+				</li>
+				<li class="nav-item <?= $current_page == 'trackorder.php' ? 'active' : '' ?>">
+					<a href="trackorder.php" class="nav-link">Track Order</a>
 				</li>
 				<li class="nav-item cta cta-colored <?= $current_page == 'cart.php' ? 'active' : '' ?>">
 					<a href="cart.php" class="nav-link">

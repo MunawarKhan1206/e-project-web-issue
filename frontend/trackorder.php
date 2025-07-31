@@ -8,7 +8,7 @@ require_once("../includes/db.inc.php");
 <head>
   <meta charset="UTF-8">
   <title>Track Your Order</title>
-  <link rel="stylesheet" href="../assets/css/dashboard-style.css">
+  <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
@@ -174,7 +174,6 @@ require_once("../includes/db.inc.php");
   </style>
 </head>
 <body>
-
 <div class="track-container">
   <h3>Track Your Order</h3>
   <form method="POST">
