@@ -1,8 +1,15 @@
 <?php
 session_start();
 
-// Dummy check: Only allow access if order was just placed
-if (!isset($_SESSION['order_number'])) {
+// Only accept POST data from the checkout form
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Store POST data temporarily in session
+    $_SESSION['mock_post'] = $_POST;
+
+    // Optional: Set a flag to track that payment process started
+    $_SESSION['order_initiated'] = true;
+} else {
+    // If user tries to access this directly, redirect to checkout
     header("Location: checkout.php");
     exit;
 }
@@ -16,6 +23,7 @@ if (!isset($_SESSION['order_number'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
+    /* (Your CSS styles here - unchanged) */
     body {
       margin: 0;
       padding: 0;
@@ -101,7 +109,8 @@ if (!isset($_SESSION['order_number'])) {
   <script>
     // Simulate payment processing delay
     setTimeout(function() {
-      window.location.href = 'thankyou.php';
+      // Redirect to place-order.php which will finalize the order
+      window.location.href = 'place-order.php?payment=success';
     }, 5000); // 5 seconds
   </script>
 </head>

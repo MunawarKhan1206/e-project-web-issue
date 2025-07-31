@@ -5,7 +5,7 @@ require_once("../includes/db.inc.php");
 if ($_SERVER["REQUEST_METHOD"] === "POST" || 
     ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['payment']) && $_GET['payment'] === 'success')) {
 
-    // Restore POST data for mock payment (from session)
+    // Restore POST data for mock/redirected payments
     if ($_SERVER["REQUEST_METHOD"] === "GET") {
         $_POST = $_SESSION['mock_post'] ?? [];
         if (empty($_POST)) {
@@ -15,12 +15,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" ||
         }
     }
 
-    // Validate form inputs
+    // Validate required fields
     $required_fields = ['first_name', 'last_name', 'address', 'email', 'phone', 'payment_method'];
     foreach ($required_fields as $field) {
         if (empty($_POST[$field])) {
             $_SESSION['toast'] = ['type' => 'danger', 'msg' => "Missing required field: $field"];
-            header("Location: ../checkout.php");
+            header("Location: checkout.php");
             exit;
         }
     }
@@ -31,13 +31,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" ||
     $address = $_POST['address'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
-    $payment_method = $_POST['payment_method'];
+    $payment_method = strtolower($_POST['payment_method']);
 
-    // Ensure cart exists
     $cart = $_SESSION['cart'] ?? [];
     if (empty($cart)) {
         $_SESSION['toast'] = ['type' => 'warning', 'msg' => "Your cart is empty."];
-        header("Location: ../checkout.php");
+        header("Location: checkout.php");
         exit;
     }
 
@@ -46,13 +45,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" ||
     $delivery = $_SESSION['totals']['delivery'] ?? 0;
     $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
 
-    $prefix = strtoupper($payment_method) === 'cod' ? 'COD' : 'PP';
-    $order_number = $prefix . date('Ymd') . rand(100000, 999999);
+    // Generate order number with appropriate prefix
+    $prefix = ($payment_method === 'cod') ? 'VPP' : 'CC';
+    $order_number = $prefix . rand(10000000, 99999999); // e.g., CC90837265
 
     try {
         $pdo->beginTransaction();
 
-        // Insert order
+        // Insert into orders2
         $order_stmt = $pdo->prepare("
             INSERT INTO orders2 (order_number, customer_name, address, email, phone, payment_method, subtotal, discount, delivery, grand_total)
             VALUES (:order_number, :customer_name, :address, :email, :phone, :payment_method, :subtotal, :discount, :delivery, :grand_total)
@@ -72,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" ||
 
         $order_id = $pdo->lastInsertId();
 
-        // Insert order items
+        // Insert order items and update stock
         $item_stmt = $pdo->prepare("
             INSERT INTO order_items (order_id, product_id, quantity, price)
             VALUES (:order_id, :product_id, :quantity, :price)
@@ -98,9 +98,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" ||
 
         $pdo->commit();
 
-        // Store details and clear session
+        // ✅ Set order success session values
         $_SESSION['order_number'] = $order_number;
         $_SESSION['recipient_name'] = $customer_name;
+
+        // ✅ Clear cart, totals, and mock_post (important!)
         unset($_SESSION['cart'], $_SESSION['totals'], $_SESSION['mock_post']);
 
         $_SESSION['toast'] = ['type' => 'success', 'msg' => 'Order placed successfully!'];
@@ -113,9 +115,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" ||
         header("Location: checkout.php");
         exit;
     }
+
 } else {
     $_SESSION['toast'] = ['type' => 'danger', 'msg' => "Invalid request."];
     header("Location: checkout.php");
     exit;
 }
-?>

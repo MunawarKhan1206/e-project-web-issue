@@ -537,21 +537,11 @@ function validateCheckout() {
 document.getElementById('checkout-form').addEventListener('submit', function(e) {
   const selectedMethod = document.querySelector('input[name="payment_method"]:checked');
   if (selectedMethod && selectedMethod.value === 'card') {
-    e.preventDefault(); // prevent normal submission
-    const formData = new FormData(e.target);
-
-    fetch('mockgateway.php', {
-      method: 'POST',
-      body: formData
-    })
-    .then(res => res.text())
-    .then(html => {
-      document.open();
-      document.write(html);
-      document.close();
-    })
-    .catch(err => console.error('Mock gateway error:', err));
+    e.preventDefault();              // Prevent default submit
+    this.action = 'mockgateway.php'; // Redirect form to mockgateway.php for card payment
+    this.submit();                  // Submit the form normally to mockgateway.php
   }
+  // If COD is selected, form will submit to place-order.php as usual
 });
 </script>
 
