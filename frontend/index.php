@@ -99,7 +99,7 @@ try {
 				</p>
 
 				<p>
-					<a href="#" class="btn btn-warning px-4 py-2 rounded-pill font-weight-bold shadow-lg">
+					<a href="#newarrival" style="scroll-behavior: smooth !important;" class="btn btn-warning px-4 py-2 rounded-pill font-weight-bold shadow-lg">
 						Discover Now
 					</a>
 				</p>
@@ -162,10 +162,10 @@ try {
 	</section>
 
 	<section class="ftco-section bg-light">
-		<div class="container">
+		<div class="container" id="newarrival">
 			<div class="row justify-content-center mb-3 pb-3">
 				<div class="col-md-12 heading-section text-center ftco-animate">
-					<h2 class="mb-4">New Arrivals</h2>
+					<h2 class="mb-4" >New Arrivals</h2>
 					<p>Discover our latest collection of gifts, stationery, accessories, bags and bottles — perfect for
 						every occasion, from school to celebrations.</p>
 				</div>
@@ -252,12 +252,12 @@ try {
 						style="background-image: url(product/main-col-1.png);">
 
 						<div class="text text-center text-white px-2">
-							<span class="subheading">Gift Sets for Him</span>
+							<!-- <span class="subheading">Gift Sets for Him</span> -->
 							<h2>Stationery Highlights</h2>
 							<p>Explore premium notebooks, stylish pens, organizers, and creative supplies — perfect for
 								school, office, or gifting.</p>
 
-							<p><a href="#" class="btn btn-black px-3 py-2">Shop now</a></p>
+							<p><a href="shop.php" class="btn btn-black px-3 py-2">Shop now</a></p>
 						</div>
 					</div>
 				</div>
@@ -268,13 +268,11 @@ try {
 								style="background-image: url(product/WhatsApp\ Image\ 2025-07-14\ at\ 12.18.47_27dfa101.jpg);">
 								<div class="col-md-7 d-flex align-items-center">
 									<div class="text text-white px-5">
-										<span class="subheading">Gift Sets for Her</span>
+										<!-- <span class="subheading">Gift Sets for Her</span> -->
 									<h2>Nike Bags Collection</h2>
 <p>Discover our exclusive range of authentic Nike backpacks, duffel bags, and gym sacks — perfect for school, sports, travel, and everyday use. Built for durability and iconic style.</p>
 
-
-
-										<p><a href="#" class="btn btn-black px-3 py-2">Shop now</a></p>
+										<p><a href="shop.php" class="btn btn-black px-3 py-2">Shop now</a></p>
 									</div>
 								</div>
 							</div>

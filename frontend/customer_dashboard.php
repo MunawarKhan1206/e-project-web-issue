@@ -40,168 +40,27 @@ foreach ($orders as $order) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    * {
-      margin: 0; padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-    body {
-      background: #f7f6f3;
-      color: #333;
-    }
-    .dashboard {
-      display: flex;
-    }
-    .sidebar {
-      width: 240px;
-      background: #312b26;
-      min-height: 100vh;
-      padding: 40px 20px;
-      position: fixed;
-      top: 0; left: 0;
-    }
-    .sidebar h2 {
-      color: #fff;
-      text-align: center;
-      margin-bottom: 40px;
-      font-size: 22px;
-    }
-    .sidebar a {
-      display: block;
-      padding: 12px 20px;
-      margin: 10px 0;
-      color: #eee;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    .sidebar a:hover, .sidebar a.active {
-      background: #c29958;
-      color: #fff;
-    }
-
-    .main {
-      margin-left: 240px;
-      width: calc(100% - 240px);
-      padding: 40px 30px;
-    }
-
-    .dashboard-title {
-      font-size: 26px;
-      font-weight: 700;
-      margin-bottom: 30px;
-      color: #3a2f27;
-    }
-
-    .stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .stat-card {
-      background: #fff;
-      border-left: 6px solid #c29958;
-      flex: 1;
-      min-width: 200px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-      transition: transform 0.3s ease;
-    }
-    .stat-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .stat-title {
-      font-size: 14px;
-      color: #777;
-    }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 600;
-      color: #c29958;
-    }
-
-    .section {
-      margin-top: 50px;
-    }
-
-    .section h3 {
-      font-size: 20px;
-      color: #3a2f27;
-      margin-bottom: 20px;
-    }
-
-    table {
-      width: 100%;
-      background: #fff;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    }
-
-    th, td {
-      padding: 14px 20px;
-      text-align: left;
-    }
-
-    th {
-      background: #f2ebe0;
-      color: #5c4434;
-    }
-
-    tr:nth-child(even) {
-      background: #fdfdfd;
-    }
-
-    tr:hover {
-      background: #f7f1e6;
-    }
-
-    .badge {
-      padding: 5px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-    }
-    .badge.success {
-      background: #d1f1d1;
-      color: #267c27;
-    }
-    .badge.pending {
-      background: #f9e2ae;
-      color: #9e6b00;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-      }
-      .main {
-        margin-left: 0;
-        width: 100%;
-        padding: 20px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="customer.css">
+   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="dashboard">
-  <div class="sidebar">
+ <div class="sidebar">
     <h2>Customer Panel</h2>
-    <a href="customer_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="customer_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
     <a href="myorders.php"><i class="fas fa-shopping-cart"></i> My Orders</a>
+    <a href="customer_return.php"><i class="fas fa-undo-alt"></i> Returns</a>
     <a href="#"><i class="fas fa-user"></i> My Profile</a>
     <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
+  
   <div class="main">
-    <div class="dashboard-title">Welcome Back 👋</div>
-
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">
+  ☰
+</button>
+  <div class="dashboard-title">Welcome Back 👋</div>
+  
     <div class="stats">
   <div class="stat-card">
     <div class="stat-title">Total Orders</div>
@@ -220,8 +79,10 @@ foreach ($orders as $order) {
 
    <div class="section">
   <h3>Recent Orders</h3>
-  <table>
-    <thead>
+  <!-- Desktop Table (visible on md and up) -->
+<div class="table-responsive d-none d-md-block">
+  <table class="table table-bordered table-striped text-center">
+    <thead class="thead-dark">
       <tr>
         <th>#Order</th>
         <th>Date</th>
@@ -246,6 +107,24 @@ foreach ($orders as $order) {
   </table>
 </div>
 
+<!-- Mobile Cards (visible below md) -->
+<div class="d-block d-md-none">
+  <?php foreach (array_slice($orders, 0, 5) as $order): ?>
+    <div class="card shadow-sm mb-3">
+      <div class="card-body p-3">
+        <h6 class="card-title mb-2">Order #<?= htmlspecialchars($order['id']) ?></h6>
+        <p class="mb-1"><strong>Date:</strong> <?= date("M d, Y", strtotime($order['created_at'])) ?></p>
+        <p class="mb-1"><strong>Total:</strong> Rs. <?= number_format($order['grand_total'], 2) ?></p>
+        <span class="badge <?= strtolower($order['status']) === 'pending' ? 'pending' : 'success' ?>">
+          <?= ucfirst($order['status']) ?>
+        </span>
+      </div>
+    </div>
+  <?php endforeach; ?>
+</div>
+
+</div>
+
   </div>
 </div>
 
@@ -257,6 +136,18 @@ foreach ($orders as $order) {
   gsap.from(".stat-card", {
     y: 50, opacity: 0, stagger: 0.2, duration: 0.8, delay: 0.5, ease: "back.out(1.7)"
   });
+</script>
+<script>
+  // Optional: close sidebar when clicking outside on small screens
+  document.addEventListener("click", function (e) {
+    const sidebar = document.querySelector(".sidebar");
+    const toggle = document.querySelector(".menu-toggle");
+    if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+      sidebar.classList.remove("active");
+    }
+  });
+
+
 </script>
 </body>
 </html>

@@ -21,6 +21,9 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
   <style>
     * {
       margin: 0; padding: 0;
@@ -151,75 +154,193 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
       color: #856404;
     }
 
-    @media (max-width: 768px) {
-      .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-      }
-      .main {
-        margin-left: 0;
-        width: 100%;
-        padding: 20px;
-      }
-    }
+.menu-toggle {
+  display: none;
+  font-size: 24px;
+  background: #c29958;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px; /* adds spacing below toggle */
+}
+
+
+.table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.order-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px;
+}
+.order-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 15px;
+  font-size: 14px;
+  border-left: 4px solid #eee;
+}
+.order-card div {
+  margin-bottom: 6px;
+}
+.order-card .badge {
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 240px;
+    height: 100%;
+    background: #312b26;
+    transition: left 0.3s ease;
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+  }
+}
+
   </style>
 </head>
+<!-- <body> -->
 <body>
-<div class="dashboard">
-  <div class="sidebar">
-    <h2>Customer Panel</h2>
-    <a href="customer_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
-    <a href="myorders.php" class="active"><i class="fas fa-shopping-cart"></i> My Orders</a>
-    <a href="#"><i class="fas fa-user"></i> My Profile</a>
-    <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
-  </div>
+  <div class="dashboard">
 
-  <div class="main">
-    <div class="page-title"><i class="fas fa-box-open"></i> My Orders</div>
 
-    <?php if ($orders): ?>
-    <table>
-      <thead>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>Customer Panel</h2>
+      <a href="customer_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="myorders.php" class="active"><i class="fas fa-shopping-cart"></i> My Orders</a>
+      <a href="#"><i class="fas fa-user"></i> My Profile</a>
+      <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+          <!-- Menu Toggle Button -->
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">
+  ☰
+</button>
+      <div class="page-title"><i class="fas fa-box-open"></i> My Orders</div>
+
+      <?php if ($orders): ?>
+     <!-- Desktop & Tablet View (Table) -->
+<!-- Table view for desktop -->
+<div class="table-responsive d-none d-md-block">
+  <table class="table table-bordered table-striped text-center">
+    <thead class="thead-dark">
+      <tr>
+        <th>#</th>
+        <th>Order No.</th>
+        <th>Date</th>
+        <th>Total</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($orders as $index => $order): ?>
+        <?php
+          $statusClass = match (strtolower($order['status'])) {
+            'pending' => 'badge-warning',
+            'confirmed' => 'badge-info',
+            'shipped' => 'badge-primary',
+            'delivered' => 'badge-success',
+            'cancelled' => 'badge-danger',
+            default => 'badge-secondary',
+          };
+        ?>
         <tr>
-          <th>#</th>
-          <th>Order No.</th>
-          <th>Date</th>
-          <th>Total</th>
-          <th>Status</th>
-          <!-- <th>View</th> -->
+          <td><?= $index + 1 ?></td>
+          <td>#<?= htmlspecialchars($order['order_number']) ?></td>
+          <td><?= date('M d, Y', strtotime($order['created_at'])) ?></td>
+          <td>Rs. <?= number_format($order['grand_total'], 0) ?></td>
+          <td><span class="badge <?= $statusClass ?>"><?= ucfirst($order['status']) ?></span></td>
         </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($orders as $index => $order): ?>
-          <?php
-            $statusClass = match (strtolower($order['status'])) {
-              'pending' => 'pending',
-              'confirmed' => 'confirmed',
-              'shipped' => 'shipped',
-              'delivered' => 'delivered',
-              'cancelled' => 'cancelled',
-              default => 'pending',
-            };
-          ?>
-          <tr>
-            <td><?= $index + 1 ?></td>
-            <td>#<?= htmlspecialchars($order['order_number']) ?></td>
-            <td><?= date('M d, Y', strtotime($order['created_at'])) ?></td>
-            <td>Rs. <?= number_format($order['grand_total'], 0) ?></td>
-            <td><span class="badge <?= $statusClass ?>"><?= ucfirst($order['status']) ?></span></td>
-
-          </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-    <?php else: ?>
-      <div class="empty-msg">
-        <i class="fas fa-info-circle"></i> You haven’t placed any orders yet.
-      </div>
-    <?php endif; ?>
-  </div>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
 </div>
+
+<!-- Card view for mobile -->
+<div class="d-md-none">
+  <?php foreach ($orders as $index => $order): ?>
+    <?php
+      $statusClass = match (strtolower($order['status'])) {
+        'pending' => 'badge-warning',
+        'confirmed' => 'badge-info',
+        'shipped' => 'badge-primary',
+        'delivered' => 'badge-success',
+        'cancelled' => 'badge-danger',
+        default => 'badge-secondary',
+      };
+    ?>
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">#<?= htmlspecialchars($order['order_number']) ?></h5>
+        <p class="card-text mb-1"><strong>Date:</strong> <?= date('M d, Y', strtotime($order['created_at'])) ?></p>
+        <p class="card-text mb-1"><strong>Total:</strong> Rs. <?= number_format($order['grand_total'], 0) ?></p>
+        <p class="card-text"><strong>Status:</strong> <span class="badge <?= $statusClass ?>"><?= ucfirst($order['status']) ?></span></p>
+      </div>
+    </div>
+  <?php endforeach; ?>
+</div>
+
+
+
+      <?php else: ?>
+        <div class="empty-msg">
+          <i class="fas fa-info-circle"></i> You haven’t placed any orders yet.
+        </div>
+      <?php endif; ?>
+    </div>
+  </div>
+
+  <!-- Responsive Sidebar Script -->
+  <script>
+    document.addEventListener("click", function (e) {
+      const sidebar = document.querySelector(".sidebar");
+      const toggle = document.querySelector(".menu-toggle");
+      if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+        sidebar.classList.remove("active");
+      }
+    });
+  </script>
+
+
 
 <!-- GSAP Animations -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
