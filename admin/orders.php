@@ -49,6 +49,39 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="products-style.css" rel="stylesheet">
+  <style>
+    /* Hide card list on desktop */
+.orders-card-list {
+  display: none;
+}
+.badge.fs-6 {
+  font-size: 0.95rem !important;
+}
+
+/* Show card list and hide table on mobile */
+@media (max-width: 768px) {
+  .table-responsive table {
+    display: none !important;
+  }
+  .orders-card-list {
+    display: block;
+  }
+  .order-card {
+    font-size: 0.9rem;
+    border-radius: 10px;
+    /* Optional: box-shadow or border for cards */
+    box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+  }
+  .order-card > div {
+    margin-bottom: 8px;
+  }
+  .order-card select,
+  .order-card button {
+    width: 100%;
+  }
+}
+
+  </style>
 </head>
 <body>
 <div class="dashboard">
@@ -102,55 +135,91 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </form>
 
     <!-- Orders Table -->
-    <div class="bg-white p-3 shadow-sm rounded" style="overflow-x: auto;">
-      <div class="table-responsive">
+   <!-- Orders Table for desktop -->
+<!-- Orders Table -->
+<div class="bg-white p-2 shadow-sm rounded" style="overflow-x: auto;">
+  <div class="table-responsive">
+   <table class="table table-bordered table-hover">
+  <thead style="background: #f2ebe0; color: #5c4434;">
+    <tr>
+      <th>Email</th>
+      <th>Payment</th>
+      <th>Status</th>
+      <th>Total (Rs)</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php if (count($orders) > 0): ?>
+      <?php foreach ($orders as $o): ?>
+        <tr>
+          <td><?= htmlspecialchars($o['email']) ?></td>
+          <td><?= ucfirst($o['payment_method']) ?></td>
+          <td>
+            <span class="badge px-3 py-2 fs-6
+              <?= $o['status'] === 'pending' ? 'bg-warning text-dark' : '' ?>
+              <?= $o['status'] === 'processed' ? 'bg-primary' : '' ?>
+              <?= $o['status'] === 'shipped' ? 'bg-info text-dark' : '' ?>
+              <?= $o['status'] === 'delivered' ? 'bg-success' : '' ?>">
+              <?= ucfirst($o['status']) ?>
+            </span>
+          </td>
+          <td>Rs. <?= number_format($o['grand_total'], 2) ?></td>
+          <td><?= date("d M Y", strtotime($o['created_at'])) ?></td>
+          <td>
+            <div class="d-flex flex-column gap-1">
+              <select class="form-select form-select-sm status-select" data-id="<?= $o['id'] ?>">
+                <option value="pending" <?= $o['status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
+                <option value="processed" <?= $o['status'] === 'processed' ? 'selected' : '' ?>>Processed</option>
+                <option value="shipped" <?= $o['status'] === 'shipped' ? 'selected' : '' ?>>Shipped</option>
+                <option value="delivered" <?= $o['status'] === 'delivered' ? 'selected' : '' ?>>Delivered</option>
+              </select>
+              <button class="btn btn-sm btn-primary update-status-btn" data-id="<?= $o['id'] ?>">Update</button>
+            </div>
+          </td>
+        </tr>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <tr><td colspan="6" class="text-center text-muted">No orders found</td></tr>
+    <?php endif; ?>
+  </tbody>
+</table>
 
-        <table class="table table-bordered table-hover" >
-          <thead class="thead-light">
-            <tr>
-              <!-- <th>Order ID</th> -->
-            <th>Email</th>
-            <th>Payment</th>
-            <th>Status</th>
-            <th>Total (Rs)</th>
-            <th>Date</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php if (count($orders) > 0): ?>
-            <?php foreach ($orders as $o): ?>
-              <tr>
-                
-                <td><?= htmlspecialchars($o['email']) ?></td>
-                <td><?= ucfirst($o['payment_method']) ?></td>
-                <td>
-                  <span class="badge badge-<?= $o['status'] === 'pending' ? 'warning' : ($o['status'] === 'delivered' ? 'success' : 'info') ?>">
-                    <?= ucfirst($o['status']) ?>
-                  </span>
-                </td>
-                <td>Rs. <?= number_format($o['grand_total'], 2) ?></td>
-                <td><?= date("d M Y", strtotime($o['created_at'])) ?></td>
-                <td>
-                  <select class="form-control status-select" data-id="<?= $o['id'] ?>">
-                    <option value="Pending" <?= $o['status'] === 'Pending' ? 'selected' : '' ?>>Pending</option>
-                    <option value="Processed" <?= $o['status'] === 'Processed' ? 'selected' : '' ?>>Processed</option>
-                    <option value="Shipped" <?= $o['status'] === 'Shipped' ? 'selected' : '' ?>>Shipped</option>
-                    <option value="Delivered" <?= $o['status'] === 'Delivered' ? 'selected' : '' ?>>Delivered</option>
-                  </select>
-                  <button class="btn btn-sm btn-primary mt-2 update-status-btn" data-id="<?= $o['id'] ?>">Update</button>
-                </td>
-              </tr>
-              <?php endforeach; ?>
-              <?php else: ?>
-                <tr><td colspan="6" class="text-center text-muted">No orders found</td></tr>
-                <?php endif; ?>
-                
-                
-              </tbody>
-            </table>
-          </div>
+  </div>
 </div>
+
+<!-- Card view for mobile, same data -->
+<div class="orders-card-list">
+  <?php if (count($orders) > 0): ?>
+    <?php foreach ($orders as $o): ?>
+      <div class="order-card p-3 mb-3 bg-white shadow-sm rounded">
+        <div><strong>Email:</strong> <?= htmlspecialchars($o['email']) ?></div>
+        <div><strong>Payment:</strong> <?= ucfirst($o['payment_method']) ?></div>
+        <div>
+          <strong>Status:</strong>
+          <span class="badge badge-<?= $o['status'] === 'pending' ? 'warning' : ($o['status'] === 'delivered' ? 'success' : 'info') ?>">
+            <?= ucfirst($o['status']) ?>
+          </span>
+        </div>
+        <div><strong>Total:</strong> Rs. <?= number_format($o['grand_total'], 2) ?></div>
+        <div><strong>Date:</strong> <?= date("d M Y", strtotime($o['created_at'])) ?></div>
+        <div class="mt-2">
+          <select class="form-control status-select" data-id="<?= $o['id'] ?>">
+            <option value="Pending" <?= $o['status'] === 'Pending' ? 'selected' : '' ?>>Pending</option>
+            <option value="Processed" <?= $o['status'] === 'Processed' ? 'selected' : '' ?>>Processed</option>
+            <option value="Shipped" <?= $o['status'] === 'Shipped' ? 'selected' : '' ?>>Shipped</option>
+            <option value="Delivered" <?= $o['status'] === 'Delivered' ? 'selected' : '' ?>>Delivered</option>
+          </select>
+          <button class="btn btn-sm btn-primary mt-2 update-status-btn w-100" data-id="<?= $o['id'] ?>">Update</button>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <p class="text-center text-muted">No orders found</p>
+  <?php endif; ?>
+</div>
+
 </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -205,6 +274,20 @@ $(document).ready(function() {
   });
 </script> -->
 <script src="menu.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+  // GSAP Animations
+  gsap.from(".sidebar", { x: -200, duration: 0.8, ease: "power2.out" });
+  gsap.from(".main", { opacity: 0, y: 30, duration: 0.6, delay: 0.2 });
+  gsap.from(".btn-add, .dashboard-title, .section", {
+    y: 50,
+    opacity: 0,
+    stagger: 0.2,
+    duration: 0.8,
+    delay: 0.5,
+    ease: "back.out(1.7)",
+  });
+</script>
 <!-- Scripts -->
 </body>
 </html>

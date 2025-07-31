@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 29, 2025 at 12:56 PM
+-- Generation Time: Jul 31, 2025 at 01:23 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -65,26 +65,6 @@ INSERT INTO `customers` (`id`, `user_id`, `address`, `phone`, `created_at`) VALU
 (3, 6, NULL, NULL, '2025-07-26 06:51:23'),
 (4, 11, NULL, NULL, '2025-07-28 09:40:01'),
 (5, 12, NULL, NULL, '2025-07-29 02:26:18');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `employees`
---
-
-CREATE TABLE `employees` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `department` varchar(100) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `employees`
---
-
-INSERT INTO `employees` (`id`, `user_id`, `department`, `created_at`) VALUES
-(1, 3, NULL, '2025-07-11 15:49:57');
 
 -- --------------------------------------------------------
 
@@ -174,7 +154,17 @@ INSERT INTO `orders2` (`id`, `customer_name`, `recipient_name`, `email`, `phone`
 (9, 'Shahzaib Baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'Al Naseer Square', 'vpp', 240.00, 0.00, 200.00, 440.00, 'Delivered', '2025-07-24 23:07:56', 'VPP20250724778568'),
 (10, 'customer 123', '', 'customer@gmail.com', '1234567', '12345', 'vpp', 700.00, 0.00, 200.00, 900.00, 'Delivered', '2025-07-26 11:52:20', 'VPP20250726622525'),
 (11, 'customer 123', '', 'customer12@gmail.com', '1234567', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'vpp', 470.00, 0.00, 200.00, 670.00, 'Delivered', '2025-07-29 07:27:09', 'VPP20250729132098'),
-(12, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'check', 120.00, 0.00, 200.00, 320.00, 'Pending', '2025-07-29 07:58:35', 'PP20250729484064');
+(12, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'check', 120.00, 0.00, 200.00, 320.00, 'Pending', '2025-07-29 07:58:35', 'PP20250729484064'),
+(13, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'card', 12000.00, 300.00, 200.00, 11900.00, 'Pending', '2025-07-30 20:43:58', 'PP20250730165640'),
+(14, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'cod', 6000.00, 300.00, 200.00, 5900.00, 'Pending', '2025-07-30 20:56:15', 'PP20250730876455'),
+(15, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'cod', 2500.00, 300.00, 200.00, 2400.00, 'Pending', '2025-07-30 21:15:33', 'PP20250730104591'),
+(16, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'cod', 6000.00, 300.00, 200.00, 5900.00, 'Pending', '2025-07-30 21:51:01', 'PP20250730967862'),
+(17, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'cod', 27000.00, 300.00, 200.00, 26900.00, 'Pending', '2025-07-31 07:36:31', 'PP20250731428833'),
+(18, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'cod', 550.00, 0.00, 200.00, 750.00, 'Pending', '2025-07-31 07:39:31', 'VPP46890692'),
+(19, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'cod', 1750.00, 0.00, 200.00, 1950.00, 'Pending', '2025-07-31 07:44:08', 'VPP44310608'),
+(20, 'kashif baig', '', 'shahzaibbaig112@gmail.com', '03202052399', 'FLAT.NO 229/230, ADAM COLONY GARDEN WEST KARACHI', 'cod', 6000.00, 300.00, 200.00, 5900.00, 'Pending', '2025-07-31 09:24:33', 'VPP40935036'),
+(21, 'Gamers hacker', '', 'shahzaibbaig112@gmail.com', '03202052399', 'Al Naseer Square', 'card', 27000.00, 300.00, 200.00, 26900.00, 'Pending', '2025-07-31 09:48:44', 'CC93723027'),
+(22, 'Gamers hacker', '', 'shahzaibbaig112@gmail.com', '03202052399', 'Al Naseer Square', 'card', 24000.00, 700.00, 200.00, 23500.00, 'shipped', '2025-07-31 11:59:30', 'CC76101858');
 
 -- --------------------------------------------------------
 
@@ -206,7 +196,20 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`) 
 (10, 10, 2, 2, 350.00),
 (11, 11, 1, 1, 120.00),
 (12, 11, 2, 1, 350.00),
-(13, 12, 1, 1, 120.00);
+(13, 12, 1, 1, 120.00),
+(14, 13, 18, 2, 6000.00),
+(15, 14, 18, 1, 6000.00),
+(16, 15, 17, 1, 2500.00),
+(17, 16, 18, 1, 6000.00),
+(18, 17, 18, 2, 6000.00),
+(19, 17, 19, 1, 15000.00),
+(20, 18, 10, 1, 550.00),
+(21, 19, 10, 1, 550.00),
+(22, 19, 16, 1, 1200.00),
+(23, 20, 18, 1, 6000.00),
+(24, 21, 18, 2, 6000.00),
+(25, 21, 19, 1, 15000.00),
+(26, 22, 18, 4, 6000.00);
 
 -- --------------------------------------------------------
 
@@ -238,7 +241,11 @@ INSERT INTO `products` (`id`, `name`, `category`, `description`, `price`, `stock
 (6, 'Pack of Pens', 'stationery', 'Smooth-writing gel pens, pack of 5.', 150.00, 50, 'product-pens.png', '2025-07-14 16:13:38'),
 (7, 'Stationery Pouch', 'stationery', 'Zipper pouch for keeping all essentials.', 250.00, 35, 'product-pouch.png', '2025-07-14 16:13:38'),
 (8, 'Measuring Tape', 'stationery', '60-inch measuring tape for craft and tailoring.', 120.00, 2, 'product-measuringtape.png', '2025-07-14 16:13:38'),
-(10, 'Teddy Bear', 'gift', 'Wrap your love in a hug with this adorable teddy bear! Crafted from ultra-soft, high-quality plush, it’s the perfect gift to express affection on birthdays, anniversaries, or just because. Whether for a child or a loved one, this teddy brings comfort, warmth, and endless smiles.', 550.00, 5, '1753760261_image__2_-removebg-preview.png', '2025-07-29 03:37:41');
+(10, 'Teddy Bear', 'gift', 'Wrap your love in a hug with this adorable teddy bear! Crafted from ultra-soft, high-quality plush, it’s the perfect gift to express affection on birthdays, anniversaries, or just because. Whether for a child or a loved one, this teddy brings comfort, warmth, and endless smiles.', 550.00, 3, '1753760261_image__2_-removebg-preview.png', '2025-07-29 03:37:41'),
+(16, 'Watch With Strap', 'Gift', '', 1200.00, 10, '1753791718_gift.png', '2025-07-29 07:21:58'),
+(17, 'Offroad RC Car', 'Gift', '', 2500.00, 0, '1753791831_pic.png', '2025-07-29 07:23:51'),
+(18, 'Nike Bag', 'BAGS', '', 6000.00, 7, '1753791900_o.png', '2025-07-29 07:25:00'),
+(19, 'Original Nike Bottle', 'Bottles', '', 15000.00, 10, '1753792733_d.png', '2025-07-29 07:38:53');
 
 -- --------------------------------------------------------
 
@@ -312,13 +319,6 @@ ALTER TABLE `customers`
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `employees`
---
-ALTER TABLE `employees`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
-
---
 -- Indexes for table `feedback`
 --
 ALTER TABLE `feedback`
@@ -385,13 +385,7 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `employees`
---
-ALTER TABLE `employees`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `feedback`
@@ -415,19 +409,19 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `orders2`
 --
 ALTER TABLE `orders2`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `returns`
@@ -439,7 +433,7 @@ ALTER TABLE `returns`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
@@ -456,12 +450,6 @@ ALTER TABLE `admins`
 --
 ALTER TABLE `customers`
   ADD CONSTRAINT `customers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `employees`
---
-ALTER TABLE `employees`
-  ADD CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `feedback`

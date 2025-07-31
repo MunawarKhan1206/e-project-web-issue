@@ -84,14 +84,14 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </button>
     </div>
 
-    <div class="section">
-      <h3>Current Products</h3>
-  <div class="bg-white p-4 shadow-sm rounded" style="overflow-x: auto;">
-  <div class="table-responsive">
+   <div class="section">
+  <h3>Current Products</h3>
+
+  <!-- Desktop Table -->
+  <div class="table-responsive d-none d-md-block">
     <table class="table table-bordered table-hover">
       <thead style="background: #f2ebe0; color: #5c4434;">
         <tr>
-          <!-- <th>ID</th> -->
           <th>Image</th>
           <th>Name</th>
           <th>Category</th>
@@ -103,10 +103,9 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <tbody>
         <?php foreach ($products as $p): ?>
           <tr>
-       
             <td>
               <?php if (!empty($p['image']) && file_exists("../frontend/product/" . $p['image'])): ?>
-                <img src="../frontend/product/<?= $p['image'] ?>" style="width: 50px; height: 50px; border-radius: 6px; object-fit: cover;" />
+                <img src="../frontend/product/<?= $p['image'] ?>" alt="<?= htmlspecialchars($p['name']) ?>" />
               <?php else: ?>
                 <span class="text-muted">N/A</span>
               <?php endif; ?>
@@ -116,7 +115,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <td>Rs. <?= number_format($p['price'], 2) ?></td>
             <td><?= $p['stock'] ?></td>
             <td>
-              <button class="btn btn-sm" style="background: #ffcf67; color: #333; border-radius: 6px;" 
+              <button class="btn btn-sm" style="background: #ffcf67; color: #333; border-radius: 6px;"
                 data-toggle="modal"
                 data-target="#editProductModal"
                 data-id="<?= $p['id'] ?>"
@@ -128,7 +127,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 data-description="<?= htmlspecialchars($p['description']) ?>">
                 <i class="fas fa-pen"></i>
               </button>
-              <button class="btn btn-sm" style="background: #ff6b6b; color: white; border-radius: 6px;" 
+              <button class="btn btn-sm" style="background: #ff6b6b; color: white; border-radius: 6px;"
                 data-toggle="modal" data-target="#deleteProductModal"
                 data-id="<?= $p['id'] ?>"
                 data-name="<?= htmlspecialchars($p['name']) ?>">
@@ -140,10 +139,49 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </tbody>
     </table>
   </div>
+
+  <!-- Mobile Cards -->
+  <div class="d-block d-md-none">
+    <?php foreach ($products as $p): ?>
+      <div class="product-card mb-4 p-3 bg-white rounded shadow-sm">
+        <div class="d-flex align-items-center">
+          <?php if (!empty($p['image']) && file_exists("../frontend/product/" . $p['image'])): ?>
+            <img src="../frontend/product/<?= $p['image'] ?>" alt="<?= htmlspecialchars($p['name']) ?>" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"/>
+          <?php else: ?>
+            <div style="width: 80px; height: 80px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #aaa;">N/A</div>
+          <?php endif; ?>
+          <div class="ms-3 flex-grow-1">
+            <h5 style="color: #3a2f27; font-weight: 600; margin-bottom: 6px;"><?= htmlspecialchars($p['name']) ?></h5>
+            <p style="margin: 0; font-size: 0.9rem; color: #5c4434;"><?= htmlspecialchars($p['category']) ?></p>
+            <p style="margin: 0; font-weight: 700; color: #c29958;">Rs. <?= number_format($p['price'], 2) ?></p>
+            <p style="margin: 0; font-size: 0.9rem;">Stock: <strong><?= $p['stock'] ?></strong></p>
+          </div>
+        </div>
+        <div class="mt-3 d-flex gap-2 justify-content-end">
+          <button class="btn btn-sm" style="background: #ffcf67; color: #333; border-radius: 6px;"
+            data-toggle="modal"
+            data-target="#editProductModal"
+            data-id="<?= $p['id'] ?>"
+            data-name="<?= htmlspecialchars($p['name']) ?>"
+            data-category="<?= htmlspecialchars($p['category']) ?>"
+            data-price="<?= $p['price'] ?>"
+            data-stock="<?= $p['stock'] ?>"
+            data-image="<?= $p['image'] ?>"
+            data-description="<?= htmlspecialchars($p['description']) ?>">
+            <i class="fas fa-pen"></i> Edit
+          </button>
+          <button class="btn btn-sm" style="background: #ff6b6b; color: white; border-radius: 6px;"
+            data-toggle="modal" data-target="#deleteProductModal"
+            data-id="<?= $p['id'] ?>"
+            data-name="<?= htmlspecialchars($p['name']) ?>">
+            <i class="fas fa-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  </div>
 </div>
 
-
-    </div>
   </div>
 </div>
           
@@ -238,6 +276,22 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+  // GSAP Animations
+  gsap.from(".sidebar", { x: -200, duration: 0.8, ease: "power2.out" });
+  gsap.from(".main", { opacity: 0, y: 30, duration: 0.6, delay: 0.2 });
+  gsap.from(".btn-add, .dashboard-title, .section", {
+    y: 50,
+    opacity: 0,
+    stagger: 0.2,
+    duration: 0.8,
+    delay: 0.5,
+    ease: "back.out(1.7)",
+  });
+</script>
+
 <script>
   $('#toggleSidebar').click(function () {
     $('#adminSidebar').toggleClass('d-none');

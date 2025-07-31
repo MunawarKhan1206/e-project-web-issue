@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Main Content -->
   <main class="main">
-    <button class="menu-toggle" id="toggleSidebar">☰</button>
+    <button class="menu-toggle" id="toggleSidebar"><i class="fas fa-bars"></i></button>
 
     <h2 class="dashboard-title">My Profile</h2>
 

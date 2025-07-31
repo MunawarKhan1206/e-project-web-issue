@@ -47,7 +47,7 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <div class="main">
-          <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
+      <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
       <div class="dashboard-title d-flex justify-content-between align-items-center">
         <span>Return Requests</span>
       </div>
@@ -67,156 +67,182 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </form>
 
       <div class="bg-white p-4 shadow-sm rounded" style="overflow-x:auto;">
-        <div class="table-responsive">
-          <table class="table table-bordered table-hover">
-            <thead class="thead-light">
-              <tr>
-                <th>#</th>
-                <th>Order #</th>
-              <th>Return Reason</th>
-              <th>Return Date</th>
-              <th>Status</th>
-              <!-- <th>Actions</th> -->
-            </tr>
-          </thead>
-          <tbody>
-            <?php if (count($returns) > 0): ?>
-              <?php foreach ($returns as $r): ?>
-                <tr id="return-row-<?= $r['id'] ?>">
-                  <td><?= $r['id'] ?></td>
-                  <td><?= htmlspecialchars($r['order_number']) ?></td>
-                  <td>
+        <div class="table-responsive d-none d-md-block">
+  <table class="table table-bordered table-hover">
+    <thead  style="background: #f2ebe0; color: #5c4434;">
+      <tr>
+        <th>#</th>
+        <th>Order #</th>
+        <th>Return Reason</th>
+        <th>Return Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if (count($returns) > 0): ?>
+        <?php foreach ($returns as $r): ?>
+          <tr id="return-row-<?= $r['id'] ?>">
+            <td><?= $r['id'] ?></td>
+            <td><?= htmlspecialchars($r['order_number']) ?></td>
+            <td>
+              <button class="btn btn-sm btn-info view-details-btn"
+                data-id="<?= $r['id'] ?>"
+                data-order="<?= $r['order_number'] ?>"
+                data-reason="<?= htmlspecialchars($r['reason']) ?>"
+                data-status="<?= $r['status'] ?>"
+                data-date="<?= $r['return_date'] ?>"
+                data-customer="<?= $orderRow['customer_name'] ?>"
+                data-email="<?= $orderRow['email'] ?>"
+                data-phone="<?= $orderRow['phone'] ?>"
+                data-address="<?= $orderRow['address'] ?>"
+                data-payment="<?= $orderRow['payment_method'] ?>"
+                data-subtotal="<?= $orderRow['subtotal'] ?>"
+                data-delivery="<?= $orderRow['delivery'] ?>"
+                data-grandtotal="<?= $orderRow['grand_total'] ?>"
+                data-toggle="modal"
+                data-target="#viewDetailsModal">
+                View Details
+              </button>
+            </td>
+            <td><?= date("d M Y", strtotime($r['return_date'])) ?></td>
+            <td class="return-status">
+              <span class="badge badge-<?= $r['status'] === 'approved' ? 'success' : ($r['status'] === 'rejected' ? 'danger' : 'warning') ?>">
+                <?= ucfirst($r['status']) ?>
+              </span>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <tr><td colspan="6" class="text-center text-muted">No return requests found.</td></tr>
+      <?php endif; ?>
+    </tbody>
+  </table>
+</div>
 
-                    <?php
-// Fetch order details
-$orderRow = $pdo->prepare("SELECT * FROM orders2 WHERE order_number = ?");
-$orderRow->execute([$r['order_number']]);
-$orderRow = $orderRow->fetch(PDO::FETCH_ASSOC);
+<!-- Card Layout for Mobile -->
+<div class="d-md-none">
+  <?php if (count($returns) > 0): ?>
+    <?php foreach ($returns as $r): ?>
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Order #<?= htmlspecialchars($r['order_number']) ?></h5>
+          <p><strong>ID:</strong> <?= $r['id'] ?></p>
+          <p><strong>Return Date:</strong> <?= date("d M Y", strtotime($r['return_date'])) ?></p>
+          <p><strong>Status:</strong>
+            <span class="badge badge-<?= $r['status'] === 'approved' ? 'success' : ($r['status'] === 'rejected' ? 'danger' : 'warning') ?>">
+              <?= ucfirst($r['status']) ?>
+            </span>
+          </p>
+          <button class="btn btn-sm btn-info view-details-btn"
+            data-id="<?= $r['id'] ?>"
+            data-order="<?= $r['order_number'] ?>"
+            data-reason="<?= htmlspecialchars($r['reason']) ?>"
+            data-status="<?= $r['status'] ?>"
+            data-date="<?= $r['return_date'] ?>"
+            data-customer="<?= $orderRow['customer_name'] ?>"
+            data-email="<?= $orderRow['email'] ?>"
+            data-phone="<?= $orderRow['phone'] ?>"
+            data-address="<?= $orderRow['address'] ?>"
+            data-payment="<?= $orderRow['payment_method'] ?>"
+            data-subtotal="<?= $orderRow['subtotal'] ?>"
+            data-delivery="<?= $orderRow['delivery'] ?>"
+            data-grandtotal="<?= $orderRow['grand_total'] ?>"
+            data-toggle="modal"
+            data-target="#viewDetailsModal">
+            View Details
+          </button>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <p class="text-muted text-center">No return requests found.</p>
+  <?php endif; ?>
+</div>
 
-?>
-<button class="btn btn-sm btn-info view-details-btn"
-  data-id="<?= $r['id'] ?>"
-  data-order="<?= $r['order_number'] ?>"
-  data-reason="<?= htmlspecialchars($r['reason']) ?>"
-  data-status="<?= $r['status'] ?>"
-  data-date="<?= $r['return_date'] ?>"
-  data-customer="<?= $orderRow['customer_name'] ?>"
-  data-email="<?= $orderRow['email'] ?>"
-  data-phone="<?= $orderRow['phone'] ?>"
-  data-address="<?= $orderRow['address'] ?>"
-  data-payment="<?= $orderRow['payment_method'] ?>"
-  data-subtotal="<?= $orderRow['subtotal'] ?>"
-  data-delivery="<?= $orderRow['delivery'] ?>"
-  data-grandtotal="<?= $orderRow['grand_total'] ?>"
-  data-toggle="modal"
-  data-target="#viewDetailsModal">
-  View Details
-</button>
-
-    </td>
-
-                  <td><?= date("d M Y", strtotime($r['return_date'])) ?></td>
-                  <td class="return-status">
-                    <span class="badge badge-<?=
-                                              $r['status'] === 'approved' ? 'success' : ($r['status'] === 'rejected' ? 'danger' : 'warning') ?>">
-                      <?= ucfirst($r['status']) ?>
-                    </span>
-                  </td>
-               
-                </tr>
-              <?php endforeach; ?>
-            <?php else: ?>
-              <tr>
-                <td colspan="6" class="text-center text-muted">No return requests found.</td>
-              </tr>
-            <?php endif; ?>
-          </tbody>
-        </table>
       </div>
     </div>
-  </div>
 
-  <!-- View Details Modal -->
-  <div class="modal fade" id="viewDetailsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-dark text-white">
-          <h5 class="modal-title">Return & Order Details</h5>
-          <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <p><strong>Order #:</strong> <span id="detailOrder"></span></p>
-          <p><strong>Status:</strong> <span id="detailStatus" class="badge badge-secondary"></span></p>
-          <p><strong>Return Date:</strong> <span id="detailDate"></span></p>
-          <p><strong>Days Left:</strong> <span id="detailDaysLeft" class="text-danger"></span></p>
-          <hr>
-          <p><strong>Reason:</strong></p>
-          <p id="detailReason" style="white-space: pre-wrap;"></p>
-          <hr>
-          <p><strong>Order Items:</strong></p>
-          <table class="table table-sm table-bordered">
-            <thead>
-              <!-- <tr>
+    <!-- View Details Modal -->
+    <div class="modal fade" id="viewDetailsModal" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title">Return & Order Details</h5>
+            <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p><strong>Order #:</strong> <span id="detailOrder"></span></p>
+            <p><strong>Status:</strong> <span id="detailStatus" class="badge badge-secondary"></span></p>
+            <p><strong>Return Date:</strong> <span id="detailDate"></span></p>
+            <p><strong>Days Left:</strong> <span id="detailDaysLeft" class="text-danger"></span></p>
+            <hr>
+            <p><strong>Reason:</strong></p>
+            <p id="detailReason" style="white-space: pre-wrap;"></p>
+            <hr>
+            <p><strong>Order Items:</strong></p>
+            <table class="table table-sm table-bordered">
+              <thead>
+                <!-- <tr>
                 <th>Product</th>
                 <th>Qty</th>
                 <th>Price</th>
               </tr> -->
-            </thead>
-            <tbody id="detailItemsBody"></tbody>
-          </table>
-          <div class="d-flex justify-content-end mt-3" id="statusBtns">
-            <button class="btn btn-success btn-sm mr-2" id="modalApproveBtn">Approve</button>
-            <button class="btn btn-danger btn-sm" id="modalRejectBtn">Reject</button>
+              </thead>
+              <tbody id="detailItemsBody"></tbody>
+            </table>
+            <div class="d-flex justify-content-end mt-3" id="statusBtns">
+              <button class="btn btn-success btn-sm mr-2" id="modalApproveBtn">Approve</button>
+              <button class="btn btn-danger btn-sm" id="modalRejectBtn">Reject</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Scripts -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-  $(document).ready(function () {
-    $('.view-details-btn').click(function () {
-      const btn = $(this);
-      const order = btn.data('order');
-      const reason = btn.data('reason');
-      const status = btn.data('status');
-      const date = btn.data('date');
-      const id = btn.data('id');
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('.view-details-btn').click(function() {
+          const btn = $(this);
+          const order = btn.data('order');
+          const reason = btn.data('reason');
+          const status = btn.data('status');
+          const date = btn.data('date');
+          const id = btn.data('id');
 
-      const customer = btn.data('customer');
-      const email = btn.data('email');
-      const phone = btn.data('phone');
-      const address = btn.data('address');
-      const payment = btn.data('payment');
-      const subtotal = btn.data('subtotal');
-      const delivery = btn.data('delivery');
-      const grandtotal = btn.data('grandtotal');
+          const customer = btn.data('customer');
+          const email = btn.data('email');
+          const phone = btn.data('phone');
+          const address = btn.data('address');
+          const payment = btn.data('payment');
+          const subtotal = btn.data('subtotal');
+          const delivery = btn.data('delivery');
+          const grandtotal = btn.data('grandtotal');
 
-      // Populate header data
-      $('#detailOrder').text(order);
-      $('#detailReason').text(reason);
-      $('#detailDate').text(new Date(date).toDateString());
+          // Populate header data
+          $('#detailOrder').text(order);
+          $('#detailReason').text(reason);
+          $('#detailDate').text(new Date(date).toDateString());
 
-      $('#detailStatus')
-        .removeClass()
-        .addClass('badge badge-' + (status === 'approved' ? 'success' : status === 'rejected' ? 'danger' : 'warning'))
-        .text(status.charAt(0).toUpperCase() + status.slice(1));
+          $('#detailStatus')
+            .removeClass()
+            .addClass('badge badge-' + (status === 'approved' ? 'success' : status === 'rejected' ? 'danger' : 'warning'))
+            .text(status.charAt(0).toUpperCase() + status.slice(1));
 
-      // Days left
-      const daysPassed = Math.floor((new Date() - new Date(date)) / (1000 * 60 * 60 * 24));
-      const daysLeft = Math.max(0, 7 - daysPassed);
-      $('#detailDaysLeft').text(daysLeft > 0 ? `${daysLeft} day(s)` : 'Expired');
+          // Days left
+          const daysPassed = Math.floor((new Date() - new Date(date)) / (1000 * 60 * 60 * 24));
+          const daysLeft = Math.max(0, 7 - daysPassed);
+          $('#detailDaysLeft').text(daysLeft > 0 ? `${daysLeft} day(s)` : 'Expired');
 
-      // Action buttons
-      $('#modalApproveBtn').data('id', id);
-      $('#modalRejectBtn').data('id', id);
-      $('#statusBtns').toggle(status === 'pending');
+          // Action buttons
+          $('#modalApproveBtn').data('id', id);
+          $('#modalRejectBtn').data('id', id);
+          $('#statusBtns').toggle(status === 'pending');
 
-      // Order Summary (Single row data)
-      const rows = `
+          // Order Summary (Single row data)
+          const rows = `
         <tr><td><strong>Customer</strong></td><td>${customer}</td></tr>
         <tr><td><strong>Email</strong></td><td>${email}</td></tr>
         <tr><td><strong>Phone</strong></td><td>${phone}</td></tr>
@@ -226,26 +252,42 @@ $orderRow = $orderRow->fetch(PDO::FETCH_ASSOC);
         <tr><td><strong>Delivery</strong></td><td>Rs. ${delivery}</td></tr>
         <tr><td><strong><b>Grand Total</b></strong></td><td><strong>Rs. ${grandtotal}</strong></td></tr>
       `;
-      $('#detailItemsBody').html(rows);
+          $('#detailItemsBody').html(rows);
 
-      $('#viewDetailsModal').modal('show');
-    });
+          $('#viewDetailsModal').modal('show');
+        });
 
-    $('#modalApproveBtn, #modalRejectBtn').click(function () {
-      const id = $(this).data('id');
-      const action = this.id.includes('Approve') ? 'approve' : 'reject';
+        $('#modalApproveBtn, #modalRejectBtn').click(function() {
+          const id = $(this).data('id');
+          const action = this.id.includes('Approve') ? 'approve' : 'reject';
 
-      $.post('update_return_status.php', { id: id, action: action }, function () {
-        const row = $('#return-row-' + id);
-        row.find('.return-status').html(`<span class="badge badge-${action === 'approve' ? 'success' : 'danger'}">${action}d</span>`);
-        row.find('.return-action-cell').html('<i class="text-muted">—</i>');
-        $('#viewDetailsModal').modal('hide');
+          $.post('update_return_status.php', {
+            id: id,
+            action: action
+          }, function() {
+            const row = $('#return-row-' + id);
+            row.find('.return-status').html(`<span class="badge badge-${action === 'approve' ? 'success' : 'danger'}">${action}d</span>`);
+            row.find('.return-action-cell').html('<i class="text-muted">—</i>');
+            $('#viewDetailsModal').modal('hide');
+          });
+        });
       });
-    });
+    </script>
+    <script src="menu.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+  // GSAP Animations
+  gsap.from(".sidebar", { x: -200, duration: 0.8, ease: "power2.out" });
+  gsap.from(".main", { opacity: 0, y: 30, duration: 0.6, delay: 0.2 });
+  gsap.from(".btn-add, .dashboard-title, .section", {
+    y: 50,
+    opacity: 0,
+    stagger: 0.2,
+    duration: 0.8,
+    delay: 0.5,
+    ease: "back.out(1.7)",
   });
 </script>
-<script src="menu.js"></script>
-
 </body>
 
 </html>

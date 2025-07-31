@@ -200,3 +200,24 @@ table img {
     height: 35px;
   }
 }
+.product-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  padding: 15px 20px;
+  color: #3a2f27;
+  font-size: 0.9rem;
+}
+
+.product-card h5 {
+  font-weight: 700;
+}
+
+.product-card p {
+  margin: 2px 0;
+}
+
+.product-card .btn {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+}
