@@ -30,7 +30,76 @@ try {
 	$products = [];
 }
 
+$show_modal = false;
+$notice_title = '';
+$notice_message = '';
+
+if (!isset($_COOKIE['hide_outofstock_modal'])) {
+    $stmt = $pdo->query("SELECT * FROM site_notices WHERE active = 1 ORDER BY created_at DESC LIMIT 1");
+    $notice = $stmt->fetch();
+
+    if ($notice) {
+        $notice_title = $notice['title'];
+        $notice_message = $notice['message'];
+        $show_modal = true;
+    }
+}
+
+
+
 ?>
+<style>
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+}
+
+.glass-modal {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  color: #fff;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-modal h2 {
+  margin-bottom: 1rem;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.glass-modal p {
+  font-size: 16px;
+  margin-bottom: 1.5rem;
+  white-space: pre-wrap;
+}
+
+.glass-modal button {
+  background: #fff;
+  border: none;
+  color: #333;
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.glass-modal button:hover {
+  background: #eee;
+}
+</style>
 
 <body class="goto-here">
 	<div class="py-1 bg-black">
@@ -160,6 +229,15 @@ try {
 			</div>
 		</div>
 	</section>
+<?php if ($notice): ?>
+<div id="outOfStockModal" class="modal-overlay">
+  <div class="glass-modal">
+    <h4 class="mb-3 font-weight-bold">Important Notice</h4>
+    <p class="mb-4"><?= htmlspecialchars($notice['message']) ?></p>
+    <button id="dismissModalBtn" class="btn btn-primary px-4">Got it</button>
+  </div>
+</div>
+<?php endif; ?>
 
 	<section class="ftco-section bg-light">
 		<div class="container" id="newarrival">
@@ -586,6 +664,35 @@ try {
 			});
 		});
 	</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const modal = document.getElementById("outOfStockModal");
+  const btn = document.getElementById("dismissModalBtn");
+
+  // Only show modal if cookie is NOT set
+  if (modal && !getCookie("hide_outofstock_modal")) {
+    modal.style.display = "flex"; // or "block" depending on your styling
+  }
+
+  if (btn) {
+    btn.addEventListener("click", function () {
+      modal.style.display = "none";
+      // Set cookie to hide for 1 day
+      document.cookie = "hide_outofstock_modal=true; path=/; max-age=86400";
+    });
+  }
+
+  // Helper function to get cookie by name
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    return parts.length === 2 ? parts.pop().split(";").shift() : null;
+  }
+});
+</script>
+
+
+
 
 
 	</script>

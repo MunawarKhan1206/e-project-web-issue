@@ -48,7 +48,7 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Minishop</title>
+    <title>Minishop -Checkout</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     

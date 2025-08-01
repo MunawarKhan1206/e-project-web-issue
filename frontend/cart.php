@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'customer') {
 <html lang="en">
 
 <head>
-	<title>Minishop - Free Bootstrap 4 Template by Colorlib</title>
+	<title>Minishop - Cart</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 

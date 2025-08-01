@@ -116,6 +116,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <td><?= htmlspecialchars($p['category']) ?></td>
             <td>Rs. <?= number_format($p['price'], 2) ?></td>
             <td><?= $p['stock'] ?></td>
+            
             <td>
               <button class="btn btn-sm" style="background: #ffcf67; color: #333; border-radius: 6px;"
                 data-toggle="modal"
