@@ -51,8 +51,7 @@ $_SESSION["user_email"] = $user["email"];
 $_SESSION["user_role"] = $user["role"];
 
 // Redirect based on role
-$redirect = ($user["role"] === 'admin') ? "../admin/dashboard.php" : "../frontend/customer_dashboard.php";
-
+$redirect = ($user["role"] === 'admin') ? "../admin/dashboard.php" : "../frontend/customer/customer_dashboard.php";
 echo json_encode([
     'success' => true,
     'redirect' => $redirect

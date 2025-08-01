@@ -1,5 +1,6 @@
 <?php
-require_once("../includes/db.inc.php");
+require_once("../../includes/db.inc.php");
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $order_id = $_POST['order_id'] ?? null; // ✅ FIXED HERE

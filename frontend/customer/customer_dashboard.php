@@ -5,7 +5,9 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'customer') {
     exit;
 }
 
-require_once("../includes/db.inc.php");
+require_once("../../includes/db.inc.php");
+
+
 
 // Get email from logged-in user
 $user_email = $_SESSION['user_email'] ?? null;
@@ -50,9 +52,9 @@ foreach ($orders as $order) {
     <a href="customer_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
     <a href="myorders.php"><i class="fas fa-shopping-cart"></i> My Orders</a>
     <a href="customer_return.php"><i class="fas fa-undo-alt"></i> Returns</a>
-    <a href="customer_profile.php"><i class="fas fa-user"></i> My Profile</a>
+    <a href="customer-profile.php"><i class="fas fa-user"></i> My Profile</a>
       <a href="frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
-    <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
 

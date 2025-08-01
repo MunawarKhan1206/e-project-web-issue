@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once '../includes/db.inc.php';
+require_once("../../includes/db.inc.php");
+
 
 if (!isset($_SESSION['user_email']) || $_SESSION['user_role'] !== 'customer') {
     header("Location: ../form/index.php");
@@ -281,9 +282,9 @@ $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <a href="customer_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
     <a href="myorders.php"><i class="fas fa-shopping-cart"></i> My Orders</a>
     <a href="customer_return.php"><i class="fas fa-undo-alt"></i> Returns</a>
-    <a href="customer_profile.php"><i class="fas fa-user"></i> My Profile</a>
+    <a href="customer-profile.php"><i class="fas fa-user"></i> My Profile</a>
       <a href="frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
-    <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
 

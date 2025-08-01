@@ -4,7 +4,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'employee') {
   header("Location: ../form/index.php");
   exit;
 }
-require_once("../includes/db.inc.php");
+require_once("../../includes/db.inc.php");
+
 
 $stmt = $pdo->query("SELECT id, order_number, reason, return_date, status FROM returns ORDER BY return_date DESC");
 $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -69,7 +70,7 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <a href="employee_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
         <a href="stock.php"><i class="fas fa-boxes"></i> Stock</a>
         <a href="employee_return.php" class="active"><i class="fas fa-undo"></i> Returns</a>
-        <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
       </div>
       <!-- Main Content -->
      <!-- Main Content -->

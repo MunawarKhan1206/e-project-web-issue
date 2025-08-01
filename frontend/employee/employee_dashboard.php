@@ -4,7 +4,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'employee') {
   header("Location: ../form/index.php");
   exit;
 }
-require_once("../includes/db.inc.php");
+require_once("../../includes/db.inc.php");
+
 
 $stmt = $pdo->query("SELECT id, order_number, customer_name, grand_total, status, created_at FROM orders2 ORDER BY created_at DESC");
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -46,7 +47,7 @@ $pending_orders = count(array_filter($orders, fn($o) => strtolower($o['status'])
       <a href="employee_dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
       <a href="stock.php"><i class="fas fa-boxes"></i> Stock</a>
       <a href="employee_return.php"><i class="fas fa-undo"></i> Returns</a>
-      <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
     <!-- Main Content -->

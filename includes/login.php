@@ -23,13 +23,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["login_btn"])) {
             // ✅ Redirect based on user role
             switch ($user['role']) {
                 case 'admin':
-                    header("Location: ../admin_dashboard.php");
+                    header("Location: ../admin/dashboard.php");
                     break;
                 case 'employee':
-                    header("Location: ../employee_dashboard.php");
+                    header("Location: ../frontend/employee/employee_dashboard.php");
                     break;
                 case 'customer':
-                    header("Location: ../frontend/customer_dashboard.php");
+                    header("Location: ../frontend/customer/customer_dashboard.php");
                     break;
                 default:
                     header("Location: ../form/index.php");
