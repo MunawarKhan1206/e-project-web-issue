@@ -10,14 +10,11 @@ body {
   background: #f7f6f3;
   color: #333;
 }
-
-/* Layout */
 .dashboard {
   display: flex;
-  flex-wrap: nowrap;
-  width: 100%;
 }
 
+/* Sidebar */
 .sidebar {
   width: 240px;
   background: #2f2b25;
@@ -26,7 +23,8 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1050;
+  transition: left 0.3s ease;
+  z-index: 1000;
 }
 
 .sidebar h2 {
@@ -51,6 +49,7 @@ body {
   color: #fff;
 }
 
+/* Main Content */
 .main {
   margin-left: 240px;
   width: calc(100% - 240px);
@@ -60,7 +59,7 @@ body {
 .dashboard-title {
   font-size: 26px;
   font-weight: 700;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
   color: #3a2f27;
 }
 
