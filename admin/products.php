@@ -61,17 +61,26 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="dashboard">
   <!-- Sidebar -->
-  <div class="sidebar" id="adminSidebar">
-    <h2>Admin Panel</h2>
-    <a href="dashboard.php"><i class="fas fa-chart-line"></i> Dashboard</a>
-    <a href="products.php" class="active"><i class="fas fa-box"></i> Products</a>
-    <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
-    <a href="returns.php"><i class="fas fa-undo"></i> Returns</a>
-    <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
-    <a href="contact.php"><i class="fas fa-envelope"></i> Contact Messages</a>
-    <a href="../frontend/index.php"><i class="fas fa-store"></i> Shop</a>
-    <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-  </div>
+  <div class="sidebar">
+            <h2 style="    display: block;
+    font-size: 1.5em !important;
+    /* margin-block-start: 0.83em; */
+    /* margin-block-end: 0.83em; */
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+    height: 28px !important;">Admin Panel</h2>
+            <a href="dashboard.php"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="products.php" class="active"><i class="fas fa-box"></i> Products</a>
+            <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
+            <a href="returns.php"><i class="fas fa-undo-alt"></i> Returns</a>
+            <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
+            <a href="contact.php"><i class="fas fa-envelope"></i> Contact</a>
+            <a href="notification.php" ><i class="fas fa-bell"></i> Notifications</a>
+            <a href="../frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
+            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
 
   <!-- Main Content -->
   <div class="main">

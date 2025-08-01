@@ -30,7 +30,7 @@ body {
 .sidebar h2 {
   color: #fff;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .sidebar a {
@@ -41,6 +41,7 @@ body {
   border-radius: 10px;
   text-decoration: none;
   transition: 0.3s;
+   height: 42px !important;
 }
 
 .sidebar a:hover,
@@ -48,7 +49,6 @@ body {
   background: #c29958;
   color: #fff;
 }
-
 /* Main Content */
 .main {
   margin-left: 240px;

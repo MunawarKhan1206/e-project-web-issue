@@ -35,17 +35,26 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
   <div class="dashboard">
-    <div class="sidebar" id="adminSidebar">
-      <h2>Admin Panel</h2>
-      <a href="dashboard.php"><i class="fas fa-chart-line"></i> Dashboard</a>
-      <a href="products.php"><i class="fas fa-box"></i> Products</a>
-      <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
-      <a href="returns.php" class="active"><i class="fas fa-undo"></i> Returns</a>
-      <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
-      <a href="contact.php"><i class="fas fa-envelope"></i> Contact Messages</a>
-      <a href="../frontend/index.php"><i class="fas fa-store"></i> Shop</a>
-      <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-    </div>
+    <div class="sidebar">
+            <h2 style="    display: block;
+    font-size: 1.5em !important;
+    /* margin-block-start: 0.83em; */
+    /* margin-block-end: 0.83em; */
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+    height: 28px !important;">Admin Panel</h2>
+            <a href="dashboard.php"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="products.php"><i class="fas fa-box"></i> Products</a>
+            <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
+            <a href="returns.php" class="active"><i class="fas fa-undo-alt"></i> Returns</a>
+            <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
+            <a href="contact.php"><i class="fas fa-envelope"></i> Contact</a>
+            <a href="notification.php"><i class="fas fa-bell"></i> Notifications</a>
+            <a href="../frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
+            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
 
     <div class="main">
       <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
@@ -289,6 +298,26 @@ $returns = $stmt->fetchAll(PDO::FETCH_ASSOC);
     ease: "back.out(1.7)",
   });
 </script>
+   <script>
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+
+        toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar if clicked outside on small screens
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 992 && sidebar.classList.contains('active')) {
+                const isClickInsideSidebar = sidebar.contains(e.target);
+                const isClickOnToggle = toggle.contains(e.target);
+
+                if (!isClickInsideSidebar && !isClickOnToggle) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

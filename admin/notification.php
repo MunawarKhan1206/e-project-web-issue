@@ -35,30 +35,43 @@ $notices = $pdo->query("SELECT * FROM site_notices ORDER BY created_at DESC")->f
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Admin - Notifications</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Reuse your existing styles -->
     <link rel="stylesheet" href="admin.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 </head>
+
 <body>
     <div class="dashboard">
-      <div class="sidebar">
-    <h2>Admin Panel</h2>
-    <a href="dashboard.php"><i class="fas fa-chart-line"></i> Dashboard</a>
-    <a href="products.php"><i class="fas fa-box"></i> Products</a>
-    <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
-    <a href="returns.php"><i class="fas fa-undo-alt"></i> Returns</a>
-    <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
-    <a href="contact.php"><i class="fas fa-envelope"></i> Contact Messages</a>
-    <a href="notification.php"><i class="fas fa-bell"></i> Notifications</a>
-    <a href="../frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
-    <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-  </div>
+        <div class="sidebar">
+            <h2 style="    display: block;
+    font-size: 1.5em !important;
+    /* margin-block-start: 0.83em; */
+    /* margin-block-end: 0.83em; */
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+    height: 28px !important;">Admin Panel</h2>
+            <a href="dashboard.php"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="products.php"><i class="fas fa-box"></i> Products</a>
+            <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
+            <a href="returns.php"><i class="fas fa-undo-alt"></i> Returns</a>
+            <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
+            <a href="contact.php"><i class="fas fa-envelope"></i> Contact</a>
+            <a href="notification.php" class="active"><i class="fas fa-bell"></i> Notifications</a>
+            <a href="../frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
+            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
 
-        <div class="main-content p-4">
+        <div class="main">
+            <button id="menu-toggle" class="menu-toggle"><i class="fas fa-bars"></i></button>
             <h2 class="mb-4">Manage Notifications</h2>
 
             <?php if (isset($_GET['success'])): ?>
@@ -79,9 +92,10 @@ $notices = $pdo->query("SELECT * FROM site_notices ORDER BY created_at DESC")->f
             </form>
 
             <!-- Existing Notices Table -->
-            <div class="table-responsive">
+            <!-- Existing Notices Table -->
+            <div class="table-responsive d-none d-lg-block"> <!-- Hide on phones -->
                 <table class="table table-bordered table-striped custom-table">
-                    <thead class="thead-dark">
+                    <thead thead style="background: #f2ebe0; color: #5c4434;">
                         <tr>
                             <th>#</th>
                             <th>Title</th>
@@ -120,8 +134,83 @@ $notices = $pdo->query("SELECT * FROM site_notices ORDER BY created_at DESC")->f
                     </tbody>
                 </table>
             </div>
+            <!-- Mobile Card View -->
+            <div class="d-lg-none">
+                <?php foreach ($notices as $index => $notice): ?>
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= htmlspecialchars($notice['title']) ?></h5>
+                            <p class="card-text mb-2"><?= htmlspecialchars($notice['message']) ?></p>
+                            <p class="card-text">
+                                <strong>Status:</strong>
+                                <?php if ($notice['active']): ?>
+                                    <span class="badge badge-success">Active</span>
+                                <?php else: ?>
+                                    <span class="badge badge-secondary">Inactive</span>
+                                <?php endif; ?>
+                            </p>
+                            <p class="card-text text-muted mb-2">
+                                <strong>Created:</strong> <?= date("d M Y h:i A", strtotime($notice['created_at'])) ?>
+                            </p>
+                            <a href="?toggle=<?= $notice['id'] ?>" class="btn btn-sm btn-warning">
+                                <?= $notice['active'] ? 'Deactivate' : 'Activate' ?>
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+
+                <?php if (empty($notices)): ?>
+                    <p class="text-muted text-center">No notifications yet.</p>
+                <?php endif; ?>
+            </div>
+
 
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        // GSAP
+        gsap.from(".sidebar", {
+            x: -200,
+            duration: 0.8,
+            ease: "power2.out"
+        });
+        gsap.from(".main", {
+            opacity: 0,
+            y: 30,
+            duration: 0.6,
+            delay: 0.2
+        });
+        gsap.from(".stat-card", {
+            y: 50,
+            opacity: 0,
+            stagger: 0.2,
+            duration: 0.8,
+            delay: 0.5,
+            ease: "back.out(1.7)"
+        });
+    </script>
+    <script>
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+
+        toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar if clicked outside on small screens
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 992 && sidebar.classList.contains('active')) {
+                const isClickInsideSidebar = sidebar.contains(e.target);
+                const isClickOnToggle = toggle.contains(e.target);
+
+                if (!isClickInsideSidebar && !isClickOnToggle) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+    </script>
+
 </body>
+
 </html>

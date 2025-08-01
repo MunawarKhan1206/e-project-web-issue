@@ -79,7 +79,8 @@ $stmt2 = $pdo->prepare("SELECT COUNT(*) FROM returns WHERE MONTH(return_date) = 
     <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
     <a href="returns.php"><i class="fas fa-undo-alt"></i> Returns</a>
     <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
-    <a href="contact.php"><i class="fas fa-envelope"></i> Contact Messages</a>
+    <a href="contact.php"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="notification.php"><i class="fas fa-bell"></i> Notifications</a>
     <a href="../frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
     <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>

@@ -31,6 +31,7 @@ try {
 }
 
 $show_modal = false;
+$notice = null;
 $notice_title = '';
 $notice_message = '';
 
