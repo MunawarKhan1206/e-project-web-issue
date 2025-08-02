@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'customer') {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['customer', 'admin'])) {
     $showLoginModal = true;
 } else {
     $showLoginModal = false;
@@ -20,6 +20,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'customer') {
 
 	<link rel="stylesheet" href="css/open-iconic-bootstrap.min.css">
 	<link rel="stylesheet" href="css/animate.css">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 	<link rel="stylesheet" href="css/owl.carousel.min.css">
 	<link rel="stylesheet" href="css/owl.theme.default.min.css">
@@ -168,7 +169,7 @@ if (!empty($cart)) {
 						</div>
 						<div class="col-md pr-4 d-flex topper align-items-center">
 							<div class="icon mr-2 d-flex justify-content-center align-items-center"><span class="icon-paper-plane"></span></div>
-							<span class="text">youremail@email.com</span>
+							<span class="text">minishop@email.com</span>
 						</div>
 						<div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
 							<span class="text">3-5 Business days delivery &amp; Free Returns</span>
@@ -214,59 +215,74 @@ if (!empty($cart)) {
 			<div class="row">
 				<div class="col-md-12 ftco-animate">
 					<div class="cart-list">
-						<table class="table">
-							<thead class="thead-primary">
-								<tr class="text-center">
-									<th>&nbsp;</th>
-									<th>&nbsp;</th>
-									<th>Product</th>
-									<th>Price</th>
-									<th>Quantity</th>
-									<th>Total</th>
-									<th>Grand Total</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php foreach ($products as $product):
-									$productId = $product['id'];
-									$quantity = $cart[$productId]['quantity'];
-									$subtotal = $product['price'] * $quantity;
-									$total += $subtotal;
-								?>
-									<tr class="text-center">
-	<td class="product-remove">
-		<td class="product-remove">
-    <form method="POST" action="cart.php" style="display:inline;">
-        <input type="hidden" name="action" value="remove">
-        <input type="hidden" name="id" value="<?= $product['id'] ?>">
-        <button type="submit" class="btn btn-link p-0 m-0" style="color:red;">
-            <span class="ion-ios-close" style="font-size: 24px;"></span>
-        </button>
-    </form>
-</td>
+						        <div class="table-responsive d-none d-md-block">
+            <table class="table table-bordered text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Product</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $total = 0;
+                    foreach ($_SESSION['cart'] as $productId => $item) {
+                        $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
+                        $stmt->execute([$productId]);
+                        $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-
-	</td>
-
-	<td class="image-prod">
-		<div class="img" style="background-image:url('product/<?= htmlspecialchars($product['image']) ?>');"></div>
-	</td>
-
+                        if ($product) {
+                            $subtotal = $product['price'] * $item['quantity'];
+                            $total += $subtotal;
+                    ?>
+                    <tr>
+                        <td class="image-prod">
+							<div class="img" style="background-image:url('product/<?= htmlspecialchars($product['image']) ?>');"></div>
+						</td>
+					
 	<td class="product-name">
 		<h3><?= htmlspecialchars($product['name']) ?></h3>
 		<p><?= htmlspecialchars($product['description']) ?></p>
 	</td>
+                        <td>Rs <?= $product['price'] ?></td>
+                        <td><?= $item['quantity'] ?></td>
+                        <td>Rs <?= $subtotal ?></td>
+                        <td>
+                            <a href="remove-from-cart.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-danger">Remove</a>
+                        </td>
+                    </tr>
+                    <?php } } ?>
+                </tbody>
+            </table>
+        </div>
 
-	<td class="price">Rs <?= number_format($product['price']) ?></td>
+        <!-- Mobile Card View -->
+        <div class="d-md-none">
+            <?php
+            foreach ($_SESSION['cart'] as $productId => $item) {
+                $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
+                $stmt->execute([$productId]);
+                $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-	<td class="quantity"><?= $quantity ?></td>
-
-	<td class="total">Rs <?= number_format($subtotal) ?></td>
-</tr>
-
-								<?php endforeach; ?>
-							</tbody>
-						</table>
+                if ($product) {
+                    $subtotal = $product['price'] * $item['quantity'];
+            ?>
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><?= htmlspecialchars($product['name']) ?></h5>
+                    <img src="frontend/product/<?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="img-fluid mb-2" style="max-width: 100px;">
+                    <p class="card-text mb-1"><strong>Price:</strong> Rs <?= $product['price'] ?></p>
+                    <p class="card-text mb-1"><strong>Quantity:</strong> <?= $item['quantity'] ?></p>
+                    <p class="card-text mb-1"><strong>Subtotal:</strong> Rs <?= $subtotal ?></p>
+                    <a href="remove-from-cart.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-danger mt-2">Remove</a>
+                </div>
+            </div>
+            <?php } } ?>
+        </div>
 					</div>
 				</div>
 			</div>
