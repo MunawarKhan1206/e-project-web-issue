@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" ||
     $last_name = trim($_POST['last_name']);
     $customer_name = "$first_name $last_name";
     $address = $_POST['address'];
-    $email = $_POST['email'];
+$email = $_SESSION['user_email'] ?? '';
     $phone = $_POST['phone'];
     $payment_method = strtolower($_POST['payment_method']);
 

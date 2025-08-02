@@ -1,13 +1,14 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'customer') {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['customer', 'admin'])) {
     echo "<script>
-        alert('Please log in as a customer to continue.');
+        alert('Please log in to continue.');
         window.location.href = 'form/index.php';
     </script>";
     exit;
 }
 
+$user_email = $_SESSION['user_email'] ?? '';
 require_once("../includes/db.inc.php");
 if (!empty($cart)) {
     $placeholders = implode(',', array_fill(0, count($cart), '?'));
@@ -91,7 +92,7 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
 					    </div>
 					    <div class="col-md pr-4 d-flex topper align-items-center">
 					    	<div class="icon mr-2 d-flex justify-content-center align-items-center"><span class="icon-paper-plane"></span></div>
-						    <span class="text">youremail@email.com</span>
+						    <span class="text">minishop@gmail.com</span>
 					    </div>
 					    <div class="col-md-5 pr-4 d-flex topper align-items-center text-lg-right">
 						    <span class="text">3-5 Business days delivery &amp; Free Returns</span>
@@ -220,10 +221,11 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
               </div>
             </div>
             <div class="col-md-6">
-              <div class="form-group">
-                <label for="emailaddress">Email Address</label>
-                <input type="email" name="email" class="form-control" required>
-              </div>
+          <div class="form-group">
+  <label for="email">Email</label>
+  <input type="email" class="form-control" name="email" id="email" value="<?= htmlspecialchars($user_email) ?>" readonly>
+</div>
+
             </div>
 
             <div class="w-100"></div>

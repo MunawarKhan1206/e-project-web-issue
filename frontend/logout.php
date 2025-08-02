@@ -8,7 +8,8 @@ session_destroy();
 <head>
   <meta charset="UTF-8">
   <title>Logging Out...</title>
-  <meta http-equiv="refresh" content="3;url=../form/index.php">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="3;url=../frontend/index.php">
   <style>
     body {
       background: #f7f6f3;
@@ -16,28 +17,31 @@ session_destroy();
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
+      padding: 20px;
       color: #3a2f27;
     }
 
     .logout-box {
       text-align: center;
-      padding: 40px;
-      border-radius: 10px;
+      padding: 30px 20px;
+      border-radius: 12px;
       background: #fff;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-      animation: fadeIn 1s ease-in-out;
+      max-width: 400px;
+      width: 100%;
+      animation: fadeIn 0.8s ease-in-out;
     }
 
     .logout-box h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
+      font-size: 22px;
+      margin-bottom: 15px;
     }
 
     .logout-box p {
       font-size: 16px;
-      color: #666;
+      color: #555;
     }
 
     .spinner {
@@ -58,6 +62,25 @@ session_destroy();
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .logout-box {
+        padding: 20px 15px;
+      }
+
+      .logout-box h2 {
+        font-size: 20px;
+      }
+
+      .logout-box p {
+        font-size: 14px;
+      }
+
+      .spinner {
+        width: 35px;
+        height: 35px;
+      }
     }
   </style>
 </head>

@@ -54,12 +54,29 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['customer
     line-height: 1.4;
 }
 
-/* Success toast */
 .toast-success {
-    background-color: #738277ff !important;
-    color: #0e4c2dff !important;
-    border-left: 5px solid #27ae60;
+    background-color: #e6f4ea !important;
+    color: #1e4620 !important;
+    border-left: 5px solid #28a745;
+    padding: 14px 18px !important;
+    font-weight: 500;
+    border-radius: 10px !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    position: relative;
+    padding-left: 42px !important; /* space for icon */
 }
+
+/* Add checkmark icon using ::before */
+.toast-success::before {
+    content: "✔";
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #28a745;
+}
+
 
 /* Error toast */
 .toast-error {
@@ -98,7 +115,56 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['customer
   transform: scale(1);
   opacity: 1;
 }
+  @media (max-width: 767.98px) {
+    table.table thead {
+      display: none;
+    }
 
+    table.table tbody tr {
+      display: block;
+      margin-bottom: 1.5rem;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+
+    table.table tbody td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border: none !important;
+    }
+
+    table.table tbody td::before {
+      content: attr(data-label);
+      font-weight: bold;
+      flex: 1;
+      text-align: left;
+      color: #555;
+    }
+
+    .product-remove,
+    .image-prod,
+    .product-name,
+    .price,
+    .quantity,
+    .total {
+      width: 100% !important;
+      display: block !important;
+    }
+
+    .img {
+      width: 100%;
+      height: 180px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 0.25rem;
+    }
+  }
+.ftco-cart button, .ftco-cart .form-control {
+	border: none !important;
+}
 	</style>
 </head>
 <?php
@@ -107,8 +173,8 @@ require_once("../includes/db.inc.php");
 // session_start();
 
 // Validate the action
-$action = $_GET['action'] ?? null;
-$id = $_GET['id'] ?? null;
+$action = $_POST['action'] ?? $_GET['action'] ?? null;
+$id = $_POST['id'] ?? $_GET['id'] ?? null;
 
 if ($action) {
     switch ($action) {
@@ -217,14 +283,16 @@ if (!empty($cart)) {
 					<div class="cart-list">
 						        <div class="table-responsive d-none d-md-block">
             <table class="table table-bordered text-center">
-                <thead class="thead-dark">
+                <thead class="thead-primary">
                     <tr>
+						<th>&nbsp;</th>
+						<th>&nbsp;</th>
                         <th>Product</th>
                         <th>Description</th>
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Subtotal</th>
-                        <th>Remove</th>
+                        <!-- <th>Remove</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -240,6 +308,18 @@ if (!empty($cart)) {
                             $total += $subtotal;
                     ?>
                     <tr>
+					<tr class="text-center">
+	<td class="product-remove">
+		<td class="product-remove">
+    <form method="POST" action="cart.php" style="display:inline;">
+        <input type="hidden" name="action" value="remove">
+        <input type="hidden" name="id" value="<?= $product['id'] ?>">
+        <button type="submit" class="btn btn-link p-0 m-0" style="color:red;">
+            <span class="ion-ios-close" style="font-size: 24px;"></span>
+        </button>
+    </form>
+</td>
+	</td>
                         <td class="image-prod">
 							<div class="img" style="background-image:url('product/<?= htmlspecialchars($product['image']) ?>');"></div>
 						</td>
@@ -251,9 +331,7 @@ if (!empty($cart)) {
                         <td>Rs <?= $product['price'] ?></td>
                         <td><?= $item['quantity'] ?></td>
                         <td>Rs <?= $subtotal ?></td>
-                        <td>
-                            <a href="remove-from-cart.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-danger">Remove</a>
-                        </td>
+
                     </tr>
                     <?php } } ?>
                 </tbody>
@@ -261,28 +339,39 @@ if (!empty($cart)) {
         </div>
 
         <!-- Mobile Card View -->
-        <div class="d-md-none">
-            <?php
-            foreach ($_SESSION['cart'] as $productId => $item) {
-                $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
-                $stmt->execute([$productId]);
-                $product = $stmt->fetch(PDO::FETCH_ASSOC);
+        <!-- Mobile Card View -->
+<div class="d-md-none">
+    <?php
+    foreach ($_SESSION['cart'] as $productId => $item) {
+        $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
+        $stmt->execute([$productId]);
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if ($product) {
-                    $subtotal = $product['price'] * $item['quantity'];
-            ?>
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($product['name']) ?></h5>
-                    <img src="frontend/product/<?= htmlspecialchars($product['image']) ?>" alt="Product Image" class="img-fluid mb-2" style="max-width: 100px;">
-                    <p class="card-text mb-1"><strong>Price:</strong> Rs <?= $product['price'] ?></p>
-                    <p class="card-text mb-1"><strong>Quantity:</strong> <?= $item['quantity'] ?></p>
-                    <p class="card-text mb-1"><strong>Subtotal:</strong> Rs <?= $subtotal ?></p>
-                    <a href="remove-from-cart.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-danger mt-2">Remove</a>
+        if ($product) {
+            $subtotal = $product['price'] * $item['quantity'];
+    ?>
+    <div class="card mb-3 shadow-sm border border-dark">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-2">
+                <div class="mr-3" style="width: 80px; height: 80px; background-image: url('product/<?= htmlspecialchars($product['image']) ?>'); background-size: cover; background-position: center; border-radius: 8px;"></div>
+                <div>
+                    <h5 class="mb-1"><?= htmlspecialchars($product['name']) ?></h5>
+                    <p class="mb-0 text-muted" style="font-size: 14px;"><?= htmlspecialchars($product['description']) ?></p>
                 </div>
             </div>
-            <?php } } ?>
+            <ul class="list-group list-group-flush mb-2">
+                <li class="list-group-item px-0 py-1 d-flex justify-content-between"><strong>Price:</strong> <span>Rs <?= $product['price'] ?></span></li>
+                <li class="list-group-item px-0 py-1 d-flex justify-content-between"><strong>Quantity:</strong> <span><?= $item['quantity'] ?></span></li>
+                <li class="list-group-item px-0 py-1 d-flex justify-content-between"><strong>Subtotal:</strong> <span>Rs <?= $subtotal ?></span></li>
+            </ul>
+            <a href="cart.php?action=remove&id=<?= $product['id'] ?>" style="color: red; font-size: 24px;">
+        <span class="ion-ios-close"></span>
+    </a>
         </div>
+    </div>
+    <?php } } ?>
+</div>
+
 					</div>
 				</div>
 			</div>
