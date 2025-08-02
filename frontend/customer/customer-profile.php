@@ -63,45 +63,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Main Content -->
   <main class="main">
-    <button class="menu-toggle" id="toggleSidebar"><i class="fas fa-bars"></i></button>
+ <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('active')">☰</button>
 
     <h2 class="dashboard-title">My Profile</h2>
 
     <?= $msg ?>
 
-    <div class="row">
-      <!-- User Info -->
-      <div class="col-md-6 mb-4">
-        <div class="card p-4">
-          <h5 class="mb-3">Account Details</h5>
-          <p><strong>Name:</strong> <?= htmlspecialchars($user['name']) ?></p>
-          <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
-          <p><strong>Joined:</strong> <?= date("F d, Y", strtotime($user['created_at'])) ?></p>
-        </div>
-      </div>
-
-      <!-- Password Form -->
-      <div class="col-md-6 mb-4">
-        <div class="card p-4">
-          <h5 class="mb-3">Change Password</h5>
-          <form method="POST">
-            <div class="form-group">
-              <label for="current_password">Current Password</label>
-              <input type="password" id="current_password" name="current_password" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label for="new_password">New Password</label>
-              <input type="password" id="new_password" name="new_password" class="form-control" required minlength="6">
-            </div>
-            <div class="form-group">
-              <label for="confirm_password">Confirm New Password</label>
-              <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-outline-primary mt-3">Update Password</button>
-          </form>
-        </div>
-      </div>
+<div class="row">
+  <!-- User Info -->
+  <div class="col-12 col-md-6 mb-4">
+    <div class="card p-4 h-100">
+      <h5 class="mb-3">Account Details</h5>
+      <p><strong>Name:</strong> <?= htmlspecialchars($user['name']) ?></p>
+      <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
+      <p><strong>Joined:</strong> <?= date("F d, Y", strtotime($user['created_at'])) ?></p>
     </div>
+  </div>
+
+  <!-- Password Form -->
+  <div class="col-12 col-md-6 mb-4">
+    <div class="card p-4 h-100">
+      <h5 class="mb-3">Change Password</h5>
+      <form method="POST">
+        <div class="form-group">
+          <label for="current_password">Current Password</label>
+          <input type="password" id="current_password" name="current_password" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="new_password">New Password</label>
+          <input type="password" id="new_password" name="new_password" class="form-control" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label for="confirm_password">Confirm New Password</label>
+          <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-outline-primary mt-3">Update Password</button>
+      </form>
+    </div>
+  </div>
+</div>
+
   </main>
 </div>
 
