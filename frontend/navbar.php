@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 $current_page = basename($_SERVER['PHP_SELF']);
 
 // Absolute path to dashboard based on user role
