@@ -53,6 +53,7 @@ $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
     <a href="returns.php"><i class="fas fa-undo-alt"></i> Returns</a>
     <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
+     <a href="customers.php"><i class="fas fa-user-tie"></i> Customers</a>
     <a href="contact.php" class="active"><i class="fas fa-envelope"></i> Contact Messages</a>
     <a href="../frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
     <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>

@@ -12,6 +12,7 @@ require_once '../includes/db.inc.php';
 $total_orders = $pdo->query("SELECT COUNT(*) FROM orders2")->fetchColumn();
 $total_returns = $pdo->query("SELECT COUNT(*) FROM returns")->fetchColumn();
 $total_employees = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'employee'")->fetchColumn();
+$total_customers = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'customer'")->fetchColumn();
 $total_messages = $pdo->query("SELECT COUNT(*) FROM contacts")->fetchColumn();
 
 // Fetch monthly order & return stats
@@ -53,8 +54,6 @@ for ($i = 1; $i <= 12; $i++) {
     $stmt->execute([$i]);
     $monthly_orders[] = $stmt->fetchColumn();
 $stmt2 = $pdo->prepare("SELECT COUNT(*) FROM returns WHERE MONTH(return_date) = ?");
-
-
     $stmt2->execute([$i]);
     $monthly_returns[] = $stmt2->fetchColumn();
 }
@@ -79,6 +78,7 @@ $stmt2 = $pdo->prepare("SELECT COUNT(*) FROM returns WHERE MONTH(return_date) = 
     <a href="orders.php"><i class="fas fa-shopping-cart"></i> Orders</a>
     <a href="returns.php"><i class="fas fa-undo-alt"></i> Returns</a>
     <a href="employees.php"><i class="fas fa-user-tie"></i> Employees</a>
+    <a href="customers.php"><i class="fas fa-user-tie"></i> Customers</a>
     <a href="contact.php"><i class="fas fa-envelope"></i> Contact</a>
     <a href="notification.php"><i class="fas fa-bell"></i> Notifications</a>
     <a href="../frontend/index.php"><i class="fas fa-store"></i> Go to Shop</a>
@@ -104,12 +104,14 @@ $stmt2 = $pdo->prepare("SELECT COUNT(*) FROM returns WHERE MONTH(return_date) = 
     <div class="stat-value"><?= $total_employees ?></div>
   </div>
   <div class="stat-card">
+    <div class="stat-title">Customers</div>
+    <div class="stat-value"><?= $total_customers ?></div>
+  </div>
+  <div class="stat-card">
     <div class="stat-title">Messages</div>
     <div class="stat-value"><?= $total_messages ?></div>
   </div>
 </div>
-
-
     <div class="section">
 <h3 style="margin-top: 40px;">Monthly Sales (PKR)</h3>
 <div class="chart-container">
