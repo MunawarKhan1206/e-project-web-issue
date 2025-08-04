@@ -276,3 +276,7 @@ body {
     font-size: 14px;
   }
 }
+.border-danger {
+  border: 2px solid #dc3545 !important;
+  background-color: #ffe5e5 !important;
+}

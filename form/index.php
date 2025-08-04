@@ -109,6 +109,93 @@
     }
   });
 </script>
+<script>
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+  toastMessage.textContent = message;
+  toast.style.display = "block";
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 3000);
+}
+
+// Regex patterns
+const nameRegex = /^[A-Za-z]{2,}(?: [A-Za-z]{2,})*$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/;
+
+function validateSignupForm(e) {
+  const form = e.target;
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const role = form.role.value;
+  const password = form.password.value;
+
+  if (!nameRegex.test(name)) {
+    e.preventDefault();
+    showToast("Name must contain at least 2 alphabetic characters, no symbols.");
+    form.name.classList.add("border-danger");
+    return false;
+  }
+
+  if (!emailRegex.test(email)) {
+    e.preventDefault();
+    showToast("Please enter a valid email address.");
+    form.email.classList.add("border-danger");
+    return false;
+  }
+
+  if (!role) {
+    e.preventDefault();
+    showToast("Please select a role.");
+    return false;
+  }
+
+  if (!passwordRegex.test(password)) {
+    e.preventDefault();
+    showToast("Password must be at least 8 characters long, include letters and numbers.");
+    form.password.classList.add("border-danger");
+    return false;
+  }
+
+  return true;
+}
+
+function validateLoginForm(e) {
+  const form = e.target;
+  const email = form.email.value.trim();
+  const role = form.role.value;
+  const password = form.password.value;
+
+  if (!emailRegex.test(email)) {
+    e.preventDefault();
+    showToast("Enter a valid email.");
+    form.email.classList.add("border-danger");
+    return false;
+  }
+
+  if (!role) {
+    e.preventDefault();
+    showToast("Please select your role.");
+    return false;
+  }
+
+  if (password.length < 6) {
+    e.preventDefault();
+    showToast("Password must be at least 6 characters.");
+    form.password.classList.add("border-danger");
+    return false;
+  }
+
+  return true;
+}
+
+// Attach listeners
+document.querySelector('.sign-up form').addEventListener('submit', validateSignupForm);
+document.querySelector('.sign-in form').addEventListener('submit', validateLoginForm);
+</script>
+
 </body>
 
 </html>
