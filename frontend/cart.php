@@ -1,11 +1,10 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['customer', 'admin'])) {
-    $showLoginModal = true;
-} else {
-    $showLoginModal = false;
-}
-
+// if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['customer', 'admin'])) {
+//     $showLoginModal = true;
+// } else {
+//     $showLoginModal = false;
+// }
 ?>
 
 <!DOCTYPE html>
@@ -249,9 +248,11 @@ if (!empty($cart)) {
 	include ("navbar.php");
    ?>
 	<!-- END nav -->
-<?php if (isset($showLoginModal) && $showLoginModal): ?>
+<?php
+ //if (isset($showLoginModal) && $showLoginModal): 
+ ?>
 <!-- Bootstrap Modal -->
-<div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true" data-backdrop="static">
+<!-- <div class="modal fade" id="authModal" tabindex="-1" role="dialog" aria-labelledby="authModalLabel" aria-hidden="true" data-backdrop="static">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -262,8 +263,10 @@ if (!empty($cart)) {
       </div>
     </div>
   </div>
-</div>
-<?php endif; ?>
+</div> -->
+<?php
+//  endif; 
+?>
 
 	<div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
 		<div class="container">
@@ -467,16 +470,20 @@ if (!empty($cart)) {
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
 	<script src="js/google-map.js"></script>
 	<script src="js/main.js"></script>
-<?php if ($showLoginModal): ?>
-<script>
+<?php 
+// if ($showLoginModal):
+   ?>
+<!-- <script>
 window.addEventListener("DOMContentLoaded", () => {
   $('#authModal').modal('show');
   setTimeout(() => {
     window.location.href = "../form/index.php";
   }, 4000);
 });
-</script>
-<?php endif; ?>
+</script> -->
+<?php
+//  endif; 
+?>
 
 	<script>
 		$(document).ready(function() {

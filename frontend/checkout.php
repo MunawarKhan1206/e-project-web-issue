@@ -1,20 +1,28 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['user_role'], ['customer', 'admin'])) {
-  echo "<script>
-        alert('Please log in to continue.');
-        window.location.href = 'form/index.php';
-    </script>";
-  exit;
-}
+
+// Check login status
+$isUserLoggedIn = isset($_SESSION['user_id']) && in_array($_SESSION['user_role'], ['customer', 'admin']);
+
+// Control modal visibility
+$showLoginModal = !$isUserLoggedIn;
 
 $user_email = $_SESSION['user_email'] ?? '';
-require_once("../includes/db.inc.php");
-if (!empty($cart)) {
+
+// Continue only if user is logged in
+if ($isUserLoggedIn && !empty($_SESSION['cart'])) {
+  $cart = $_SESSION['cart'];
+
+  require_once("../includes/db.inc.php");
+
   $placeholders = implode(',', array_fill(0, count($cart), '?'));
   $stmt = $pdo->prepare("SELECT * FROM products WHERE id IN ($placeholders)");
   $stmt->execute(array_keys($cart));
   $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  $total = 0;
+  $discount = 0;
+  $deliveryFee = 200;
 
   foreach ($products as &$product) {
     $id = $product['id'];
@@ -30,20 +38,16 @@ if (!empty($cart)) {
   }
 
   $grandTotal = $total + $deliveryFee - $discount;
+
+  $_SESSION['totals'] = [
+    'subtotal' => $total,
+    'discount' => $discount,
+    'delivery' => $deliveryFee,
+    'grand_total' => $grandTotal
+  ];
 }
-
-// session_start();
-
-
-$subtotal = $_SESSION['totals']['subtotal'] ?? 0;
-$discount = $_SESSION['totals']['discount'] ?? 0;
-$delivery = $_SESSION['totals']['delivery'] ?? 0;
-$grand_total = $_SESSION['totals']['grand_total'] ?? 0;
-
-
-
-
 ?>
+
 
 
 <!DOCTYPE html>
@@ -86,6 +90,26 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
   display: none;
 }
 
+  .custom-blur-modal .modal-content {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    color: #fff;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  }
+
+  .custom-blur-modal.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  .custom-blur-modal.modal.show .modal-dialog {
+    transform: scale(1);
+    opacity: 1;
+  }
+
   </style>
 </head>
 
@@ -115,6 +139,30 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
   include 'navbar.php';
   ?>
   <!-- END nav -->
+<!-- Login Modal -->
+<div class="modal fade custom-blur-modal" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content p-4">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Please Log In</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="window.location.href='index.php';">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+<p>You need to be logged in to proceed to checkout.</p>
+<p class="text-warning font-weight-bold">
+  Redirecting in <span id="countdown">5</span> second<span id="s">s</span>...
+</p>
+<!-- <a href="../form/index.php" class="btn btn-primary btn-block">Go to Login Now</a> -->
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
   <div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
     <div class="container">
@@ -304,11 +352,11 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
 
 
 
-  <!-- loader -->
-  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
-      <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
-      <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00" />
-    </svg></div>
+<!-- loader -->
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+  <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+  <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00" />
+</svg></div>
 
 
   <script src="js/jquery.min.js"></script>
@@ -327,6 +375,32 @@ $grand_total = $_SESSION['totals']['grand_total'] ?? 0;
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
   <script src="js/google-map.js"></script>
   <script src="js/main.js"></script>
+  <?php if ($showLoginModal): ?>
+  <script>
+    $(document).ready(function () {
+      $('#loginModal').modal('show');
+
+      let seconds = 5;
+      const countdownEl = document.getElementById("countdown");
+      const pluralEl = document.getElementById("s");
+
+      const interval = setInterval(function () {
+        seconds--;
+
+        if (countdownEl) countdownEl.textContent = seconds;
+        if (pluralEl) pluralEl.style.display = seconds === 1 ? 'none' : 'inline';
+
+        if (seconds <= 0) {
+          clearInterval(interval);
+          window.location.href = '../form/index.php';
+        }
+      }, 1000);
+    });
+  </script>
+<?php endif; ?>
+
+
+
   <div aria-live="polite" aria-atomic="true" style="position: fixed; top: 1rem; right: 1rem; z-index: 9999;">
     <div id="errorToast" class="toast" data-delay="4000">
       <div class="toast-header bg-danger text-white">
