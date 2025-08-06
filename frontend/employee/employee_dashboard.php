@@ -6,7 +6,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'employee') {
 }
 require_once("../../includes/db.inc.php");
 
-
 $stmt = $pdo->query("SELECT id, order_number, customer_name, grand_total, status, created_at FROM orders2 ORDER BY created_at DESC");
 $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
