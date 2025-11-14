@@ -4,11 +4,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'customer') {
     header("Location: ../form/index.php");
     exit;
 }
-
 require_once("../../includes/db.inc.php");
-
-
-
 // Get email from logged-in user
 $user_email = $_SESSION['user_email'] ?? null;
 
